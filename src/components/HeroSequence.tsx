@@ -1,171 +1,94 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-const TOTAL_FRAMES = 192;
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { ArrowRight, Sparkles, Award, Compass, ShieldCheck } from "lucide-react";
 
 export default function HeroSequence() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [loadedPercent, setLoadedPercent] = useState(0);
-  const [loadingDone, setLoadingDone] = useState(false);
+  const [filled, setFilled] = useState(false);
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Set canvas dimensions
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    // Preload images
-    const images: HTMLImageElement[] = [];
-    let loadedCount = 0;
-
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
-      const img = new Image();
-      const frameNum = String(i).padStart(3, "0");
-      img.src = `/sequence/ezgif-frame-${frameNum}.jpg`;
-
-      img.onload = () => {
-        loadedCount++;
-        setLoadedPercent(Math.round((loadedCount / TOTAL_FRAMES) * 100));
-        if (loadedCount === TOTAL_FRAMES) {
-          setLoadingDone(true);
-          renderFrame(0);
-        }
-      };
-
-      img.onerror = () => {
-        loadedCount++;
-        if (loadedCount === TOTAL_FRAMES) {
-          setLoadingDone(true);
-        }
-      };
-
-      images.push(img);
-    }
-
-    const renderFrame = (index: number) => {
-      const img = images[index];
-      if (!img || !img.complete || img.naturalWidth === 0) return;
-
-      const hRatio = canvas.width / img.width;
-      const vRatio = canvas.height / img.height;
-      const ratio = Math.max(hRatio, vRatio);
-      const centerShift_x = (canvas.width - img.width * ratio) / 2;
-      const centerShift_y = (canvas.height - img.height * ratio) / 2;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        img.width,
-        img.height,
-        centerShift_x,
-        centerShift_y,
-        img.width * ratio,
-        img.height * ratio
-      );
-    };
-
-    // GSAP ScrollTrigger timeline
-    const frameObj = { currentFrame: 0 };
-    const st = gsap.to(frameObj, {
-      currentFrame: TOTAL_FRAMES - 1,
-      snap: "currentFrame",
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#sequence-container",
-        start: "top top",
-        end: "+=400%",
-        scrub: 0.5,
-        pin: true,
-      },
-      onUpdate: () => {
-        renderFrame(Math.floor(frameObj.currentFrame));
-      },
-    });
-
-    return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      st.kill();
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
+    const timer = setTimeout(() => {
+      setFilled(true);
+    }, 400);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <section id="sequence-container" className="relative w-full h-screen overflow-hidden bg-[#241e12]">
-      {/* Preloader overlay */}
-      {!loadingDone && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-neutral-950 text-white transition-opacity duration-700">
-          <div className="font-serif italic text-3xl font-bold tracking-widest uppercase mb-4 text-amber-100">
-            VIGYAN<span className="font-sans text-xs tracking-normal lowercase text-neutral-400">.prep</span>
-          </div>
-          <div className="relative w-24 h-24 flex items-center justify-center">
-            <svg className="w-full h-full transform -rotate-90">
-              <circle cx="48" cy="48" r="40" stroke="rgba(255,255,255,0.1)" strokeWidth="3" fill="none" />
-              <circle
-                cx="48"
-                cy="48"
-                r="40"
-                stroke="#d4a520"
-                strokeWidth="3"
-                fill="none"
-                strokeDasharray={251.2}
-                strokeDashoffset={251.2 - (loadedPercent / 100) * 251.2}
-                className="transition-all duration-150"
-              />
-            </svg>
-            <span className="absolute font-sans font-medium text-sm text-amber-200">{loadedPercent}%</span>
-          </div>
-          <p className="mt-4 text-xs uppercase tracking-widest text-neutral-400 font-light">Loading Experience...</p>
+    <section className="relative min-h-screen pt-36 pb-20 px-6 flex flex-col items-center justify-between bg-[#16120b] overflow-hidden">
+      {/* Blueprint Radial Vignette */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_90%_80%_at_50%_50%,transparent_45%,rgba(36,30,18,0.6)_70%,rgba(22,18,11,0.95)_100%)]" />
+
+      {/* Background Blueprint Grid Lines */}
+      <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(#d4a520_1px,transparent_1px)] [background-size:32px_32px]" />
+
+      {/* Main Content Box */}
+      <div className="relative z-10 max-w-5xl w-full mx-auto text-center space-y-8 my-auto">
+        {/* Top Tag Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-widest shadow-lg">
+          <ShieldCheck className="w-4 h-4 text-amber-400" /> Research-Grade Entrance Preparation
         </div>
-      )}
 
-      {/* Main Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-cover z-0" />
-
-      {/* Vignette Overlay */}
-      <div className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(ellipse_90%_80%_at_50%_50%,transparent_45%,rgba(36,30,18,0.4)_70%,rgba(36,30,18,0.85)_100%)]" />
-
-      {/* Text Overlays */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
-        <div className="max-w-4xl mx-auto space-y-4">
-          <span className="inline-block text-xs uppercase tracking-[0.3em] font-semibold text-amber-400/90 bg-amber-950/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-amber-500/20 shadow-lg">
-            India&apos;s Premier Science Entrance Platform
-          </span>
-          <h1 className="font-serif text-5xl md:text-7xl font-light text-neutral-100 leading-tight">
-            Gateway to <em className="not-italic font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500">Future Science</em>
-          </h1>
-          <p className="text-sm md:text-base text-neutral-300 max-w-xl mx-auto font-light leading-relaxed">
-            Prepare for IISER IAT, NISER NEST & research institute exams with precision mock tests, PYQs, and interactive study modules.
-          </p>
-
-          <div className="pt-6 pointer-events-auto flex items-center justify-center gap-4">
-            <a
-              href="https://auth.vigyanprep.com"
-              className="px-8 py-3.5 rounded-full text-sm font-semibold uppercase tracking-wider bg-gradient-to-r from-amber-400 to-orange-500 text-black hover:scale-105 transition-all shadow-xl shadow-amber-500/25"
-            >
-              Start Learning &rarr;
-            </a>
-            <a
-              href="#institutes"
-              className="px-8 py-3.5 rounded-full text-sm font-medium uppercase tracking-wider text-amber-100 border border-white/20 bg-black/40 backdrop-blur-md hover:border-amber-400 hover:text-amber-300 transition-all"
-            >
-              Explore Institutes
-            </a>
+        {/* Dynamic Typography Hero Title */}
+        <div className="space-y-3">
+          <div className={`dynamic-fill-word mx-auto ${filled ? "filled" : ""}`}>
+            VIGYAN
+            <span className="fill-overlay">VIGYAN</span>
           </div>
+          <h2 className="font-serif italic text-2xl sm:text-4xl text-[#f2ead8] font-light max-w-3xl mx-auto leading-tight">
+            Gateway to Future Science • <em className="not-italic font-bold bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 bg-clip-text text-transparent">IISER IAT & NISER NEST</em>
+          </h2>
+        </div>
+
+        {/* Subtitle Description */}
+        <p className="text-neutral-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-light">
+          Master IISER Aptitude Test (IAT), NISER NEST, IISc Bangalore, and CMI with India’s most comprehensive computer-based test platform and research-backed study modules.
+        </p>
+
+        {/* Call to Action Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          <Link
+            href="/courses/iat"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 text-black font-bold text-xs uppercase tracking-wider hover:scale-105 transition-all shadow-xl shadow-amber-500/20"
+          >
+            <span>Explore Courses</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/pyq/iiser"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white/5 border border-white/20 text-[#f2ead8] hover:border-amber-400 hover:text-amber-300 hover:bg-white/10 font-medium text-xs uppercase tracking-wider transition-all"
+          >
+            <Compass className="w-4 h-4 text-amber-400" />
+            <span>Attempt Free PYQs</span>
+          </Link>
+        </div>
+
+        {/* Platform Stat Bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 p-6 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md">
+          <div className="text-center">
+            <div className="font-serif text-3xl font-bold text-amber-400">98.4%</div>
+            <div className="text-[10px] uppercase tracking-widest text-neutral-400 mt-1">IAT Qualification</div>
+          </div>
+          <div className="text-center">
+            <div className="font-serif text-3xl font-bold text-amber-400">1,450+</div>
+            <div className="text-[10px] uppercase tracking-widest text-neutral-400 mt-1">Solved Questions</div>
+          </div>
+          <div className="text-center">
+            <div className="font-serif text-3xl font-bold text-amber-400">AIR 12</div>
+            <div className="text-[10px] uppercase tracking-widest text-neutral-400 mt-1">Top IISER Ranker</div>
+          </div>
+          <div className="text-center">
+            <div className="font-serif text-3xl font-bold text-amber-400">100%</div>
+            <div className="text-[10px] uppercase tracking-widest text-neutral-400 mt-1">Research Faculty</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Animated Scroll Cue Indicator */}
+      <div className="relative z-10 flex flex-col items-center gap-2 mt-8">
+        <span className="text-[10px] uppercase tracking-widest text-white/40 font-light">Scroll to Explore</span>
+        <div className="w-px h-10 bg-white/20 relative overflow-hidden">
+          <div className="w-full h-2 bg-amber-400 absolute animate-pip" />
         </div>
       </div>
     </section>
