@@ -18,16 +18,6 @@ interface PyqPaper {
 
 const fallbackPapers: PyqPaper[] = [
   {
-    id: "pyq_iat_2024",
-    title: "IISER IAT 2024 Official Question Paper",
-    examType: "IAT",
-    year: "2024",
-    questionsCount: 60,
-    duration: 180,
-    marks: 240,
-    subjects: ["Physics", "Chemistry", "Mathematics", "Biology"],
-  },
-  {
     id: "pyq_nest_2024",
     title: "NISER NEST 2024 Official Question Paper",
     examType: "NEST",
@@ -90,11 +80,12 @@ export default function PyqPage() {
         const res = await fetch("https://api.vigyanprep.com/api/public/pyq");
         if (res.ok) {
           const data = await res.json();
-          if (data.success && Array.isArray(data.tests) && data.tests.length > 0) {
-            const liveData: PyqPaper[] = data.tests.map((t: any) => ({
+          const liveList = data.tests || data.pyqs || [];
+          if (data.success && Array.isArray(liveList) && liveList.length > 0) {
+            const liveData: PyqPaper[] = liveList.map((t: any) => ({
               id: t.id,
               title: t.title,
-              examType: t.test_type || "IAT",
+              examType: t.exam_type || t.test_type || "IAT",
               year: "2024",
               questionsCount: t.total_questions || 60,
               duration: t.duration_minutes || 180,
@@ -120,7 +111,8 @@ export default function PyqPage() {
   });
 
   const launchTest = (testId: string) => {
-    window.location.href = `https://test.vigyanprep.com/exam?testId=${testId}`;
+    // Launch directly into official CBT Exam Instructions page
+    window.location.href = `https://test.vigyanprep.com/instructions?testId=${testId}`;
   };
 
   return (
@@ -207,7 +199,6 @@ export default function PyqPage() {
             ))}
           </div>
 
-          {/* Search Box */}
           <div className="relative w-full sm:w-72">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400" />
             <input
@@ -220,7 +211,7 @@ export default function PyqPage() {
           </div>
         </div>
 
-        {/* Papers Grid */}
+        {/* Question Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPapers.map((paper) => (
             <div
@@ -232,14 +223,20 @@ export default function PyqPage() {
                   <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-500/20 border border-orange-500/40 text-orange-400">
                     {paper.examType}
                   </span>
-                  <span className="font-serif text-lg font-bold text-amber-300">{paper.year}</span>
+                  <span className="font-serif text-lg font-bold text-amber-300">
+                    {paper.year}
+                  </span>
                 </div>
-                <h3 className="font-serif text-xl font-bold text-neutral-100 mb-3">{paper.title}</h3>
-
+                <h3 className="font-serif text-xl font-bold text-neutral-100 mb-3">
+                  {paper.title}
+                </h3>
                 <div className="flex flex-wrap gap-1.5 mb-6">
-                  {paper.subjects.map((s) => (
-                    <span key={s} className="px-2.5 py-0.5 rounded-md text-[10px] bg-white/5 text-neutral-400 border border-white/5">
-                      {s}
+                  {paper.subjects.map((sub) => (
+                    <span
+                      key={sub}
+                      className="px-2.5 py-0.5 rounded-md text-[10px] bg-white/5 text-neutral-400 border border-white/5"
+                    >
+                      {sub}
                     </span>
                   ))}
                 </div>
@@ -251,19 +248,20 @@ export default function PyqPage() {
                   <span>{paper.duration} Mins</span>
                   <span>{paper.marks} Marks</span>
                 </div>
-
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => launchTest(paper.id)}
                     className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-black font-semibold text-xs hover:opacity-90 transition-all shadow-md shadow-amber-500/20"
                   >
-                    <PlayCircle className="w-4 h-4" /> Live Test
+                    <PlayCircle className="w-4 h-4" />
+                    Live Test
                   </button>
                   <button
-                    onClick={() => alert(`Downloading ${paper.title} PDF...`)}
+                    onClick={() => alert("Downloading official answer key PDF...")}
                     className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-white/5 border border-amber-500/30 text-amber-200 font-medium text-xs hover:bg-amber-500/10 transition-all"
                   >
-                    <Download className="w-4 h-4" /> PDF
+                    <Download className="w-4 h-4" />
+                    PDF
                   </button>
                 </div>
               </div>
