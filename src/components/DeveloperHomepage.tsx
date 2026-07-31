@@ -19,8 +19,8 @@ export default function DeveloperHomepage() {
     };
 
     Promise.all([
-      loadScript("https://cdnjs.cloudflare.com/ajax/libs/(window as any).gsap/3.12.5/(window as any).gsap.min.js"),
-      loadScript("https://cdnjs.cloudflare.com/ajax/libs/(window as any).gsap/3.12.5/(window as any).ScrollTrigger.min.js"),
+      loadScript("https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"),
+      loadScript("https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"),
       loadScript("https://unpkg.com/lenis@1.3.18/dist/lenis.min.js")
     ]).then(() => {
       try {
