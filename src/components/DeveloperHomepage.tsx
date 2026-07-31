@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 
 export default function DeveloperHomepage() {
   useEffect(() => {
-    // Dynamically inject scripts (GSAP, ScrollTrigger, Lenis)
     const loadScript = (src: string) => {
       return new Promise<void>((resolve, reject) => {
         if (document.querySelector(`script[src="${src}"]`)) {
@@ -20,13 +19,329 @@ export default function DeveloperHomepage() {
     };
 
     Promise.all([
-      loadScript("https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"),
-      loadScript("https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"),
+      loadScript("https://cdnjs.cloudflare.com/ajax/libs/(window as any).gsap/3.12.5/(window as any).gsap.min.js"),
+      loadScript("https://cdnjs.cloudflare.com/ajax/libs/(window as any).gsap/3.12.5/(window as any).ScrollTrigger.min.js"),
       loadScript("https://unpkg.com/lenis@1.3.18/dist/lenis.min.js")
     ]).then(() => {
       try {
-        const executeScript = new Function("");
-        executeScript();
+        
+        (function () {
+            'use strict';
+
+            // ─── CONFIG ──────────────────────────────────────────
+            const TOTAL_FRAMES = 192;
+            const BG_COLOR = '#241e12';
+            const SEQ_PATH = "/sequence/";
+            const frameURL = (i: number) => `${SEQ_PATH}ezgif-frame-${String(i + 1).padStart(3, '0')}.jpg`;
+
+            // ─── DOM ─────────────────────────────────────────────
+            const canvas = document.getElementById('seq-canvas') as HTMLCanvasElement;
+            const ctx = canvas ? canvas.getContext('2d') as any : null;
+            const canvasWrap = document.getElementById('canvas-wrap') as HTMLElement;
+            const progressBar = document.getElementById('progress-bar') as HTMLElement;
+            const scrollCue = document.getElementById('scroll-cue') as HTMLElement;
+            const preloader = document.getElementById('preloader') as HTMLElement;
+            const ringFill = document.getElementById('ring-fill') as HTMLElement;
+            const pctDisplay = document.getElementById('preloader-pct') as HTMLElement;
+            const fluidNav = document.getElementById('fluid-nav') as HTMLElement;
+            const ov1 = document.getElementById('ov1') as HTMLElement;
+            const ov2 = document.getElementById('ov2') as HTMLElement;
+            const ov3 = document.getElementById('ov3') as HTMLElement;
+            const ov4 = document.getElementById('ov4') as HTMLElement;
+            const vigyanText = document.getElementById('vigyan-text') as HTMLElement;
+
+            // ─── STATE ────────────────────────────────────────────
+            const frames = new Array(TOTAL_FRAMES);
+            let currentFrame = 0, canvasW: number, canvasH: number, dpr: number;
+            const CIRC = 2 * Math.PI * 44;
+
+            // ─── OVERLAY CONFIG ──────────────────────────────────
+            // OV1: VIGYAN text — appears first, with dynamic fill
+            // OV2: Tagline — appears as student walks
+            // OV3: Stats — community numbers
+            // OV4: CTA — appears when student sits to read
+            const overlays = [
+                { el: ov1, frameIn: -10, framePeak: 0, frameOut: 40, dx: 0, dy: -20 },
+                { el: ov2, frameIn: 45, framePeak: 70, frameOut: 100, dx: 0, dy: -20 },
+                { el: ov3, frameIn: 110, framePeak: 130, frameOut: 155, dx: 30, dy: 0 },
+                { el: ov4, frameIn: 160, framePeak: 180, frameOut: null, dx: 0, dy: 20 },
+            ];
+
+            // ─── PRELOAD ALL 192 FRAMES ──────────────────────────
+            function preloadFrames() {
+                return new Promise<void>(resolve => {
+                    let loaded = 0;
+                    for (let i = 0; i < TOTAL_FRAMES; i++) {
+                        const img = new Image();
+                        img.src = frameURL(i);
+                        const onDone = () => {
+                            loaded++;
+                            const pct = loaded / TOTAL_FRAMES;
+                            if (ringFill) ringFill.style.strokeDashoffset = (CIRC - pct * CIRC).toString();
+                            pctDisplay.textContent = Math.round(pct * 100) + '%';
+                            if (loaded === TOTAL_FRAMES) resolve();
+                        };
+                        img.onload = () => { frames[i] = img; onDone(); };
+                        img.onerror = () => { frames[i] = null; onDone(); };
+                    }
+                });
+            }
+
+            // ─── CANVAS SIZE (DPR-aware) ─────────────────────────
+            function sizeCanvas() {
+                dpr = Math.min(window.devicePixelRatio || 1, 2);
+                canvasW = canvasWrap.clientWidth;
+                canvasH = canvasWrap.clientHeight;
+                canvas.width = canvasW * dpr;
+                canvas.height = canvasH * dpr;
+                canvas.style.width = canvasW + 'px';
+                canvas.style.height = canvasH + 'px';
+                ctx.scale(dpr, dpr);
+            }
+
+            // ─── DRAW FRAME (cover fit) ──────────────────────────
+            function drawFrame(idx: number) {
+                if (idx === currentFrame && ctx._lastDrawn === idx) return;
+                currentFrame = idx;
+                ctx._lastDrawn = idx;
+                const img = frames[idx];
+                if (!img) return;
+                ctx.clearRect(0, 0, canvasW, canvasH);
+                const imgAR = img.naturalWidth / img.naturalHeight;
+                const canAR = canvasW / canvasH;
+                let dw, dh, dx, dy;
+                if (imgAR > canAR) { dh = canvasH; dw = canvasH * imgAR; }
+                else { dw = canvasW; dh = canvasW / imgAR; }
+                dx = (canvasW - dw) / 2;
+                dy = (canvasH - dh) / 2;
+                ctx.drawImage(img, dx, dy, dw, dh);
+            }
+
+            // ─── OVERLAY OPACITY ─────────────────────────────────
+            function getOpacity(frameIn: number, framePeak: number, frameOut: number | null, current: number) {
+                if (current < frameIn) return 0;
+                if (frameOut !== null && current > frameOut) return 0;
+                if (current <= framePeak) return (current - frameIn) / (framePeak - frameIn);
+                if (frameOut === null) return 1; // Stay fully visible if frameOut is null
+                return (frameOut - current) / (frameOut - framePeak);
+            }
+
+            // ─── UPDATE OVERLAYS ─────────────────────────────────
+            let vigyanFilled = false;
+            function updateOverlays(frame: number) {
+                for (const ov of overlays) {
+                    const op = getOpacity(ov.frameIn, ov.framePeak, ov.frameOut, frame);
+                    if (ov.el) ov.el.style.opacity = op.toString();
+                    ov.el.style.filter = `blur(${(1 - op) * 8}px)`;
+                    const shift = 1 - op;
+                    if (ov.el.id === 'ov1' || ov.el.id === 'ov2')
+                        ov.el.style.transform = `translate(-50%, calc(-50% + ${shift * ov.dy}px))`;
+                    else if (ov.el.id === 'ov4')
+                        ov.el.style.transform = `translateX(-50%) translateY(${shift * ov.dy}px)`;
+                    else if (ov.el.id === 'ov3')
+                        ov.el.style.transform = `translateY(-50%) translateX(${shift * ov.dx}px)`;
+                }
+
+                // Dynamic fill: fill VIGYAN when it's visible
+                if (!vigyanFilled && frame >= 0) {
+                    vigyanFilled = true;
+                    setTimeout(() => vigyanText.classList.add('filled'), 300);
+                }
+
+                // Trigger React Hero Text animation perfectly at frame 43
+                if (!(window as any).reactTextPlayed && frame >= 43) {
+                    (window as any).reactTextPlayed = true;
+                    window.dispatchEvent(new Event('playReactHero'));
+                }
+            }
+
+            // ─── INIT GSAP SEQUENCE ──────────────────────────────
+            function initSequence() {
+                (window as any).gsap.registerPlugin((window as any).ScrollTrigger);
+
+                // ── LENIS SMOOTH SCROLL ──
+                const lenis = new (window as any).Lenis({
+                    duration: 1.2,
+                    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                    orientation: 'vertical',
+                    smoothWheel: true,
+                    wheelMultiplier: 1,
+                    touchMultiplier: 2,
+                });
+                lenis.on('scroll', (window as any).ScrollTrigger.update);
+                (window as any).gsap.ticker.add((time: number) => lenis.raf(time * 1000));
+                (window as any).gsap.ticker.lagSmoothing(0);
+
+                sizeCanvas();
+                drawFrame(0);
+                updateOverlays(0);
+
+                // ── MASTER TWEEN: scroll → frame index ──
+                const frameObj = { frame: 0 };
+                (window as any).gsap.to(frameObj, {
+                    frame: TOTAL_FRAMES - 1,
+                    snap: 'frame',
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: '#sequence-scroll',
+                        start: 'top top',
+                        end: '+=400%',
+                        pin: '#canvas-wrap',
+                        scrub: 0.5,
+                        anticipatePin: 1,
+                        onUpdate(self: any) {
+                            const f = Math.round(frameObj.frame);
+                            drawFrame(f);
+                            updateOverlays(f);
+                            if (progressBar) progressBar.style.width = (self.progress * 100) + '%';
+                            if (self.progress > 0.05) scrollCue.classList.add('hidden');
+                            else scrollCue.classList.remove('hidden');
+                        }
+                    }
+                });
+
+                // ── Nav scroll effect ──
+                (window as any).ScrollTrigger.create({
+                    start: 80, end: 99999,
+                    onUpdate(self: any) {
+                        if (self.scroll() > 80) fluidNav.classList.add('scrolled');
+                        else fluidNav.classList.remove('scrolled');
+                    }
+                });
+
+                // ── Hide Nav after first section ──
+                (window as any).ScrollTrigger.create({
+                    trigger: '#sequence-scroll',
+                    start: 'top top',
+                    end: '+=450%', // Fade out near the end of the scroll sequence
+                    onLeave: () => {
+                        (window as any).gsap.to([fluidNav, document.querySelector('.top-right-login')], { opacity: 0, pointerEvents: 'none', y: -20, duration: 0.4, ease: 'power2.out' });
+                    },
+                    onEnterBack: () => {
+                        (window as any).gsap.to([fluidNav, document.querySelector('.top-right-login')], { opacity: 1, pointerEvents: 'auto', y: 0, duration: 0.4, ease: 'power2.out' });
+                    }
+                });
+
+                // ── FLUID NAV INDICATOR ──
+                const indicator = document.getElementById('fluid-indicator') as HTMLElement;
+                const navLinks = document.querySelectorAll('[data-nav]');
+                function moveIndicator(el: any) {
+                    const navRect = fluidNav.getBoundingClientRect();
+                    const elRect = el.getBoundingClientRect();
+                    if (indicator) indicator.style.left = (elRect.left - navRect.left) + 'px';
+                    if (indicator) indicator.style.width = elRect.width + 'px';
+                    if (indicator) indicator.classList.add('active');
+                }
+                navLinks.forEach((link: any) => link.addEventListener('mouseenter', () => moveIndicator(link)));
+                fluidNav.addEventListener('mouseleave', () => {
+                    const active = fluidNav.querySelector('[data-nav].active');
+                    if (active) moveIndicator(active); else if (indicator) indicator.classList.remove('active');
+                });
+                const initActive = fluidNav.querySelector('[data-nav].active');
+                if (initActive) setTimeout(() => moveIndicator(initActive), 100);
+
+                // ── IISER CAROUSEL ──
+                const iiserData = [
+                    { name: 'IISER Pune', city: 'Pune', state: 'Maharashtra', img: 'https://image-static.collegedunia.com/public/college_data/images/appImage/1768215998Screenshot20260112163438.png', logo: 'frontend/images/IISER,_PUNE_Logo.svg' },
+                    { name: 'IISER Kolkata', city: 'Kolkata', state: 'West Bengal', img: 'https://www.iiserkol.ac.in/~outreach/images/gallery-image1.JPG', logo: 'frontend/images/IISER-K_Logo.svg' },
+                    { name: 'IISER Mohali', city: 'Mohali', state: 'Punjab', img: 'https://web.iisermohali.ac.in/iisermcc/images/iiser/informatics.jpg', logo: 'frontend/images/IISER-Mohali_Logo.svg' },
+                    { name: 'IISER Bhopal', city: 'Bhopal', state: 'Madhya Pradesh', img: 'https://www.vidyavision.com/CollegeUploads/Photos/2022-03-1-13-45-45_IISER2.jpg', logo: 'frontend/images/IISERB_logo.png' },
+                    { name: 'IISER TVM', city: 'Thiruvananthapuram', state: 'Kerala', img: 'https://i.ytimg.com/vi/UQn9uB1KSqk/hq720.jpg', logo: 'frontend/images/IISER_Thiruvananthapuram_Logo.svg' },
+                    { name: 'IISER Tirupati', city: 'Tirupati', state: 'Andhra Pradesh', img: 'https://education.sakshi.com/sites/default/files/images/2026/01/19/iiser-tirupati-nonfaculty-1768823729.jpg', logo: 'frontend/images/IISER_Tirupati_logo.png' },
+                    { name: 'IISER Berhampur', city: 'Berhampur', state: 'Odisha', img: 'https://www.iiserbpr.ac.in/webcontrol/uploads/gallery/1733375000_2.jpeg', logo: 'frontend/images/IISERB_logo.png' },
+                    { name: 'NISER', city: 'Bhubaneswar', state: 'Odisha', img: 'https://lh3.googleusercontent.com/EA41Gh7fbNLrba1X-GUc6taW3ObTLo1ujdLG1kiDPnT9K2nFdd12JXjH6rOtuZ9KGVEuYV8xkoEZogBToSXq5Rxir6JO5snmczjR6P_F4NvEZJa4G9FTH9z5hycse-LgoCnKQQTA', logo: '' },
+                    { name: 'IISc', city: 'Bengaluru', state: 'Karnataka', img: 'https://media.licdn.com/dms/image/v2/C4D1BAQH0_UeKoteJyA/company-background_10000/company-background_10000/0/1583221367975?e=2147483647&v=beta&t=KQigaftmL6HB9UnpqDg84muDKht9JV3XEw9vHodQiv8', logo: '' },
+                    { name: 'CMI', city: 'Chennai', state: 'Tamil Nadu', img: 'https://assets.kollegeapply.com/images/1751562027513-1532929904phpvnB5TO.jpeg', logo: '' },
+                    { name: 'ISI Chennai', city: 'Chennai', state: 'Tamil Nadu', img: 'https://image-static.collegedunia.com/public/college_data/images/campusimage/14286494434.PNG', logo: '' },
+                    { name: 'CBS Mumbai', city: 'Mumbai', state: 'Maharashtra', img: 'https://www.cbs.ac.in/assets/site_content/cbs24/home_240824_16323.jpg', logo: '' }
+                ];
+                const track = document.getElementById('carousel-track') as HTMLElement;
+                const dotsC = document.getElementById('carousel-dots') as HTMLElement;
+                let currentSlide = 0;
+                const total = iiserData.length;
+
+                iiserData.forEach((inst, i) => {
+                    const card = document.createElement('div');
+                    card.className = 'carousel-3d-card';
+                    card.innerHTML = `<img class="carousel-card-img" src="${inst.img}" alt="${inst.name}" onerror="this.style.background='linear-gradient(135deg,#1a1a1a,#2a2a2a)';this.style.height='220px'"><div class="carousel-card-body"><img class="carousel-card-logo" src="${inst.logo}" alt="" onerror="this.style.display='none'"><h3>${inst.name}</h3><div class="card-location">${inst.city}</div><div class="card-state">${inst.state}</div></div>`;
+                    if (track) track.appendChild(card);
+                    const dot = document.createElement('div');
+                    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+                    dot.onclick = () => goToSlide(i);
+                    if (dotsC) dotsC.appendChild(dot);
+                });
+                const cards = track.querySelectorAll('.carousel-3d-card');
+                const dots = dotsC.querySelectorAll('.carousel-dot');
+
+                function updateCarousel() {
+                    cards.forEach((card: any, i: number) => {
+                        const off = i - currentSlide, abs = Math.abs(off);
+                        (card as HTMLElement).style.transform = `translateX(${off * 350}px) translateZ(${-abs * 200}px) rotateY(${off * -15}deg) scale(${abs > 2 ? .7 : 1 - abs * .1})`;
+                        (card as HTMLElement).style.opacity = (abs > 2 ? 0 : 1 - abs * .3).toString();
+                        (card as HTMLElement).style.zIndex = (total - abs).toString();
+                        card.classList.toggle('center', i === currentSlide);
+                    });
+                    dots.forEach((d, i) => (d as HTMLElement).classList.toggle('active', i === currentSlide));
+                }
+                function goToSlide(n: number) { currentSlide = ((n % total) + total) % total; updateCarousel(); }
+                (document.getElementById('carousel-prev') as any).onclick = () => goToSlide(currentSlide - 1);
+                (document.getElementById('carousel-next') as any).onclick = () => goToSlide(currentSlide + 1);
+                updateCarousel();
+                let autoR = setInterval(() => goToSlide(currentSlide + 1), 4000);
+                (document.getElementById('carousel-viewport') as any).onmouseenter = () => clearInterval(autoR);
+                (document.getElementById('carousel-viewport') as any).onmouseleave = () => { autoR = setInterval(() => goToSlide(currentSlide + 1), 4000); };
+
+                // ── Institute card stagger ──
+                (window as any).gsap.utils.toArray('.carousel-3d-card').forEach((card: any, i: number) => {
+                    (window as any).gsap.from(card, { y: 40, opacity: 0, duration: .7, delay: i * .06, ease: 'power2.out', scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none none' } });
+                });
+
+                // ── Blur-fade reveals ──
+                const revealObs = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
+                    entries.forEach((e: any) => { if (e.isIntersecting) { e.target.classList.add('revealed'); revealObs.unobserve(e.target); } });
+                }, { threshold: .15, rootMargin: '0px 0px -40px 0px' });
+                (window as any).revealObs = revealObs;
+                document.querySelectorAll('.blur-fade').forEach((el: any) => revealObs.observe(el));
+
+                // ── Number counters ──
+                const counterObs = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
+                    entries.forEach(e => {
+                        if (e.isIntersecting) {
+                            const el = e.target as HTMLElement, target = parseInt(el.dataset.target || '0'), obj = { val: 0 };
+                            (window as any).gsap.to(obj, { val: target, duration: 2.2, ease: 'power2.out', onUpdate() { el.textContent = Math.round(obj.val).toLocaleString() } });
+                            counterObs.unobserve(el);
+                        }
+                    });
+                }, { threshold: .5 });
+                document.querySelectorAll('.counter-num').forEach((el: any) => counterObs.observe(el));
+
+                // ── Floating particles ──
+                const pc = document.getElementById('particles-features');
+                if (pc) { for (let i = 0; i < 24; i++) { const p = document.createElement('div'); p.className = 'particle'; p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%'; p.style.width = p.style.height = (1 + Math.random() * 2) + 'px'; pc.appendChild(p); (window as any).gsap.to(p, { y: -60 - Math.random() * 80, x: (Math.random() - .5) * 40, opacity: .15 + Math.random() * .3, duration: 3 + Math.random() * 4, repeat: -1, yoyo: true, delay: Math.random() * 3, ease: 'sine.inOut' }); } }
+
+                // ── Feature card tilt ──
+                document.querySelectorAll('.feature-card').forEach((card: any) => {
+                    card.addEventListener('mousemove', (e: any) => { const r = card.getBoundingClientRect(); (window as any).gsap.to(card, { rotateY: ((e.clientX - r.left) / r.width - .5) * 6, rotateX: -((e.clientY - r.top) / r.height - .5) * 6, transformPerspective: 800, duration: .4, ease: 'power2.out' }); });
+                    card.addEventListener('mouseleave', () => (window as any).gsap.to(card, { rotateY: 0, rotateX: 0, duration: .6, ease: 'elastic.out(1,.5)' }));
+                });
+
+                // ── Resize ──
+                let resizeT: any;
+                window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { sizeCanvas(); drawFrame(currentFrame); }, 120); });
+            }
+
+            // ─── HAMBURGER ───
+            (document.getElementById('hamburger') as any).onclick = () => (document.getElementById('mobile-nav') as any)?.classList.toggle('open');
+            document.querySelectorAll('#mobile-nav a').forEach((a: any) => a.onclick = () => (document.getElementById('mobile-nav') as any)?.classList.remove('open'));
+
+            // ─── BOOT ────────────────────────────────────────────
+            preloadFrames().then(() => {
+                preloader.classList.add('done');
+                setTimeout(initSequence, 400);
+            });
+
+        })();
+    
       } catch (err) {
         console.error("Developer Homepage JS Execution Error:", err);
       }
