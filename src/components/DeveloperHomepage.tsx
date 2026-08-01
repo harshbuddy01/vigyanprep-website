@@ -24,6 +24,26 @@ export default function DeveloperHomepage() {
       loadScript("https://unpkg.com/lenis@1.3.18/dist/lenis.min.js")
     ]).then(() => {
       try {
+        // 🛡️ Dynamic Auth Check for Homepage Header Navigation
+        const getCookie = (name: string) => {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+          return null;
+        };
+
+        const token = getCookie('student_token') || localStorage.getItem('student_token');
+        const studentName = getCookie('student_name') || localStorage.getItem('student_name') || localStorage.getItem('full_name');
+        const loginBtn = document.querySelector('.top-right-login') as HTMLAnchorElement;
+
+        if (loginBtn && token) {
+          const displayName = studentName ? studentName.split(' ')[0] : 'Student';
+          loginBtn.href = 'https://test.vigyanprep.com/dashboard';
+          loginBtn.innerHTML = `<span>${displayName} (Dashboard ↗)</span>`;
+          loginBtn.style.color = '#f59e0b';
+          loginBtn.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+          loginBtn.style.background = 'rgba(245, 158, 11, 0.1)';
+        }
         
         (function () {
             'use strict';
