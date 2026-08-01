@@ -81,18 +81,18 @@ export default function PyqPage() {
         if (res.ok) {
           const data = await res.json();
           const liveList = data.tests || data.pyqs || [];
-          if (data.success && Array.isArray(liveList) && liveList.length > 0) {
+          if (Array.isArray(liveList) && liveList.length > 0) {
             const liveData: PyqPaper[] = liveList.map((t: any) => ({
               id: t.id,
               title: t.title,
               examType: t.exam_type || t.test_type || "IAT",
-              year: "2024",
-              questionsCount: t.total_questions || 60,
+              year: t.year || "2024",
+              questionsCount: t.total_questions || t.questions_count || 60,
               duration: t.duration_minutes || 180,
-              marks: (t.total_questions || 60) * 4,
+              marks: (t.total_questions || t.questions_count || 60) * 4,
               subjects: ["Physics", "Chemistry", "Mathematics", "Biology"],
             }));
-            setPapers([...liveData, ...fallbackPapers]);
+            setPapers(liveData);
           }
         }
       } catch (err) {
