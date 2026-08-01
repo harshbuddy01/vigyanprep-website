@@ -1,1 +1,51 @@
 @import "tailwindcss";
+
+@layer utilities {
+  .font-handwriting {
+    font-family: 'Caveat', 'Kalam', cursive;
+  }
+  .font-sketch {
+    font-family: 'Architects Daughter', 'Caveat', cursive;
+  }
+  .font-serif-vintage {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+/* Custom sketch hatch pattern */
+.sketch-hatch-bg {
+  background-color: #aa7738;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(70, 45, 20, 0.15),
+    rgba(70, 45, 20, 0.15) 2px,
+    transparent 2px,
+    transparent 6px
+  ), repeating-linear-gradient(
+    -45deg,
+    rgba(70, 45, 20, 0.1),
+    rgba(70, 45, 20, 0.1) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+}
+
+.sketch-card-bg {
+  background-color: #ebdcc9;
+  background-image: 
+    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.3) 0%, rgba(215, 195, 170, 0.4) 100%),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(80, 60, 40, 0.02) 2px, rgba(80, 60, 40, 0.02) 4px);
+}
+
+/* Paper clip effect */
+.paper-clip {
+  position: absolute;
+  top: -14px;
+  right: 60px;
+  width: 24px;
+  height: 48px;
+  border: 3px solid #7a7065;
+  border-radius: 12px;
+  z-index: 20;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.15);
+}
