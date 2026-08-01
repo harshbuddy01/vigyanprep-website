@@ -379,8 +379,13 @@ export default function BuyTestPage() {
 
                     <div className="space-y-6">
                       <div>
-                        <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
-                        <p className="text-xs text-amber-300 mt-1">{plan.duration_days} Days Full Access</p>
+                        <h3 className="text-2xl font-bold text-white">
+                          {plan.exam_type && !plan.name.toUpperCase().includes(plan.exam_type.toUpperCase())
+                            ? `${plan.exam_type} — `
+                            : ''}
+                          {plan.name}
+                        </h3>
+                        <p className="text-xs text-amber-300 mt-1 font-semibold">{plan.exam_type} Pass &middot; {plan.duration_days} Days Full Access</p>
                       </div>
 
                       <div className="flex items-baseline gap-3 pb-6 border-b border-white/10">
