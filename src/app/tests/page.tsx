@@ -18,6 +18,8 @@ interface Plan {
   active: boolean;
 }
 
+import { getCookie } from "@/lib/cookies";
+
 export default function BuyTestPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
@@ -29,9 +31,12 @@ export default function BuyTestPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Check local student auth token
-    const token = typeof window !== 'undefined' ? (localStorage.getItem('student_token') || localStorage.getItem('token')) : null;
+    // Check shared cookies and fallback to local storage
+    const token = getCookie("student_token") || (typeof window !== 'undefined' ? (localStorage.getItem('student_token') || localStorage.getItem('token')) : null);
     setIsLoggedIn(!!token);
+    if (token && typeof window !== 'undefined' && !localStorage.getItem('student_token')) {
+      localStorage.setItem('student_token', token);
+    }
 
     async function fetchPlans() {
       try {
