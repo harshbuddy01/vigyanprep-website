@@ -80,19 +80,27 @@ export default function PyqPage() {
         const res = await fetch("https://api.vigyanprep.com/api/public/pyq");
         if (res.ok) {
           const data = await res.json();
-          const liveList = data.tests || data.pyqs || [];
+          const liveList = data.papers || data.tests || data.pyqs || [];
           if (Array.isArray(liveList) && liveList.length > 0) {
             const liveData: PyqPaper[] = liveList.map((t: any) => ({
               id: t.id,
-              title: t.title,
+              title: t.title || t.name,
               examType: t.exam_type || t.test_type || "IAT",
-              year: t.year || "2024",
+              year: String(t.pyq_year || t.year || (t.title && t.title.match(/\d{4}/) ? t.title.match(/\d{4}/)[0] : "2025")),
               questionsCount: t.total_questions || t.questions_count || 60,
               duration: t.duration_minutes || 180,
               marks: (t.total_questions || t.questions_count || 60) * 4,
               subjects: ["Physics", "Chemistry", "Mathematics", "Biology"],
             }));
-            setPapers(liveData);
+
+            // Merge live uploaded papers with fallback archive
+            const merged = [...liveData];
+            fallbackPapers.forEach(fb => {
+              if (!merged.some(m => m.title.toLowerCase() === fb.title.toLowerCase())) {
+                merged.push(fb);
+              }
+            });
+            setPapers(merged);
           }
         }
       } catch (err) {
