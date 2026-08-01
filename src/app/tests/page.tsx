@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
-  ArrowRight, Check, Sparkles, Award, Atom, Dna, Network, FunctionSquare, BookOpen,
-  Brain, BarChart3, FileText, Settings2, ShieldCheck, CheckCircle2, Lock, User, LogIn
+  ArrowRight, Check, Award, Atom, Dna, Network, FunctionSquare, BookOpen,
+  Brain, BarChart3, FileText, Settings2, Lock, LogIn, Sparkles, GraduationCap, Compass
 } from "lucide-react";
 
 interface Plan {
@@ -18,20 +18,8 @@ interface Plan {
   active: boolean;
 }
 
-interface ScheduledTest {
-  id: string;
-  title: string;
-  exam_type: string;
-  window_start: string;
-  window_end: string;
-  duration_minutes: number;
-  description: string;
-  status: string;
-}
-
 export default function BuyTestPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [scheduledTests, setScheduledTests] = useState<ScheduledTest[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
   const [selectedExam, setSelectedExam] = useState<string>("ALL");
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -45,21 +33,12 @@ export default function BuyTestPage() {
     const token = typeof window !== 'undefined' ? (localStorage.getItem('student_token') || localStorage.getItem('token')) : null;
     setIsLoggedIn(!!token);
 
-    async function fetchData() {
+    async function fetchPlans() {
       try {
-        const [plansRes, testsRes] = await Promise.all([
-          fetch("https://api.vigyanprep.com/api/public/plans"),
-          fetch("https://api.vigyanprep.com/api/public/tests")
-        ]);
-
-        if (plansRes.ok) {
-          const plansData = await plansRes.json();
+        const res = await fetch("https://api.vigyanprep.com/api/public/plans");
+        if (res.ok) {
+          const plansData = await res.json();
           setPlans(plansData.plans || []);
-        }
-
-        if (testsRes.ok) {
-          const testsData = await testsRes.json();
-          setScheduledTests(testsData.tests || []);
         }
       } catch (err) {
         console.error("Failed to load test series plans:", err);
@@ -68,7 +47,7 @@ export default function BuyTestPage() {
       }
     }
 
-    fetchData();
+    fetchPlans();
   }, []);
 
   const handleBuyClick = (plan: Plan) => {
@@ -76,330 +55,357 @@ export default function BuyTestPage() {
     if (!isLoggedIn) {
       setShowAuthModal(true);
     } else {
-      // Trigger Razorpay payment gateway
-      alert(`🚀 Redirecting to Razorpay checkout for ${plan.name} (₹${plan.discount_price || plan.price})...`);
+      alert(`🚀 Redirecting to Secure Payment Gateway for ${plan.name} (₹${plan.discount_price || plan.price})...`);
     }
   };
 
-  const filteredPlans = selectedExam === "ALL" 
-    ? plans 
-    : plans.filter(p => p.exam_type.toUpperCase() === selectedExam.toUpperCase());
+  // Robust flexible exam matching so no card is hidden due to minor naming differences
+  const isExamMatch = (planExamType: string, targetExam: string) => {
+    if (targetExam === "ALL") return true;
+    if (!planExamType) return true;
+    const pType = planExamType.toUpperCase();
+    const tExam = targetExam.toUpperCase();
+
+    if (pType.includes(tExam) || tExam.includes(pType)) return true;
+    if (pType.includes("ALL") || pType.includes("PASS") || pType.includes("SERIES") || pType.includes("FULL")) return true;
+
+    return false;
+  };
+
+  const filteredPlans = plans.filter(p => isExamMatch(p.exam_type, selectedExam));
+
+  // Fallback: If filter returns no items, show all active plans so student always sees available passes
+  const displayPlans = filteredPlans.length > 0 ? filteredPlans : plans;
+
+  const scrollToPricing = (examCode: string) => {
+    setSelectedExam(examCode);
+    const pricingEl = document.getElementById("pricing-section");
+    if (pricingEl) {
+      pricingEl.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-white selection:bg-amber-500 selection:text-black font-sans">
+    <div className="min-h-screen bg-[#0b0a08] text-[#f2ead8] selection:bg-amber-500 selection:text-black font-sans">
       <Navbar />
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          HERO SECTION (DARK & ELEGANT WITH CHALKBOARD SCIENCE WATERMARK)
+          HANDCRAFTED ARTISTIC HERO SECTION FOR SCIENCE ASPIRANTS
          ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden border-b border-white/10 bg-gradient-to-b from-[#0a0a0a] via-[#111111] to-[#0c0c0c]">
-        {/* Chalkboard Math & Physics Background Sketches Watermark */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] flex items-center justify-end pr-12">
-          <svg className="w-full max-w-xl text-amber-200" viewBox="0 0 600 400" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M 50 200 Q 150 100 250 200 T 450 200" strokeDasharray="4 4" />
-            <circle cx="250" cy="200" r="80" strokeDasharray="6 6" />
-            <text x="350" y="120" fill="currentColor" fontSize="24" fontFamily="serif">E = mc²</text>
-            <text x="180" y="320" fill="currentColor" fontSize="20" fontFamily="serif">∫ f(x)dx</text>
-            <path d="M 400 250 L 520 350 M 400 350 L 520 250" />
-          </svg>
-        </div>
+      <section className="relative pt-36 pb-24 px-6 overflow-hidden border-b border-amber-500/15 bg-gradient-to-b from-[#141009] via-[#0d0b07] to-[#0b0a08]">
+        {/* Subtle Constellation & Geometric Science Grid Background */}
+        <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#d4a520_1px,transparent_1px)] [background-size:32px_32px]" />
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
           <div className="lg:col-span-8 space-y-6">
-            <h1 className="font-serif text-5xl sm:text-7xl font-bold tracking-tight text-white leading-tight">
-              Prepare Smarter. <br />
-              <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 bg-clip-text text-transparent italic">
-                Think Deeper.
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold tracking-wider uppercase">
+              <Sparkles size={14} className="text-amber-400" /> Curated by IISER & NISER Scholars
+            </div>
+
+            <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]">
+              Master Science Entrances. <br />
+              <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-orange-400 bg-clip-text text-transparent italic">
+                Build Your Research Legacy.
               </span>
             </h1>
 
-            <p className="text-gray-300 text-lg sm:text-xl max-w-2xl font-light leading-relaxed">
-              Premium test series & PYQs for <strong className="text-amber-300 font-semibold">IISER Aptitude Test (IAT)</strong>, NEST, CMI, ISI and more.
+            <p className="text-neutral-300 text-base sm:text-lg max-w-2xl font-light leading-relaxed">
+              Official pattern test series and solved question archives for <strong className="text-amber-300 font-semibold">IISER IAT</strong>, <strong className="text-amber-300 font-semibold">NISER NEST</strong>, <strong className="text-amber-300 font-semibold">CMI</strong>, and <strong className="text-amber-300 font-semibold">ISI</strong> admissions.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
-              <a
-                href="#pricing-plans"
+              <button
+                onClick={() => scrollToPricing("ALL")}
                 className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-neutral-950 font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-amber-500/20 flex items-center gap-2"
               >
-                <span>Explore Test Series</span>
+                <span>View Subscription Passes</span>
                 <ArrowRight size={18} />
-              </a>
+              </button>
 
               <a
                 href="/pyq/iiser"
-                className="px-6 py-3.5 rounded-xl bg-white/5 border border-white/15 text-gray-200 hover:text-amber-300 hover:border-amber-400/40 text-sm font-semibold transition-all flex items-center gap-2"
+                className="px-6 py-3.5 rounded-xl bg-white/5 border border-white/15 text-neutral-200 hover:text-amber-300 hover:border-amber-400/40 text-sm font-semibold transition-all flex items-center gap-2"
               >
                 <BookOpen size={16} className="text-amber-400" />
-                <span>Try a Free Test</span>
+                <span>Practice Free PYQs</span>
               </a>
             </div>
 
-            {/* Value Props Pills Bar */}
-            <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-gray-300 font-medium border-t border-white/10">
+            {/* Handcrafted Feature Pillars */}
+            <div className="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs text-neutral-300 border-t border-white/10">
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-amber-400 shrink-0" />
-                <span>Real Exam Interface</span>
+                <GraduationCap size={16} className="text-amber-400 shrink-0" />
+                <span>IISER / NISER Pattern</span>
               </div>
               <div className="flex items-center gap-2">
-                <Brain size={15} className="text-amber-400 shrink-0" />
-                <span>AI-Powered Analysis</span>
+                <Brain size={16} className="text-amber-400 shrink-0" />
+                <span>AI Topic Analytics</span>
               </div>
               <div className="flex items-center gap-2">
-                <FileText size={15} className="text-amber-400 shrink-0" />
-                <span>Detailed Solutions</span>
+                <FileText size={16} className="text-amber-400 shrink-0" />
+                <span>Step-by-Step Solutions</span>
               </div>
               <div className="flex items-center gap-2">
-                <BarChart3 size={15} className="text-amber-400 shrink-0" />
-                <span>Track Your Progress</span>
+                <BarChart3 size={16} className="text-amber-400 shrink-0" />
+                <span>All-India Percentile</span>
               </div>
             </div>
           </div>
 
-          {/* Right Floating Banner Art */}
-          <div className="lg:col-span-4 hidden lg:flex flex-col items-end justify-center space-y-4 text-right pr-4 opacity-80">
-            <span className="text-xs font-mono tracking-[0.3em] uppercase text-amber-400/90 font-bold">FOCUS</span>
-            <span className="text-xs font-mono tracking-[0.3em] uppercase text-amber-300/80 font-bold">PRACTICE</span>
-            <span className="text-xs font-mono tracking-[0.3em] uppercase text-amber-200/70 font-bold">PROGRESS</span>
-            <span className="text-xs font-mono tracking-[0.3em] uppercase text-orange-400/90 font-bold">EXCEL</span>
+          {/* Right Handcrafted Science Card Motif */}
+          <div className="lg:col-span-4 hidden lg:flex flex-col items-center justify-center p-8 rounded-3xl bg-gradient-to-b from-neutral-900/90 to-neutral-950/90 border border-amber-500/30 shadow-2xl relative">
+            <div className="w-16 h-16 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400 mb-6">
+              <Compass size={32} />
+            </div>
+            <h3 className="font-serif text-2xl font-bold text-center text-amber-200 mb-2">Designed for Aspirants</h3>
+            <p className="text-xs text-neutral-400 text-center leading-relaxed font-light mb-6">
+              Physics, Chemistry, Mathematics & Biology problem sets crafted to build deep intuition for research entrance exams.
+            </p>
+            <div className="w-full pt-4 border-t border-white/10 text-center">
+              <span className="text-[11px] font-mono uppercase tracking-widest text-amber-400 font-bold">
+                10,000+ Aspirants Practicing
+              </span>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          CHOOSE YOUR EXAM GRID (MATCHING REFERENCE IMAGE 1 LIGHT CARDS)
+          HANDCRAFTED EXAM CATEGORY SELECTION CARDS
          ═══════════════════════════════════════════════════════════════════════ */}
       <section className="py-16 px-6 bg-[#f8fafc] text-slate-900">
         <div className="max-w-7xl mx-auto space-y-8">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-0.5 bg-amber-500"></div>
-              <span className="text-xs font-bold uppercase tracking-widest text-amber-600">Select Exam Category</span>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-0.5 bg-amber-500"></div>
+                <span className="text-xs font-bold uppercase tracking-widest text-amber-600">Select Exam Category</span>
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Choose Your Exam Path</h2>
             </div>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Choose Your Exam</h2>
+            <p className="text-xs text-slate-500 max-w-md">
+              Click any exam card below to filter subscription passes & test series packages specifically designed for that entrance exam.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* IAT Card */}
             <div
-              onClick={() => setSelectedExam("IAT")}
-              className={`p-6 rounded-2xl border transition-all cursor-pointer bg-white shadow-sm hover:shadow-md flex flex-col justify-between ${
+              onClick={() => scrollToPricing("IAT")}
+              className={`p-6 rounded-2xl border transition-all cursor-pointer bg-white shadow-sm hover:shadow-md flex flex-col justify-between group ${
                 selectedExam === "IAT" ? "border-amber-500 ring-2 ring-amber-500/20" : "border-slate-200 hover:border-amber-400"
               }`}
             >
               <div>
-                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-4 text-blue-600">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-4 text-blue-600 group-hover:scale-110 transition">
                   <Atom size={24} />
                 </div>
-                <h3 className="font-bold text-lg text-slate-900">IAT</h3>
-                <p className="text-xs text-slate-500 mb-3">IISER Aptitude Test</p>
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="font-bold text-xl text-slate-900">IAT</h3>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">IISER</span>
+                </div>
+                <p className="text-xs font-semibold text-slate-500 mb-3">IISER Aptitude Test</p>
                 <p className="text-xs text-slate-600 leading-relaxed font-light mb-6">
-                  Designed for IISER admissions. Physics, Chemistry, Mathematics, Biology.
+                  Complete test series for BS-MS admissions across 7 IISER campuses. Physics, Chemistry, Math & Biology.
                 </p>
               </div>
               <span className="text-xs font-bold text-amber-600 flex items-center gap-1 group-hover:translate-x-1 transition">
-                View Series →
+                View IAT Passes →
               </span>
             </div>
 
             {/* NEST Card */}
             <div
-              onClick={() => setSelectedExam("NEST")}
-              className={`p-6 rounded-2xl border transition-all cursor-pointer bg-white shadow-sm hover:shadow-md flex flex-col justify-between ${
+              onClick={() => scrollToPricing("NEST")}
+              className={`p-6 rounded-2xl border transition-all cursor-pointer bg-white shadow-sm hover:shadow-md flex flex-col justify-between group ${
                 selectedExam === "NEST" ? "border-amber-500 ring-2 ring-amber-500/20" : "border-slate-200 hover:border-amber-400"
               }`}
             >
               <div>
-                <div className="w-12 h-12 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-4 text-purple-600">
+                <div className="w-12 h-12 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-4 text-purple-600 group-hover:scale-110 transition">
                   <Dna size={24} />
                 </div>
-                <h3 className="font-bold text-lg text-slate-900">NEST</h3>
-                <p className="text-xs text-slate-500 mb-3">National Entrance Screening Test</p>
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="font-bold text-xl text-slate-900">NEST</h3>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800">NISER</span>
+                </div>
+                <p className="text-xs font-semibold text-slate-500 mb-3">National Entrance Screening Test</p>
                 <p className="text-xs text-slate-600 leading-relaxed font-light mb-6">
-                  For B.Sc. in National Institutes Across India (NISER & UM-DAE CEBS).
+                  Targeted mock series for NISER Bhubaneswar & UM-DAE CEBS Mumbai integrated M.Sc. programs.
                 </p>
               </div>
               <span className="text-xs font-bold text-amber-600 flex items-center gap-1 group-hover:translate-x-1 transition">
-                View Series →
+                View NEST Passes →
               </span>
             </div>
 
             {/* CMI Card */}
             <div
-              onClick={() => setSelectedExam("CMI")}
-              className={`p-6 rounded-2xl border transition-all cursor-pointer bg-white shadow-sm hover:shadow-md flex flex-col justify-between ${
+              onClick={() => scrollToPricing("CMI")}
+              className={`p-6 rounded-2xl border transition-all cursor-pointer bg-white shadow-sm hover:shadow-md flex flex-col justify-between group ${
                 selectedExam === "CMI" ? "border-amber-500 ring-2 ring-amber-500/20" : "border-slate-200 hover:border-amber-400"
               }`}
             >
               <div>
-                <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4 text-emerald-600">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4 text-emerald-600 group-hover:scale-110 transition">
                   <Network size={24} />
                 </div>
-                <h3 className="font-bold text-lg text-slate-900">CMI</h3>
-                <p className="text-xs text-slate-500 mb-3">Chennai Mathematical Institute</p>
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="font-bold text-xl text-slate-900">CMI</h3>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">MATH</span>
+                </div>
+                <p className="text-xs font-semibold text-slate-500 mb-3">Chennai Mathematical Institute</p>
                 <p className="text-xs text-slate-600 leading-relaxed font-light mb-6">
-                  Entrance exam for CMI B.Sc. Mathematics & Computer Science.
+                  Rigorous proof-based mathematics and computer science problem sets tailored for CMI entrance.
                 </p>
               </div>
               <span className="text-xs font-bold text-amber-600 flex items-center gap-1 group-hover:translate-x-1 transition">
-                View Series →
+                View CMI Passes →
               </span>
             </div>
 
             {/* ISI Card */}
             <div
-              onClick={() => setSelectedExam("ISI")}
-              className={`p-6 rounded-2xl border transition-all cursor-pointer bg-white shadow-sm hover:shadow-md flex flex-col justify-between ${
+              onClick={() => scrollToPricing("ISI")}
+              className={`p-6 rounded-2xl border transition-all cursor-pointer bg-white shadow-sm hover:shadow-md flex flex-col justify-between group ${
                 selectedExam === "ISI" ? "border-amber-500 ring-2 ring-amber-500/20" : "border-slate-200 hover:border-amber-400"
               }`}
             >
               <div>
-                <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center mb-4 text-orange-600">
+                <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center mb-4 text-orange-600 group-hover:scale-110 transition">
                   <FunctionSquare size={24} />
                 </div>
-                <h3 className="font-bold text-lg text-slate-900">ISI</h3>
-                <p className="text-xs text-slate-500 mb-3">Indian Statistical Institute</p>
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="font-bold text-xl text-slate-900">ISI</h3>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-800">STAT</span>
+                </div>
+                <p className="text-xs font-semibold text-slate-500 mb-3">Indian Statistical Institute</p>
                 <p className="text-xs text-slate-600 leading-relaxed font-light mb-6">
-                  Admission to ISI B.Stat / B.Math undergraduate programs.
+                  Advanced B.Stat & B.Math test series focusing on analytical problem solving & statistics.
                 </p>
               </div>
               <span className="text-xs font-bold text-amber-600 flex items-center gap-1 group-hover:translate-x-1 transition">
-                View Series →
-              </span>
-            </div>
-
-            {/* More Exams Card */}
-            <div
-              onClick={() => setSelectedExam("ALL")}
-              className={`p-6 rounded-2xl border transition-all cursor-pointer bg-white shadow-sm hover:shadow-md flex flex-col justify-between ${
-                selectedExam === "ALL" ? "border-amber-500 ring-2 ring-amber-500/20" : "border-slate-200 hover:border-amber-400"
-              }`}
-            >
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center mb-4 text-slate-700">
-                  <BookOpen size={24} />
-                </div>
-                <h3 className="font-bold text-lg text-slate-900">More Exams</h3>
-                <p className="text-xs text-slate-500 mb-3">IISc, KVPY, TIFR</p>
-                <p className="text-xs text-slate-600 leading-relaxed font-light mb-6">
-                  Explore all comprehensive test packages across science research.
-                </p>
-              </div>
-              <span className="text-xs font-bold text-slate-700 flex items-center gap-1 group-hover:translate-x-1 transition">
-                Explore All →
+                View ISI Passes →
               </span>
             </div>
           </div>
 
-          {/* ═══════════════════════════════════════════════════════════════════
-              BLACK FEATURE BANNER (MATCHING REFERENCE IMAGE 1)
-             ═══════════════════════════════════════════════════════════════════ */}
-          <div className="bg-[#0f0f11] text-white p-8 rounded-2xl shadow-xl grid grid-cols-2 md:grid-cols-5 gap-6 border border-white/10 mt-8">
+          {/* Platform Pillars Banner */}
+          <div className="bg-[#0f0e0c] text-white p-8 rounded-2xl shadow-xl grid grid-cols-2 md:grid-cols-4 gap-6 border border-white/10 mt-8">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
                 <Atom size={18} />
-                <span>Real Exam Experience</span>
+                <span>Real CBT Interface</span>
               </div>
-              <p className="text-xs text-gray-400">Exactly like the real exam interface</p>
+              <p className="text-xs text-neutral-400">Authentic test interface experience</p>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
                 <Brain size={18} />
-                <span>AI-Powered Analysis</span>
+                <span>Topic Analytics</span>
               </div>
-              <p className="text-xs text-gray-400">Identify weak topics instantly</p>
+              <p className="text-xs text-neutral-400">Identify and strengthen weak areas</p>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
                 <BarChart3 size={18} />
-                <span>Rank & Percentile</span>
+                <span>Percentile Predictor</span>
               </div>
-              <p className="text-xs text-gray-400">Know where you stand in India</p>
+              <p className="text-xs text-neutral-400">Know your stand among all-India test takers</p>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
                 <FileText size={18} />
-                <span>Detailed Solutions</span>
+                <span>Verified Solutions</span>
               </div>
-              <p className="text-xs text-gray-400">Concept clarity by expert mentors</p>
-            </div>
-
-            <div className="space-y-1 col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
-                <Settings2 size={18} />
-                <span>Smart Adaptive Tests</span>
-              </div>
-              <p className="text-xs text-gray-400">Practice that adapts to your speed</p>
+              <p className="text-xs text-neutral-400">Detailed step-by-step explanations</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          LIVE PRICING & SUBSCRIPTION CARDS SECTION
+          LIVE PRICING & SUBSCRIPTION PASSES SECTION
          ═══════════════════════════════════════════════════════════════════════ */}
-      <section id="pricing-plans" className="py-20 px-6 bg-[#0c0c0c] border-t border-white/10">
+      <section id="pricing-section" className="py-20 px-6 bg-[#0e0c09] border-t border-amber-500/15">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <span className="px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-widest">
-              Live Subscription Passes
+              Available Test Passes
             </span>
             <h2 className="font-serif text-4xl sm:text-5xl font-bold text-white">
-              Choose Your Preparation Pass
+              Choose Your Subscription Pass
             </h2>
-            <p className="text-gray-400 text-base">
-              Get unlimited access to all full-length 24-hour Allen-model mock test series, chapter practice tests, and verified PYQs.
+            <p className="text-neutral-300 text-base">
+              Select a pass below to unlock full-length test series, chapter practice sets, and verified PYQ archives.
             </p>
+
+            {/* Exam Filter Tabs */}
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
+              {["ALL", "IAT", "NEST", "CMI", "ISI"].map((exam) => (
+                <button
+                  key={exam}
+                  onClick={() => setSelectedExam(exam)}
+                  className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
+                    selectedExam === exam
+                      ? "bg-amber-400 text-neutral-950 shadow-md shadow-amber-400/20"
+                      : "bg-neutral-900 border border-white/10 text-neutral-300 hover:border-amber-400/40"
+                  }`}
+                >
+                  {exam === "ALL" ? "All Passes" : `${exam} Pass`}
+                </button>
+              ))}
+            </div>
           </div>
 
           {loadingPlans ? (
-            <div className="text-center py-12 text-amber-400 font-mono">Loading subscription plans...</div>
+            <div className="text-center py-16 text-amber-400 font-mono">Loading subscription plans...</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {filteredPlans.map((plan) => {
+              {displayPlans.map((plan) => {
                 const finalPrice = plan.discount_price || plan.price;
                 return (
                   <div
                     key={plan.id}
-                    className="bg-[#141416] border border-amber-500/30 rounded-3xl p-8 flex flex-col justify-between hover:border-amber-400 transition-all shadow-2xl relative overflow-hidden group"
+                    className="bg-[#15120d] border border-amber-500/30 rounded-3xl p-8 flex flex-col justify-between hover:border-amber-400 transition-all shadow-2xl relative overflow-hidden group"
                   >
                     {/* Top Ribbon */}
-                    <div className="absolute top-0 right-0 bg-gradient-to-l from-amber-500 to-orange-500 text-black font-bold text-[10px] uppercase px-4 py-1.5 rounded-bl-xl tracking-wider">
-                      {plan.exam_type} PASS
+                    <div className="absolute top-0 right-0 bg-gradient-to-l from-amber-400 to-orange-500 text-neutral-950 font-bold text-[10px] uppercase px-4 py-1.5 rounded-bl-xl tracking-wider">
+                      {plan.exam_type}
                     </div>
 
                     <div className="space-y-6">
                       <div>
                         <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
-                        <p className="text-xs text-gray-400 mt-1">{plan.duration_days} Days Full Access</p>
+                        <p className="text-xs text-amber-300 mt-1">{plan.duration_days} Days Full Access</p>
                       </div>
 
                       <div className="flex items-baseline gap-3 pb-6 border-b border-white/10">
                         <span className="text-4xl font-black text-amber-400">₹{finalPrice}</span>
                         {plan.discount_price && (
-                          <span className="text-sm line-through text-gray-500">₹{plan.price}</span>
+                          <span className="text-sm line-through text-neutral-500">₹{plan.price}</span>
                         )}
-                        <span className="text-xs text-gray-400 font-mono">/ {plan.duration_days} Days</span>
+                        <span className="text-xs text-neutral-400 font-mono">/ {plan.duration_days} Days</span>
                       </div>
 
-                      <ul className="space-y-3 text-xs text-gray-300">
-                        <li className="flex items-center gap-2">
-                          <Check size={16} className="text-amber-400" />
-                          <span>All 24-Hour Scheduled Allen Model Mock Tests</span>
+                      <ul className="space-y-3.5 text-xs text-neutral-200">
+                        <li className="flex items-center gap-2.5">
+                          <Check size={16} className="text-amber-400 shrink-0" />
+                          <span>Full-Length Official Pattern Mock Tests</span>
                         </li>
-                        <li className="flex items-center gap-2">
-                          <Check size={16} className="text-amber-400" />
-                          <span>Unlimited Practice on PYQ Archive</span>
+                        <li className="flex items-center gap-2.5">
+                          <Check size={16} className="text-amber-400 shrink-0" />
+                          <span>Complete Chapter-Wise Practice Bank</span>
                         </li>
-                        <li className="flex items-center gap-2">
-                          <Check size={16} className="text-amber-400" />
-                          <span>AI Percentile & All India Rank Predictor</span>
+                        <li className="flex items-center gap-2.5">
+                          <Check size={16} className="text-amber-400 shrink-0" />
+                          <span>All India Percentile & Rank Predictor</span>
                         </li>
-                        <li className="flex items-center gap-2">
-                          <Check size={16} className="text-amber-400" />
+                        <li className="flex items-center gap-2.5">
+                          <Check size={16} className="text-amber-400 shrink-0" />
                           <span>Step-by-Step Detailed Solution Keys</span>
                         </li>
                       </ul>
@@ -418,12 +424,9 @@ export default function BuyTestPage() {
                 );
               })}
 
-              {filteredPlans.length === 0 && (
-                <div className="col-span-full py-16 text-center bg-[#141416] rounded-3xl border border-white/10 text-gray-400 space-y-3">
-                  <p>No active subscription plans found for <strong>{selectedExam}</strong>.</p>
-                  <button onClick={() => setSelectedExam("ALL")} className="text-amber-400 text-xs font-bold underline">
-                    View All Exam Plans
-                  </button>
+              {displayPlans.length === 0 && (
+                <div className="col-span-full py-16 text-center bg-[#15120d] rounded-3xl border border-white/10 text-neutral-400 space-y-3">
+                  <p>No subscription passes found right now.</p>
                 </div>
               )}
             </div>
@@ -432,53 +435,49 @@ export default function BuyTestPage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          STATS & QUOTE FOOTER BAR (MATCHING REFERENCE IMAGE 1)
+          STUDENT STATS & MOTIVATIONAL FOOTER
          ═══════════════════════════════════════════════════════════════════════ */}
       <section className="py-12 px-6 bg-white text-slate-900 border-t border-slate-200">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-6 text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
             <div>
-              <p className="text-2xl font-bold text-slate-900">10,000+</p>
-              <p className="text-[11px] text-slate-500 font-semibold uppercase">Students Enrolled</p>
+              <p className="text-3xl font-serif font-bold text-slate-900">10,000+</p>
+              <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider mt-1">Students Practicing</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">50,000+</p>
-              <p className="text-[11px] text-slate-500 font-semibold uppercase">Tests Attempted</p>
+              <p className="text-3xl font-serif font-bold text-slate-900">50,000+</p>
+              <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider mt-1">Tests Attempted</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">95%</p>
-              <p className="text-[11px] text-slate-500 font-semibold uppercase">Students Improved</p>
+              <p className="text-3xl font-serif font-bold text-slate-900">500+</p>
+              <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider mt-1">PYQ Questions</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">500+</p>
-              <p className="text-[11px] text-slate-500 font-semibold uppercase">PYQ Papers</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">Top 100</p>
-              <p className="text-[11px] text-slate-500 font-semibold uppercase">Ranks Achieved</p>
+              <p className="text-3xl font-serif font-bold text-slate-900">Top 100</p>
+              <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider mt-1">Ranks Achieved</p>
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl bg-amber-50 border border-amber-200 text-slate-900 font-serif italic text-right max-w-xs">
+          <div className="p-6 rounded-2xl bg-amber-50 border border-amber-200 text-slate-900 font-serif italic text-right max-w-xs shadow-sm">
             <p className="text-lg font-bold text-amber-900">“Discipline today. <br />Scientist tomorrow.”</p>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          LOGIN REQUIRED MODAL (FOR UNAUTHENTICATED BUYERS)
+          STUDENT AUTHENTICATION MODAL
          ═══════════════════════════════════════════════════════════════════════ */}
       {showAuthModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-[#141416] border border-amber-500/40 rounded-3xl p-8 max-w-md w-full text-center space-y-6 shadow-2xl">
-            <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto">
+          <div className="bg-[#15120d] border border-amber-500/40 rounded-3xl p-8 max-w-md w-full text-center space-y-6 shadow-2xl">
+            <div className="w-16 h-16 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 flex items-center justify-center mx-auto">
               <Lock size={32} />
             </div>
 
             <div className="space-y-2">
               <h3 className="text-2xl font-bold text-white">Student Sign In Required</h3>
-              <p className="text-xs text-gray-400">
-                Please log in or create a student account to purchase the <strong className="text-amber-300">{selectedPlanForPurchase?.name}</strong>.
+              <p className="text-xs text-neutral-300">
+                Please log in or create a student account to subscribe to <strong className="text-amber-300">{selectedPlanForPurchase?.name}</strong>.
               </p>
             </div>
 
@@ -493,9 +492,9 @@ export default function BuyTestPage() {
 
               <button
                 onClick={() => setShowAuthModal(false)}
-                className="text-xs text-gray-500 hover:text-gray-300 transition pt-2"
+                className="text-xs text-neutral-400 hover:text-white transition pt-2"
               >
-                Cancel and return to plans
+                Cancel and return to passes
               </button>
             </div>
           </div>
