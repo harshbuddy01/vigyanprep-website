@@ -55,12 +55,76 @@ export default function BuyTestPage() {
     fetchPlans();
   }, []);
 
+  const openRazorpayCheckout = async (plan: Plan) => {
+    try {
+      const res = await fetch("https://api.vigyanprep.com/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planId: plan.id,
+          amount: plan.discount_price || plan.price,
+          testSeriesId: plan.id
+        })
+      });
+      const data = await res.json();
+      if (!data.success || !data.order) {
+        alert("Payment initialization error: " + (data.error || "Unable to create Razorpay order"));
+        return;
+      }
+
+      const options = {
+        key: data.order.key || "rzp_test_mockKey123",
+        amount: data.order.amount,
+        currency: "INR",
+        name: "Vigyan.prep",
+        description: `${plan.name} Subscription Pass`,
+        order_id: data.order.id,
+        handler: async function (response: any) {
+          await fetch("https://api.vigyanprep.com/api/payment/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              planId: plan.id
+            })
+          });
+          alert(`🎉 Payment Successful! Your ${plan.name} has been activated.`);
+          window.location.href = "https://test.vigyanprep.com/dashboard";
+        },
+        prefill: {
+          name: "Science Student",
+          email: "student@vigyanprep.com"
+        },
+        theme: {
+          color: "#d4a520"
+        }
+      };
+
+      if (typeof window !== "undefined" && !(window as any).Razorpay) {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.onload = () => {
+          const rzp = new (window as any).Razorpay(options);
+          rzp.open();
+        };
+        document.body.appendChild(script);
+      } else if (typeof window !== "undefined" && (window as any).Razorpay) {
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      }
+    } catch (err: any) {
+      alert("Error launching payment checkout: " + err.message);
+    }
+  };
+
   const handleBuyClick = (plan: Plan) => {
     setSelectedPlanForPurchase(plan);
     if (!isLoggedIn) {
       setShowAuthModal(true);
     } else {
-      alert(`🚀 Redirecting to Secure Payment Gateway for ${plan.name} (₹${plan.discount_price || plan.price})...`);
+      openRazorpayCheckout(plan);
     }
   };
 
