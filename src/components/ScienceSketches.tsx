@@ -84,3 +84,24 @@ export function DNAHelixSketch({ className = "w-24 h-24 text-emerald-400/60" }: 
     </svg>
   );
 }
+
+/**
+ * 🏛️ Handcrafted Vector SVG Line Art of University Campus Arches, Clock Tower & Observatory Dome
+ */
+export function UniversityCampusSketch({ className = "w-full h-full text-amber-900/20" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <rect x="50" y="240" width="380" height="260" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M 50,240 L 240,140 L 430,240 Z" stroke="currentColor" strokeWidth="2" fill="none" />
+      <rect x="210" y="160" width="60" height="40" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M 70,500 L 70,380 Q 115,330 160,380 L 160,500" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M 185,500 L 185,380 Q 230,330 275,380 L 275,500" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M 300,500 L 300,380 Q 345,330 390,380 L 390,500" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="520" y="100" width="120" height="400" stroke="currentColor" strokeWidth="2" />
+      <path d="M 520,100 L 580,20 L 640,100 Z" stroke="currentColor" strokeWidth="2" fill="none" />
+      <circle cx="580" cy="180" r="30" stroke="currentColor" strokeWidth="2" />
+      <path d="M 850,500 L 850,300 C 850,180 1050,180 1050,300 L 1050,500" stroke="currentColor" strokeWidth="2" />
+      <line x1="20" y1="500" x2="1180" y2="500" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  );
+}

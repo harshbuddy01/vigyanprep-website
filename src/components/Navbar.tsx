@@ -2,17 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, BookOpen, GraduationCap, Sparkles, HelpCircle, Newspaper, Award, UserCheck } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { ArrowRight, UserCheck, Menu, X } from "lucide-react";
 import { getCookie } from "../lib/cookies";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [studentName, setStudentName] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      setScrolled(window.scrollY > 30);
     };
     window.addEventListener("scroll", handleScroll);
 
@@ -28,95 +31,163 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isActive = (path: string) => pathname === path;
+
   return (
     <>
-      {/* Fluid Floating Glass Navbar */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          3 DECOUPLED FLOATING GLASS PILLS (Left Logo | Middle Nav | Right Student Sign In)
+         ═══════════════════════════════════════════════════════════════════════ */}
+      
+      {/* 1. LEFT FLOATING PILL: LOGO PLACEHOLDER */}
+      <div className="fixed top-5 left-6 sm:left-10 z-50 flex items-center">
+        <Link
+          href="/"
+          className={`flex items-center gap-2.5 px-4 py-2 rounded-full border-2 transition-all duration-300 ${
+            scrolled
+              ? "bg-white/85 backdrop-blur-2xl border-amber-950/30 shadow-xl"
+              : "bg-white/75 backdrop-blur-xl border-amber-950/20 shadow-md"
+          }`}
+        >
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-800 text-white font-serif font-bold text-base flex items-center justify-center shadow-md">
+            V
+          </div>
+          <div className="text-left">
+            <span className="font-serif italic font-extrabold text-base text-[#1c1815] tracking-tight">
+              VIGYAN<span className="font-sans text-[10px] uppercase text-amber-900 font-extrabold ml-1">.prep</span>
+            </span>
+            <span className="block text-[7px] font-extrabold tracking-widest text-amber-900 uppercase">RESEARCH ENTRANCES</span>
+          </div>
+        </Link>
+      </div>
+
+      {/* 2. MIDDLE FLOATING PILL: NAVIGATION LINKS */}
       <nav
-        className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 p-2 rounded-full transition-all duration-500 border ${
+        className={`fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden md:flex items-center gap-1.5 p-1.5 rounded-full border-2 transition-all duration-300 ${
           scrolled
-            ? "bg-[#0a0a0a]/90 backdrop-blur-2xl border-amber-500/30 shadow-2xl shadow-black/80"
-            : "bg-white/[0.03] backdrop-blur-xl border-white/10 shadow-xl"
+            ? "bg-white/85 backdrop-blur-2xl border-amber-950/30 shadow-xl"
+            : "bg-white/75 backdrop-blur-xl border-amber-950/20 shadow-md"
         }`}
       >
-        {/* Shimmering Logo Pill */}
-        <Link href="/" className="px-5 py-2 font-display text-lg font-bold tracking-widest uppercase animate-shimmer">
-          Vigyan<span className="text-xs font-sans tracking-normal lowercase opacity-70 ml-1">.prep</span>
+        <Link
+          href="/"
+          className={`px-5 py-2 text-xs font-extrabold rounded-full transition-all ${
+            isActive('/')
+              ? "bg-[#1c1815] text-amber-300 shadow-md"
+              : "text-[#1c1815] hover:bg-white/60 hover:text-amber-950"
+          }`}
+        >
+          Home
         </Link>
 
-        {/* Courses Dropdown */}
-        <div className="relative group">
-          <button className="px-4 py-2 text-xs font-medium tracking-wide text-white/70 hover:text-white transition-colors rounded-full">
-            Courses
-          </button>
-          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 p-3 bg-[#0c0c0c]/90 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0 flex flex-col gap-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-white/50 px-3 py-1">Featured Programs</span>
-            <Link href="/courses/iat" className="flex items-center gap-3 p-2.5 text-xs text-white hover:bg-white/10 rounded-xl transition">
-              <GraduationCap className="w-4 h-4 text-amber-400" /> IISER IAT 2025 Masterclass
-            </Link>
-            <Link href="/courses/nest" className="flex items-center gap-3 p-2.5 text-xs text-white hover:bg-white/10 rounded-xl transition">
-              <Sparkles className="w-4 h-4 text-orange-400" /> NISER NEST 2025 Target Batch
-            </Link>
-            <Link href="/courses/cmi" className="flex items-center gap-3 p-2.5 text-xs text-white hover:bg-white/10 rounded-xl transition">
-              <Award className="w-4 h-4 text-yellow-400" /> CMI & ISI Proof-Based Math
-            </Link>
-          </div>
-        </div>
+        <Link
+          href="/tests"
+          className={`px-5 py-2 text-xs font-extrabold rounded-full transition-all ${
+            isActive('/tests')
+              ? "bg-[#1c1815] text-amber-300 shadow-md"
+              : "text-[#1c1815] hover:bg-white/60 hover:text-amber-950"
+          }`}
+        >
+          Test Series
+        </Link>
 
-        {/* PYQ Link */}
-        <div className="relative group">
-          <Link href="/pyq/iiser" className="px-4 py-2 text-xs font-medium tracking-wide text-white/70 hover:text-white transition-colors rounded-full">
-            PYQs
-          </Link>
-          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-60 p-3 bg-[#0c0c0c]/90 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0 flex flex-col gap-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-white/50 px-3 py-1">Verified Question Papers</span>
-            <Link href="/pyq/iiser" className="flex items-center gap-3 p-2.5 text-xs text-white hover:bg-white/10 rounded-xl transition">
-              <BookOpen className="w-4 h-4 text-amber-400" /> IISER IAT Solved Archive
-            </Link>
-            <Link href="/pyq/iiser" className="flex items-center gap-3 p-2.5 text-xs text-white hover:bg-white/10 rounded-xl transition">
-              <BookOpen className="w-4 h-4 text-orange-400" /> NISER NEST Official Papers
-            </Link>
-          </div>
-        </div>
+        <Link
+          href="/pyq/iiser"
+          className={`px-5 py-2 text-xs font-extrabold rounded-full transition-all ${
+            isActive('/pyq/iiser')
+              ? "bg-[#1c1815] text-amber-300 shadow-md"
+              : "text-[#1c1815] hover:bg-white/60 hover:text-amber-950"
+          }`}
+        >
+          PYQs
+        </Link>
 
-        {/* Explore Link */}
-        <div className="relative group">
-          <button className="px-4 py-2 text-xs font-medium tracking-wide text-white/70 hover:text-white transition-colors rounded-full">
-            Explore
-          </button>
-          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 p-3 bg-[#0c0c0c]/90 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0 flex flex-col gap-1">
-            <Link href="/sciencenews" className="flex items-center gap-3 p-2.5 text-xs text-white hover:bg-white/10 rounded-xl transition">
-              <Newspaper className="w-4 h-4 text-amber-400" /> Science News & Research
-            </Link>
-            <Link href="/your-doubt" className="flex items-center gap-3 p-2.5 text-xs text-white hover:bg-white/10 rounded-xl transition">
-              <HelpCircle className="w-4 h-4 text-emerald-400" /> Instant Doubt Solver
-            </Link>
-          </div>
-        </div>
-
-        {/* About Link */}
-        <Link href="/about" className="px-4 py-2 text-xs font-medium tracking-wide text-white/70 hover:text-white transition-colors rounded-full">
-          About
+        <Link
+          href="/about"
+          className={`px-5 py-2 text-xs font-extrabold rounded-full transition-all ${
+            isActive('/about')
+              ? "bg-[#1c1815] text-amber-300 shadow-md"
+              : "text-[#1c1815] hover:bg-white/60 hover:text-amber-950"
+          }`}
+        >
+          About Us
         </Link>
       </nav>
 
-      {/* Top Right Floating Login / Dashboard Button */}
-      {isLoggedIn ? (
-        <a
-          href="https://test.vigyanprep.com/dashboard"
-          className="fixed top-6 right-8 z-50 hidden sm:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-emerald-500/10 backdrop-blur-xl border border-emerald-500/30 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400 transition-all duration-300 shadow-xl group"
+      {/* 3. RIGHT FLOATING PILL: STUDENT SECTION BUTTON */}
+      <div className="fixed top-5 right-6 sm:right-10 z-50 hidden md:flex items-center">
+        {isLoggedIn ? (
+          <a
+            href="https://test.vigyanprep.com/dashboard"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#1c1815] hover:bg-black border border-amber-500/30 text-xs font-extrabold text-amber-300 transition-all duration-300 shadow-lg shadow-amber-950/20 group"
+          >
+            <UserCheck className="w-4 h-4 text-amber-400" />
+            <span>{studentName ? `${studentName.split(' ')[0]}'s Portal` : "Student Portal"}</span>
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
+        ) : (
+          <a
+            href="https://auth.vigyanprep.com"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#1c1815] hover:bg-black border border-amber-500/30 text-xs font-extrabold text-amber-300 transition-all duration-300 shadow-lg shadow-amber-950/20 group"
+          >
+            <span>Student Sign In</span>
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
+        )}
+      </div>
+
+      {/* MOBILE HAMBURGER TOGGLE BUTTON */}
+      <div className="fixed top-5 right-6 z-50 md:hidden">
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="p-2.5 rounded-2xl bg-white/90 backdrop-blur-2xl border-2 border-amber-950/30 text-[#1c1815] shadow-lg"
         >
-          <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>{studentName ? `${studentName} (Dashboard)` : "Student Dashboard"}</span>
-          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-        </a>
-      ) : (
-        <a
-          href="https://auth.vigyanprep.com"
-          className="fixed top-6 right-8 z-50 hidden sm:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/[0.03] backdrop-blur-xl border border-white/12 text-xs font-semibold text-[#f2ead8] hover:bg-white/10 hover:border-amber-400/40 hover:text-amber-300 transition-all duration-300 shadow-xl group"
-        >
-          <span>Student Login</span>
-          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-        </a>
+          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+
+      {/* MOBILE NAVIGATION DRAWER */}
+      {mobileMenuOpen && (
+        <div className="fixed top-20 left-6 right-6 z-50 md:hidden p-5 bg-white/95 backdrop-blur-2xl border-2 border-amber-950/25 rounded-3xl shadow-2xl space-y-2">
+          <Link
+            href="/"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block p-3 rounded-xl text-xs font-extrabold text-[#1c1815] hover:bg-amber-950/10 transition"
+          >
+            Home
+          </Link>
+          <Link
+            href="/tests"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block p-3 rounded-xl text-xs font-extrabold text-[#1c1815] hover:bg-amber-950/10 transition"
+          >
+            Test Series
+          </Link>
+          <Link
+            href="/pyq/iiser"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block p-3 rounded-xl text-xs font-extrabold text-[#1c1815] hover:bg-amber-950/10 transition"
+          >
+            PYQs
+          </Link>
+          <Link
+            href="/about"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block p-3 rounded-xl text-xs font-extrabold text-[#1c1815] hover:bg-amber-950/10 transition"
+          >
+            About Us
+          </Link>
+          
+          <div className="pt-2 border-t border-amber-950/15">
+            <a
+              href={isLoggedIn ? "https://test.vigyanprep.com/dashboard" : "https://auth.vigyanprep.com"}
+              className="w-full py-3 bg-[#1c1815] text-amber-300 font-extrabold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-md"
+            >
+              <span>{isLoggedIn ? "Open Student Portal" : "Student Sign In"}</span>
+              <ArrowRight size={14} />
+            </a>
+          </div>
+        </div>
       )}
     </>
   );
