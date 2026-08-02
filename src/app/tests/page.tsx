@@ -204,7 +204,7 @@ export default function BuyTestPage() {
         <img
           src="/images/examination_center_sketch.jpg"
           alt="Science Examination Center & Research Auditorium Architectural Masterplan Sketch"
-          className="w-full h-full object-cover opacity-[0.25] mix-blend-multiply filter blur-[10px] contrast-110 sepia-[0.08]"
+          className="w-full h-full object-cover opacity-[0.38] mix-blend-multiply filter blur-[1.5px] contrast-120 sepia-[0.10]"
         />
         {/* Warm Light Parchment Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#faf5eb]/55 via-transparent to-[#f1e6d3]/60" />
