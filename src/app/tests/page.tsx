@@ -36,7 +36,25 @@ export default function BuyTestPage() {
   // User auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // Load Razorpay Script dynamically
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      if (typeof window !== "undefined" && (window as any).Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   useEffect(() => {
+    // Preload Razorpay script
+    loadRazorpayScript();
+
     const token = getCookie("student_token") || (typeof window !== 'undefined' ? (localStorage.getItem('student_token') || localStorage.getItem('token')) : null);
     setIsLoggedIn(!!token);
     if (token && typeof window !== 'undefined' && !localStorage.getItem('student_token')) {
@@ -62,6 +80,12 @@ export default function BuyTestPage() {
 
   const openRazorpayCheckout = async (plan: Plan) => {
     try {
+      const isRazorpayReady = await loadRazorpayScript();
+      if (!isRazorpayReady) {
+        alert("Unable to load Razorpay payment gateway. Please check your network connection and try again.");
+        return;
+      }
+
       const res = await fetch("https://api.vigyanprep.com/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -115,7 +139,7 @@ export default function BuyTestPage() {
         const rzp = new razorpayWindow(options);
         rzp.open();
       } else {
-        alert("Razorpay SDK is loading. Please try again in a few seconds.");
+        alert("Razorpay payment gateway failed to initialize. Please refresh the page and try again.");
       }
     } catch (err: any) {
       console.error("Razorpay Payment Error:", err);
