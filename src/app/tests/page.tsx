@@ -86,9 +86,14 @@ export default function BuyTestPage() {
         return;
       }
 
+      const token = getCookie("student_token") || (typeof window !== 'undefined' ? (localStorage.getItem('student_token') || localStorage.getItem('token')) : null);
+
       const res = await fetch("https://api.vigyanprep.com/api/payment/create-order", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           planId: plan.id,
           amount: plan.discount_price || plan.price
@@ -96,12 +101,12 @@ export default function BuyTestPage() {
       });
 
       const orderData = await res.json();
-      if (!res.ok) throw new Error(orderData.error || "Order creation failed");
+      if (!res.ok || !orderData.success) throw new Error(orderData.error || orderData.message || "Order creation failed");
 
       const options = {
-        key: orderData.key || "rzp_live_defaultKey",
+        key: orderData.key || (orderData.order && orderData.order.key) || "rzp_live_TKAmZ5QydRUNs1",
         amount: orderData.order.amount,
-        currency: orderData.order.currency,
+        currency: orderData.order.currency || "INR",
         name: "VIGYAN.prep",
         description: `Test Series Subscription - ${plan.name}`,
         image: "/frontend/images/vigyan-logo.png",
