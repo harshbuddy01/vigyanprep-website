@@ -114,12 +114,18 @@ export default function BuyTestPage() {
         handler: async function (response: any) {
           const verifyRes = await fetch("https://api.vigyanprep.com/api/payment/verify", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            },
             body: JSON.stringify({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
-              planId: plan.id
+              planId: plan.id,
+              studentEmail: localStorage.getItem('student_email'),
+              studentName: localStorage.getItem('student_name'),
+              amount: plan.discount_price || plan.price
             })
           });
           const verifyData = await verifyRes.json();
