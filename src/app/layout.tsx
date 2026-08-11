@@ -54,6 +54,9 @@ export const metadata: Metadata = {
     description: "India's premier research entrance platform for IISER IAT, NISER NEST, IISc & CMI entrance exams.",
     images: ["https://vigyanprep.com/images/pyq-textbook-stack.jpg"],
   },
+  verification: {
+    google: "google471760565057ec7a",
+  },
   robots: {
     index: true,
     follow: true,
