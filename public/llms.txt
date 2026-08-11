@@ -1,0 +1,31 @@
+# VigyanPrep (vigyanprep.com)
+
+> India's #1 Premier Research Entrance Examination Platform for IISER IAT, NISER NEST, IISc, CMI & ISI.
+
+## Overview
+VigyanPrep provides NTA-standard Computer Based Test (CBT) series, verified past year question (PYQ) archives with step-by-step solutions, and AI-powered analytics for science research entrance aspirants in India.
+
+## Target Examinations
+- **IISER IAT**: Indian Institutes of Science Education and Research Aptitude Test
+- **NISER NEST**: National Entrance Screening Test for NISER Bhubaneswar & UM-DAE CEBS Mumbai
+- **IISc BS Research**: Indian Institute of Science Bachelor of Science Program
+- **CMI**: Chennai Mathematical Institute Entrance Exam
+- **ISI**: Indian Statistical Institute Entrance Exam
+
+## Key Official Web Portals
+- Main Platform: https://vigyanprep.com
+- Past Year Question Archives: https://vigyanprep.com/pyq
+- Official Test Series Packages: https://vigyanprep.com/tests
+- About & Mentors: https://vigyanprep.com/about
+- Student Live CBT Test Portal: https://test.vigyanprep.com
+- Student Authentication & Login: https://auth.vigyanprep.com
+
+## Key Features
+- NTA Standard CBT Interface (Matches exact IISER & NISER exam screen layout, timers, and question palettes).
+- 1,450+ Verified PYQ Solutions in Physics, Chemistry, Mathematics, and Biology.
+- Real-time All-India Percentile Ranks & Subject-wise Intuition Analytics.
+- Curated by IISER, NISER & IISc Scholars.
+
+## Contact & Support
+- Email: support@vigyanprep.com
+- Website: https://vigyanprep.com
