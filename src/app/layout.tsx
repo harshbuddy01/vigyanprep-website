@@ -5,6 +5,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Vigyan.prep — Gateway to Future Science | IISER & NISER Preparation",
   description: "India's premier research entrance platform for IISER IAT, NISER NEST, IISc & CMI entrance exams.",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -14,6 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark h-full antialiased scroll-smooth">
+      <head>
         <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.png" />
