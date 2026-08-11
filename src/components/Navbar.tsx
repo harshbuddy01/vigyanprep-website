@@ -13,6 +13,12 @@ export default function Navbar() {
   const [studentName, setStudentName] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const [isMaintenanceActive, setIsMaintenanceActive] = useState<boolean>(() => {
+    const fromCookie = getCookie("maintenance_mode");
+    if (fromCookie !== null && fromCookie !== undefined) return fromCookie === "true";
+    return false;
+  });
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
@@ -28,6 +34,21 @@ export default function Navbar() {
       setStudentName(name);
     }
 
+    async function checkMaintenance() {
+      try {
+        const res = await fetch("https://api.vigyanprep.com/api/public/settings");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.settings?.maintenanceMode !== undefined) {
+            setIsMaintenanceActive(!!data.settings.maintenanceMode);
+          }
+        }
+      } catch (err) {
+        console.warn("Website maintenance check error:", err);
+      }
+    }
+    checkMaintenance();
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -38,6 +59,11 @@ export default function Navbar() {
 
   return (
     <>
+      {isMaintenanceActive && (
+        <div className="fixed top-0 inset-x-0 z-[3000] bg-amber-500 text-black py-2 px-4 text-center font-sans font-bold text-xs shadow-lg flex items-center justify-center gap-2">
+          <span>⚠️ Scheduled Platform Maintenance Active — Live test sessions & submissions are running in protected mode.</span>
+        </div>
+      )}
       {/* ═══════════════════════════════════════════════════════════════════════
           IDENTICAL HOMEPAGE FLUID GLASS NAVBAR FOR ALL PAGES
          ═══════════════════════════════════════════════════════════════════════ */}
