@@ -24,6 +24,7 @@ interface Plan {
   price: number;
   discount_price: number | null;
   active: boolean;
+  bundle_includes: string[] | null;
 }
 
 export default function BuyTestPage() {
@@ -35,6 +36,8 @@ export default function BuyTestPage() {
 
   // User auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Tracks which exam types the student already has an active subscription for
+  const [subscribedExamTypes, setSubscribedExamTypes] = useState<string[]>([]);
 
   // Load Razorpay Script dynamically
   const loadRazorpayScript = () => {
@@ -75,8 +78,53 @@ export default function BuyTestPage() {
       }
     }
 
+    // If the student is logged in, fetch their active subscriptions
+    // so we can change the buy button to "Access Tests" for already-purchased plans
+    async function fetchSubscriptions(authToken: string) {
+      try {
+        const res = await fetch("https://api.vigyanprep.com/api/student/subscriptions", {
+          headers: { Authorization: `Bearer ${authToken}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // Collect all exam types the student has active access to
+          // This handles both single-exam subs (e.g. exam_type="IAT")
+          // and bundle subs (bundle_includes=["IAT","NEST"])
+          const examTypes: string[] = [];
+          for (const sub of data.subscriptions || []) {
+            const planExamType = sub.plan?.exam_type || sub.exam_type || '';
+            const bundleIncludes: string[] = sub.bundle_includes || sub.plan?.bundle_includes || [];
+            if (planExamType === 'BUNDLE' && bundleIncludes.length > 0) {
+              bundleIncludes.forEach((e: string) => { if (!examTypes.includes(e)) examTypes.push(e); });
+            } else if (planExamType && !examTypes.includes(planExamType)) {
+              examTypes.push(planExamType);
+            }
+          }
+          setSubscribedExamTypes(examTypes);
+        }
+      } catch (err) {
+        console.error("Failed to fetch subscriptions:", err);
+      }
+    }
+
     fetchPlans();
+    if (token) fetchSubscriptions(token);
   }, []);
+
+  // Helper: determine button state for a plan card
+  // Returns: 'access' | 'upgrade' | 'buy'
+  const getPlanButtonState = (plan: Plan): 'access' | 'upgrade' | 'buy' => {
+    if (!isLoggedIn || subscribedExamTypes.length === 0) return 'buy';
+    const isBundle = plan.exam_type === 'BUNDLE' && Array.isArray(plan.bundle_includes) && plan.bundle_includes.length > 0;
+    if (isBundle) {
+      const covered = plan.bundle_includes!.filter(e => subscribedExamTypes.includes(e));
+      if (covered.length === plan.bundle_includes!.length) return 'access'; // all exams covered
+      if (covered.length > 0) return 'upgrade'; // partially covered → upgrade
+      return 'buy';
+    }
+    // Single exam plan
+    return subscribedExamTypes.includes(plan.exam_type) ? 'access' : 'buy';
+  };
 
   const openRazorpayCheckout = async (plan: Plan) => {
     try {
@@ -493,7 +541,14 @@ export default function BuyTestPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {displayPlans.map((plan, idx) => {
                 const isPopular = idx === 0 || plan.name.toLowerCase().includes("all") || plan.name.toLowerCase().includes("pro");
-                const price = plan.discount_price || plan.price;
+                const displayPrice = plan.discount_price || plan.price;
+                const isPlanBundle = plan.exam_type === 'BUNDLE' && Array.isArray(plan.bundle_includes) && plan.bundle_includes.length > 0;
+                const buttonState = getPlanButtonState(plan);
+
+                // For upgrade: find which exams the student still needs from this bundle
+                const newExamsInBundle = isPlanBundle
+                  ? (plan.bundle_includes || []).filter(e => !subscribedExamTypes.includes(e))
+                  : [];
 
                 return (
                   <div
@@ -504,34 +559,70 @@ export default function BuyTestPage() {
                         : "bg-white/40 border-2 border-amber-950/35 hover:border-amber-950/60"
                     }`}
                   >
-                    {isPopular && (
+                    {isPopular && buttonState !== 'access' && (
                       <div className="absolute top-0 right-0 bg-[#1c1815] text-amber-300 text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md border-b border-l border-amber-500/30">
                         ⭐ MOST POPULAR
+                      </div>
+                    )}
+                    {buttonState === 'access' && (
+                      <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md">
+                        ✓ SUBSCRIBED
+                      </div>
+                    )}
+                    {buttonState === 'upgrade' && (
+                      <div className="absolute top-0 right-0 bg-purple-600 text-white text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md">
+                        ↑ UPGRADE AVAILABLE
                       </div>
                     )}
 
                     <div className="space-y-6">
                       <div className="space-y-2">
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest ${
-                          isPopular ? "bg-amber-500/20 border border-amber-500/30 text-amber-300" : "bg-amber-950/15 border border-amber-950/30 text-amber-950"
-                        }`}>
-                          {plan.exam_type || "TEST SERIES"}
-                        </span>
+                        {/* Exam type badge(s): show bundle tags for bundle plans */}
+                        {isPlanBundle && plan.bundle_includes ? (
+                          <div className="flex flex-wrap gap-1.5">
+                            {plan.bundle_includes.map(exam => (
+                              <span key={exam} className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest border ${
+                                subscribedExamTypes.includes(exam)
+                                  ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                                  : isPopular ? 'bg-purple-500/20 border-purple-400/30 text-purple-200' : 'bg-purple-100 border-purple-300 text-purple-800'
+                              }`}>
+                                {subscribedExamTypes.includes(exam) ? '✓ ' : ''}{exam}
+                              </span>
+                            ))}
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest border ${
+                              isPopular ? 'bg-amber-500/20 border-amber-500/30 text-amber-300' : 'bg-amber-100 border-amber-300 text-amber-800'
+                            }`}>BUNDLE</span>
+                          </div>
+                        ) : (
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest ${
+                            isPopular ? "bg-amber-500/20 border border-amber-500/30 text-amber-300" : "bg-amber-950/15 border border-amber-950/30 text-amber-950"
+                          }`}>
+                            {plan.exam_type || "TEST SERIES"}
+                          </span>
+                        )}
                         <h3 className={`font-serif text-2xl font-bold pt-2 ${isPopular ? "text-white" : "text-[#1c1815]"}`}>{plan.name}</h3>
                         <p className={`text-xs font-extrabold ${isPopular ? "text-neutral-300" : "text-[#1c1815]/80"}`}>
                           Valid for {plan.duration_days} days full access across all devices
                         </p>
+                        {/* Upgrade hint: show what new exams this bundle unlocks */}
+                        {buttonState === 'upgrade' && newExamsInBundle.length > 0 && (
+                          <p className="text-xs font-extrabold text-purple-300 bg-purple-500/15 border border-purple-400/20 rounded-lg px-3 py-1.5">
+                            🔓 Unlocks: {newExamsInBundle.join(' + ')} access
+                          </p>
+                        )}
                       </div>
 
                       {/* Pricing Display */}
                       <div className={`flex items-baseline gap-3 py-3 border-y-2 ${isPopular ? "border-white/15" : "border-amber-950/25"}`}>
-                        <span className={`text-4xl font-extrabold font-serif ${isPopular ? "text-white" : "text-[#1c1815]"}`}>₹{price}</span>
+                        <span className={`text-4xl font-extrabold font-serif ${isPopular ? "text-white" : "text-[#1c1815]"}`}>₹{displayPrice}</span>
                         {plan.discount_price && (
                           <span className={`text-sm line-through ${isPopular ? "text-neutral-400" : "text-neutral-600 font-bold"}`}>₹{plan.price}</span>
                         )}
-                        <span className="text-xs text-emerald-950 font-extrabold ml-auto bg-emerald-200/60 border border-emerald-400 px-2.5 py-1 rounded-full">
-                          Save 40% OFF
-                        </span>
+                        {plan.discount_price && (
+                          <span className="text-xs text-emerald-950 font-extrabold ml-auto bg-emerald-200/60 border border-emerald-400 px-2.5 py-1 rounded-full">
+                            Save 40% OFF
+                          </span>
+                        )}
                       </div>
 
                       {/* Feature Bullet Points */}
@@ -555,18 +646,45 @@ export default function BuyTestPage() {
                       </ul>
                     </div>
 
+                    {/* Smart CTA Button */}
                     <div className="pt-8">
-                      <button
-                        onClick={() => handleBuyClick(plan)}
-                        className={`w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg ${
-                          isPopular
-                            ? "bg-gradient-to-r from-amber-400 to-amber-500 text-neutral-950 hover:opacity-95 shadow-amber-500/20 cursor-pointer"
-                            : "bg-white/50 hover:bg-white/80 border-2 border-amber-950/35 text-[#1c1815] cursor-pointer"
-                        }`}
-                      >
-                        <span>Buy Test Series (₹{price})</span>
-                        <ArrowRight size={16} />
-                      </button>
+                      {buttonState === 'access' ? (
+                        <a
+                          href="https://test.vigyanprep.com/dashboard"
+                          className={`w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg ${
+                            isPopular
+                              ? "bg-emerald-500 text-white hover:bg-emerald-600 shadow-emerald-500/30"
+                              : "bg-emerald-100 hover:bg-emerald-200 border-2 border-emerald-500/50 text-emerald-800"
+                          }`}
+                        >
+                          <CheckCircle2 size={16} />
+                          <span>Access Tests → Go to Dashboard</span>
+                        </a>
+                      ) : buttonState === 'upgrade' ? (
+                        <button
+                          onClick={() => handleBuyClick(plan)}
+                          className={`w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg ${
+                            isPopular
+                              ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:opacity-95 shadow-purple-500/30 cursor-pointer"
+                              : "bg-purple-50 hover:bg-purple-100 border-2 border-purple-400/50 text-purple-800 cursor-pointer"
+                          }`}
+                        >
+                          <span>Upgrade to Bundle (₹{displayPrice})</span>
+                          <ArrowRight size={16} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleBuyClick(plan)}
+                          className={`w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg ${
+                            isPopular
+                              ? "bg-gradient-to-r from-amber-400 to-amber-500 text-neutral-950 hover:opacity-95 shadow-amber-500/20 cursor-pointer"
+                              : "bg-white/50 hover:bg-white/80 border-2 border-amber-950/35 text-[#1c1815] cursor-pointer"
+                          }`}
+                        >
+                          <span>Buy Test Series (₹{displayPrice})</span>
+                          <ArrowRight size={16} />
+                        </button>
+                      )}
                     </div>
 
                   </div>
