@@ -39,25 +39,24 @@ export default function Navbar() {
           HOMEPAGE-MATCHING RICH TEAK & AMBER GOLD FLOATING GLASS NAVBAR
          ═══════════════════════════════════════════════════════════════════════ */}
       
-      {/* 1. LEFT FLOATING PILL: OFFICIAL LOGO */}
+      {/* 1. LEFT FLOATING PILL: OFFICIAL LOGO ONLY */}
       <div className="fixed top-5 left-6 sm:left-10 z-50 flex items-center">
         <a
           href="https://vigyanprep.com/"
-          className={`flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-300 group ${
-            scrolled
-              ? "bg-[#161310]/95 backdrop-blur-2xl border-amber-500/40 shadow-2xl shadow-black/80"
-              : "bg-[#1c1815]/90 backdrop-blur-xl border-amber-500/30 shadow-xl shadow-black/60"
+          className={`flex items-center justify-center px-5 py-2.5 rounded-full border transition-all duration-300 group ${
+            pathname === "/tests"
+              ? "bg-[#faf6ee]/95 backdrop-blur-2xl border-amber-900/20 shadow-xl shadow-amber-950/10 hover:border-amber-700/50"
+              : scrolled
+              ? "bg-[#161310]/95 backdrop-blur-2xl border-amber-500/40 shadow-2xl shadow-black/80 hover:border-amber-400"
+              : "bg-[#1c1815]/90 backdrop-blur-xl border-amber-500/30 shadow-xl shadow-black/60 hover:border-amber-400"
           }`}
           title="Go to VigyanPrep Homepage"
         >
           <img
-            src="/vigyan-logo-light.png"
+            src={pathname === "/tests" ? "/vigyan-logo.png" : "/vigyan-logo-light.png"}
             alt="VigyanPrep Official Logo"
-            className="h-7 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
-          <span className="hidden lg:block text-[8px] font-extrabold tracking-widest text-amber-400/90 uppercase border-l border-amber-500/30 pl-2.5">
-            RESEARCH ENTRANCES
-          </span>
         </a>
       </div>
 
