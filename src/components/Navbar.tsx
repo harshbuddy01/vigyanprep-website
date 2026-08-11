@@ -33,6 +33,9 @@ export default function Navbar() {
 
   const isActive = (path: string) => pathname === path || (path !== '/' && pathname.startsWith(path));
 
+  const isLightBg = pathname.startsWith("/tests") || pathname.startsWith("/pyq");
+  const logoSrc = isLightBg ? "/vigyan-logo.png" : "/vigyan-logo-light.png";
+
   return (
     <>
       {/* ═══════════════════════════════════════════════════════════════════════
@@ -47,9 +50,9 @@ export default function Navbar() {
           title="VigyanPrep Homepage"
         >
           <img
-            src="/vigyan-logo-light.png"
+            src={logoSrc}
             alt="VigyanPrep Official Logo"
-            className="h-16 sm:h-24 w-auto object-contain drop-shadow-[0_6px_24px_rgba(0,0,0,0.95)]"
+            className="h-16 sm:h-24 w-auto object-contain drop-shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
           />
         </a>
       </div>
@@ -57,9 +60,11 @@ export default function Navbar() {
       {/* 2. CENTER FLUID GLASS NAV BAR (Identical to Homepage .fluid-nav) */}
       <nav
         className={`fixed top-6 left-1/2 -translate-x-1/2 z-[1000] hidden md:flex items-center gap-1 p-2 rounded-[60px] border transition-all duration-500 shadow-[0_8px_32px_rgba(0,0,0,0.25),inset_0_1px_1px_rgba(255,255,255,0.2)] ${
-          scrolled
-            ? "bg-[#0a0a0a]/80 backdrop-blur-2xl border-amber-500/30 shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
-            : "bg-[#16120b]/85 backdrop-blur-2xl border-white/15"
+          isLightBg
+            ? "bg-[#1c1815]/90 backdrop-blur-2xl border-amber-950/40 text-amber-100 shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+            : scrolled
+              ? "bg-[#0a0a0a]/80 backdrop-blur-2xl border-amber-500/30 shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
+              : "bg-[#16120b]/85 backdrop-blur-2xl border-white/15"
         }`}
       >
         {/* Home */}
@@ -182,7 +187,11 @@ export default function Navbar() {
         {isLoggedIn ? (
           <a
             href="https://test.vigyanprep.com/dashboard"
-            className="inline-flex items-center gap-2 px-7 py-3 rounded-[60px] bg-white/[0.03] backdrop-blur-[24px] saturate-[180%] border border-amber-500/40 hover:border-amber-400 text-[0.85rem] font-semibold text-[#f2ead8] hover:text-[#d4a520] transition-all duration-400 shadow-[0_8px_32px_rgba(0,0,0,0.15)] group"
+            className={`inline-flex items-center gap-2 px-7 py-3 rounded-[60px] backdrop-blur-[24px] saturate-[180%] border text-[0.85rem] font-semibold transition-all duration-400 shadow-xl group ${
+              isLightBg
+                ? "bg-[#1c1815] text-amber-300 border-amber-950/40 hover:bg-black hover:text-amber-200"
+                : "bg-white/[0.03] border-amber-500/40 text-[#f2ead8] hover:text-[#d4a520] hover:border-amber-400 shadow-[0_8px_32px_rgba(0,0,0,0.15)]"
+            }`}
           >
             <UserCheck className="w-4 h-4 text-amber-400" />
             <span>{studentName ? `${studentName.split(' ')[0].toUpperCase()} (Dashboard)` : "HARSH (Dashboard)"}</span>
@@ -191,7 +200,11 @@ export default function Navbar() {
         ) : (
           <a
             href="https://auth.vigyanprep.com"
-            className="inline-flex items-center gap-2 px-7 py-3 rounded-[60px] bg-white/[0.03] backdrop-blur-[24px] saturate-[180%] border border-white/15 hover:border-amber-400/60 text-[0.85rem] font-semibold text-[#f2ead8] hover:text-[#d4a520] transition-all duration-400 shadow-[0_8px_32px_rgba(0,0,0,0.15)] group"
+            className={`inline-flex items-center gap-2 px-7 py-3 rounded-[60px] backdrop-blur-[24px] saturate-[180%] border text-[0.85rem] font-semibold transition-all duration-400 shadow-xl group ${
+              isLightBg
+                ? "bg-[#1c1815] text-amber-300 border-amber-950/40 hover:bg-black hover:text-amber-200"
+                : "bg-white/[0.03] border-white/15 text-[#f2ead8] hover:text-[#d4a520] hover:border-amber-400/60 shadow-[0_8px_32px_rgba(0,0,0,0.15)]"
+            }`}
           >
             <span>Login</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
