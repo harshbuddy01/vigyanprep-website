@@ -39,23 +39,17 @@ export default function Navbar() {
           HOMEPAGE-MATCHING RICH TEAK & AMBER GOLD FLOATING GLASS NAVBAR
          ═══════════════════════════════════════════════════════════════════════ */}
       
-      {/* 1. LEFT FLOATING PILL: OFFICIAL STANDALONE BROAD LOGO */}
+      {/* 1. LEFT FLOATING STANDALONE TRANSPARENT LOGO (NO BOX / NO BACKGROUND) */}
       <div className="fixed top-5 left-6 sm:left-10 z-50 flex items-center">
         <a
           href="https://vigyanprep.com/"
-          className={`flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl border transition-all duration-300 group ${
-            pathname === "/tests"
-              ? "bg-[#faf6ee]/95 backdrop-blur-2xl border-amber-900/20 shadow-xl shadow-amber-950/10 hover:border-amber-700/50"
-              : scrolled
-              ? "bg-[#161310]/95 backdrop-blur-2xl border-amber-500/40 shadow-2xl shadow-black/80 hover:border-amber-400"
-              : "bg-[#1c1815]/90 backdrop-blur-xl border-amber-500/30 shadow-xl shadow-black/60 hover:border-amber-400"
-          }`}
+          className="block transition-transform duration-300 hover:scale-105"
           title="VigyanPrep Homepage"
         >
           <img
             src={pathname === "/tests" ? "/vigyan-logo.png" : "/vigyan-logo-light.png"}
             alt="VigyanPrep Official Logo"
-            className="h-11 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            className="h-12 sm:h-16 w-auto object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]"
           />
         </a>
       </div>
