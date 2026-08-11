@@ -16,63 +16,11 @@ interface PyqPaper {
   subjects: string[];
 }
 
-const fallbackPapers: PyqPaper[] = [
-  {
-    id: "pyq_nest_2024",
-    title: "NISER NEST 2024 Official Question Paper",
-    examType: "NEST",
-    year: "2024",
-    questionsCount: 68,
-    duration: 210,
-    marks: 200,
-    subjects: ["Physics", "Chemistry", "Mathematics", "Biology"],
-  },
-  {
-    id: "pyq_iat_2023",
-    title: "IISER IAT 2023 Official Question Paper",
-    examType: "IAT",
-    year: "2023",
-    questionsCount: 60,
-    duration: 180,
-    marks: 240,
-    subjects: ["Physics", "Chemistry", "Mathematics", "Biology"],
-  },
-  {
-    id: "pyq_nest_2023",
-    title: "NISER NEST 2023 Official Question Paper",
-    examType: "NEST",
-    year: "2023",
-    questionsCount: 68,
-    duration: 210,
-    marks: 200,
-    subjects: ["Physics", "Chemistry", "Mathematics", "Biology"],
-  },
-  {
-    id: "pyq_iat_2022",
-    title: "IISER IAT 2022 Official Question Paper",
-    examType: "IAT",
-    year: "2022",
-    questionsCount: 60,
-    duration: 180,
-    marks: 240,
-    subjects: ["Physics", "Chemistry", "Mathematics", "Biology"],
-  },
-  {
-    id: "pyq_cmi_2024",
-    title: "CMI B.Math & B.Sc Entrance 2024",
-    examType: "CMI",
-    year: "2024",
-    questionsCount: 20,
-    duration: 180,
-    marks: 100,
-    subjects: ["Mathematics", "Advanced Calculus"],
-  },
-];
-
 export default function PyqPage() {
   const [selectedExam, setSelectedExam] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
-  const [papers, setPapers] = useState<PyqPaper[]>(fallbackPapers);
+  const [papers, setPapers] = useState<PyqPaper[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadLivePyqs() {
@@ -81,7 +29,7 @@ export default function PyqPage() {
         if (res.ok) {
           const data = await res.json();
           const liveList = data.papers || data.tests || data.pyqs || [];
-          if (Array.isArray(liveList) && liveList.length > 0) {
+          if (Array.isArray(liveList)) {
             const liveData: PyqPaper[] = liveList.map((t: any) => ({
               id: t.id,
               title: t.title || t.name,
@@ -89,22 +37,16 @@ export default function PyqPage() {
               year: String(t.pyq_year || t.year || (t.title && t.title.match(/\d{4}/) ? t.title.match(/\d{4}/)[0] : "2025")),
               questionsCount: t.total_questions || t.questions_count || 60,
               duration: t.duration_minutes || 180,
-              marks: (t.total_questions || t.questions_count || 60) * 4,
-              subjects: ["Physics", "Chemistry", "Mathematics", "Biology"],
+              marks: t.total_marks || (t.total_questions || t.questions_count || 60) * 4,
+              subjects: t.subjects || ["Physics", "Chemistry", "Mathematics", "Biology"],
             }));
-
-            // Merge live uploaded papers with fallback archive
-            const merged = [...liveData];
-            fallbackPapers.forEach(fb => {
-              if (!merged.some(m => m.title.toLowerCase() === fb.title.toLowerCase())) {
-                merged.push(fb);
-              }
-            });
-            setPapers(merged);
+            setPapers(liveData);
           }
         }
       } catch (err) {
-        console.warn("API offline, using pre-rendered question bank", err);
+        console.warn("Failed to load PYQs from API", err);
+      } finally {
+        setLoading(false);
       }
     }
     loadLivePyqs();
@@ -220,6 +162,22 @@ export default function PyqPage() {
         </div>
 
         {/* Question Cards Grid */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24 text-neutral-500">
+            <div className="w-10 h-10 rounded-full border-2 border-amber-400 border-t-transparent animate-spin mb-4" />
+            <p className="text-sm">Loading question papers...</p>
+          </div>
+        ) : filteredPapers.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 text-neutral-500 gap-4">
+            <FileText className="w-14 h-14 text-amber-400/30" />
+            <p className="text-lg font-serif text-neutral-400">No papers available yet</p>
+            <p className="text-sm text-neutral-600 text-center max-w-sm">
+              {searchQuery || selectedExam !== "ALL"
+                ? "No papers match your current filter. Try changing the exam type or search query."
+                : "Question papers will appear here once they are uploaded by the admin."}
+            </p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPapers.map((paper) => (
             <div
@@ -276,6 +234,7 @@ export default function PyqPage() {
             </div>
           ))}
         </div>
+        )}
       </main>
 
       <Footer />
