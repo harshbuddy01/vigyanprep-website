@@ -39,26 +39,26 @@ export default function Navbar() {
           HOMEPAGE-MATCHING RICH TEAK & AMBER GOLD FLOATING GLASS NAVBAR
          ═══════════════════════════════════════════════════════════════════════ */}
       
-      {/* 1. LEFT FLOATING PILL: LOGO PLACEHOLDER */}
+      {/* 1. LEFT FLOATING PILL: OFFICIAL LOGO */}
       <div className="fixed top-5 left-6 sm:left-10 z-50 flex items-center">
-        <Link
-          href="/"
-          className={`flex items-center gap-2.5 px-4 py-2 rounded-full border transition-all duration-300 ${
+        <a
+          href="https://vigyanprep.com/"
+          className={`flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-300 group ${
             scrolled
               ? "bg-[#161310]/95 backdrop-blur-2xl border-amber-500/40 shadow-2xl shadow-black/80"
               : "bg-[#1c1815]/90 backdrop-blur-xl border-amber-500/30 shadow-xl shadow-black/60"
           }`}
+          title="Go to VigyanPrep Homepage"
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-400 via-amber-500 to-amber-600 text-black font-serif font-extrabold text-base flex items-center justify-center shadow-md shadow-amber-500/20">
-            V
-          </div>
-          <div className="text-left">
-            <span className="font-serif italic font-extrabold text-base text-amber-100 tracking-tight">
-              VIGYAN<span className="font-sans text-[10px] uppercase text-amber-400 font-extrabold ml-1">.prep</span>
-            </span>
-            <span className="block text-[7px] font-extrabold tracking-widest text-amber-400/90 uppercase">RESEARCH ENTRANCES</span>
-          </div>
-        </Link>
+          <img
+            src="/vigyan-logo-light.png"
+            alt="VigyanPrep Official Logo"
+            className="h-7 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+          <span className="hidden lg:block text-[8px] font-extrabold tracking-widest text-amber-400/90 uppercase border-l border-amber-500/30 pl-2.5">
+            RESEARCH ENTRANCES
+          </span>
+        </a>
       </div>
 
       {/* 2. MIDDLE FLOATING PILL: HOMEPAGE GRADIENT NAVIGATION LINKS */}

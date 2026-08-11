@@ -33,9 +33,15 @@ export default function Footer() {
         {/* Links Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-xs relative z-10">
           <div className="space-y-3">
-            <h3 className="font-display text-lg tracking-widest text-white uppercase">Vigyan.prep</h3>
+            <a href="https://vigyanprep.com/" title="Go to VigyanPrep Homepage" className="inline-block group">
+              <img
+                src="/vigyan-logo-light.png"
+                alt="VigyanPrep Official Logo"
+                className="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+            </a>
             <p className="text-neutral-400 font-light leading-relaxed">
-              India&apos;s premier research entrance platform for IISER IAT, NISER NEST, IISc & CMI entrance exams.
+              India&apos;s premier research entrance platform for IISER IAT, NISER NEST, IISc &amp; CMI entrance exams.
             </p>
           </div>
 
