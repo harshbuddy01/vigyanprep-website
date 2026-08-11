@@ -140,34 +140,16 @@ export default function PyqPage() {
             </p>
           </div>
 
-          {/* RIGHT: TEXTBOOK STACK & VIGYAN MUG GRAPHIC */}
+          {/* RIGHT: TEXTBOOK STACK & VIGYAN MUG REAL GRAPHIC */}
           <div className="lg:col-span-3 hidden lg:flex flex-col items-center justify-center relative">
-            <div className="relative transform rotate-3 hover:rotate-0 transition-transform duration-300">
-              {/* Stacked Science Textbooks */}
-              <div className="space-y-1.5">
-                <div className="w-48 h-8 rounded-md bg-[#1b365d] border-2 border-amber-400/40 shadow-md flex items-center px-4 justify-between">
-                  <span className="text-[10px] font-bold text-white tracking-widest uppercase">PHYSICS</span>
-                  <div className="w-2 h-2 rounded-full bg-amber-400" />
-                </div>
-                <div className="w-48 h-8 rounded-md bg-[#1a4331] border-2 border-emerald-400/40 shadow-md flex items-center px-4 justify-between">
-                  <span className="text-[10px] font-bold text-white tracking-widest uppercase">CHEMISTRY</span>
-                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                </div>
-                <div className="w-48 h-8 rounded-md bg-[#4a1c1d] border-2 border-red-400/40 shadow-md flex items-center px-4 justify-between">
-                  <span className="text-[10px] font-bold text-white tracking-widest uppercase">MATHEMATICS</span>
-                  <div className="w-2 h-2 rounded-full bg-red-400" />
-                </div>
-                <div className="w-48 h-8 rounded-md bg-[#8c6527] border-2 border-amber-300/40 shadow-md flex items-center px-4 justify-between">
-                  <span className="text-[10px] font-bold text-white tracking-widest uppercase">BIOLOGY</span>
-                  <div className="w-2 h-2 rounded-full bg-amber-200" />
-                </div>
-              </div>
-
-              {/* Ceramic Mug Graphic */}
-              <div className="absolute -top-10 -right-6 w-16 h-18 bg-[#1c1815] rounded-xl border-2 border-amber-900/40 shadow-2xl p-2 flex flex-col items-center justify-center">
-                <div className="text-[8px] font-serif italic text-amber-200 font-extrabold">Vigyan</div>
-                <div className="text-[6px] uppercase tracking-widest text-amber-400 font-bold">PREP</div>
-                <div className="absolute -right-3 top-4 w-4 h-7 border-2 border-[#1c1815] rounded-r-full" />
+            <div className="relative group transform hover:scale-105 transition-all duration-500">
+              <div className="absolute -inset-2 bg-gradient-to-r from-amber-500/20 via-amber-700/20 to-amber-900/20 rounded-3xl blur-md opacity-75 group-hover:opacity-100 transition duration-500" />
+              <div className="relative bg-[#fcfbfa] border-2 border-amber-950/20 rounded-2xl p-2 shadow-2xl overflow-hidden max-w-[280px]">
+                <img
+                  src="/images/pyq-textbook-stack.jpg"
+                  alt="Physics Chemistry Mathematics Biology Textbooks with VigyanPrep Coffee Mug"
+                  className="w-full h-auto rounded-xl object-cover shadow-md transform group-hover:scale-102 transition duration-500"
+                />
               </div>
             </div>
           </div>
