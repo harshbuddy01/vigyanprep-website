@@ -40,7 +40,7 @@ export default function Navbar() {
          ═══════════════════════════════════════════════════════════════════════ */}
       
       {/* 1. LEFT FLOATING STANDALONE TRANSPARENT LOGO (NO BOX / NO BACKGROUND) */}
-      <div className="fixed top-5 left-6 sm:left-10 z-50 flex items-center">
+      <div className="fixed top-4 left-6 sm:left-10 z-50 flex items-center">
         <a
           href="https://vigyanprep.com/"
           className="block transition-transform duration-300 hover:scale-105"
@@ -49,7 +49,7 @@ export default function Navbar() {
           <img
             src={pathname === "/tests" ? "/vigyan-logo.png" : "/vigyan-logo-light.png"}
             alt="VigyanPrep Official Logo"
-            className="h-12 sm:h-16 w-auto object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]"
+            className="h-16 sm:h-24 w-auto object-contain drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
           />
         </a>
       </div>
