@@ -134,7 +134,20 @@ export default function BuyTestPage() {
         return;
       }
 
-      const token = getCookie("student_token") || (typeof window !== 'undefined' ? (localStorage.getItem('student_token') || localStorage.getItem('token')) : null);
+      let studentEmail = (typeof window !== 'undefined' ? (getCookie("student_email") || localStorage.getItem('student_email') || localStorage.getItem('user_email') || localStorage.getItem('email')) : '') || '';
+      let studentName = (typeof window !== 'undefined' ? (getCookie("student_name") || localStorage.getItem('student_name') || localStorage.getItem('user_name') || localStorage.getItem('name')) : '') || '';
+
+      if (!studentEmail) {
+        const enteredEmail = window.prompt("📧 Please enter your Student Email to activate your test series subscription:", "");
+        if (!enteredEmail || !enteredEmail.includes("@")) {
+          alert("A valid email is required to assign your exam pass and test series access.");
+          return;
+        }
+        studentEmail = enteredEmail.trim().toLowerCase();
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('student_email', studentEmail);
+        }
+      }
 
       const res = await fetch("https://api.vigyanprep.com/api/payment/create-order", {
         method: "POST",
@@ -171,22 +184,22 @@ export default function BuyTestPage() {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
               planId: plan.id,
-              studentEmail: localStorage.getItem('student_email'),
-              studentName: localStorage.getItem('student_name'),
+              studentEmail: studentEmail,
+              studentName: studentName || 'Student',
               amount: plan.discount_price || plan.price
             })
           });
           const verifyData = await verifyRes.json();
           if (verifyRes.ok && verifyData.success) {
-            alert(`🎉 Payment Successful!\n\nYour ${plan.name} test series has been activated. Redirecting to your Student Dashboard...`);
+            alert(`🎉 Payment Successful!\n\nYour ${plan.name} test series has been activated for ${studentEmail}. Redirecting to your Student Dashboard...`);
             window.location.href = "https://test.vigyanprep.com/dashboard";
           } else {
             alert(`⚠️ Payment Verification Warning: ${verifyData.message || 'Signature verification pending'}`);
           }
         },
         prefill: {
-          name: typeof window !== 'undefined' ? (localStorage.getItem('student_name') || "") : "",
-          email: typeof window !== 'undefined' ? (localStorage.getItem('student_email') || "") : ""
+          name: studentName,
+          email: studentEmail
         },
         theme: {
           color: "#d4a520"
