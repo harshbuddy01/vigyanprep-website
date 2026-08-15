@@ -134,6 +134,7 @@ export default function BuyTestPage() {
         return;
       }
 
+      const token = getCookie("student_token") || (typeof window !== 'undefined' ? (localStorage.getItem('student_token') || localStorage.getItem('token')) : null);
       let studentEmail = (typeof window !== 'undefined' ? (getCookie("student_email") || localStorage.getItem('student_email') || localStorage.getItem('user_email') || localStorage.getItem('email')) : '') || '';
       let studentName = (typeof window !== 'undefined' ? (getCookie("student_name") || localStorage.getItem('student_name') || localStorage.getItem('user_name') || localStorage.getItem('name')) : '') || '';
 

@@ -32,18 +32,33 @@ export default function DeveloperHomepage() {
           return null;
         };
 
-        const token = getCookie('student_token') || localStorage.getItem('student_token');
-        let rawName = getCookie('student_name') || localStorage.getItem('student_name') || localStorage.getItem('full_name') || '';
+        const token = getCookie('student_token');
+        if (!token) {
+          try {
+            localStorage.removeItem('student_token');
+            localStorage.removeItem('student_name');
+            localStorage.removeItem('student_email');
+          } catch (e) {}
+        }
+        let rawName = getCookie('student_name') || '';
         try { rawName = decodeURIComponent(rawName); } catch (e) {}
         const loginBtn = document.querySelector('.top-right-login') as HTMLAnchorElement;
 
-        if (loginBtn && token) {
-          const displayName = rawName ? rawName.split(' ')[0].replace(/%20/g, ' ') : 'Student';
-          loginBtn.href = 'https://test.vigyanprep.com/dashboard';
-          loginBtn.innerHTML = `<span>${displayName} (Dashboard ↗)</span>`;
-          loginBtn.style.color = '#f59e0b';
-          loginBtn.style.borderColor = 'rgba(245, 158, 11, 0.5)';
-          loginBtn.style.background = 'rgba(245, 158, 11, 0.1)';
+        if (loginBtn) {
+          if (token) {
+            const displayName = rawName ? rawName.split(' ')[0].replace(/%20/g, ' ') : 'Student';
+            loginBtn.href = 'https://test.vigyanprep.com/dashboard';
+            loginBtn.innerHTML = `<span>${displayName} (Dashboard ↗)</span>`;
+            loginBtn.style.color = '#f59e0b';
+            loginBtn.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+            loginBtn.style.background = 'rgba(245, 158, 11, 0.1)';
+          } else {
+            loginBtn.href = 'https://auth.vigyanprep.com';
+            loginBtn.innerHTML = `Login <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>`;
+            loginBtn.style.color = 'var(--ivory)';
+            loginBtn.style.borderColor = 'rgba(255, 255, 255, .12)';
+            loginBtn.style.background = 'rgba(255, 255, 255, .03)';
+          }
         }
         
         (function () {

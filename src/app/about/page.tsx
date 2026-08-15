@@ -155,6 +155,55 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* CONTACT & SUPPORT SECTION */}
+      <section id="contact" className="max-w-5xl mx-auto px-4 py-16 scroll-mt-24">
+        <div className="p-8 sm:p-12 rounded-3xl bg-neutral-900/70 border border-amber-500/25 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="text-center mb-10">
+            <span className="text-xs uppercase tracking-widest text-amber-400 font-semibold">Get In Touch</span>
+            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-white mt-2">
+              Contact &amp; Student Support
+            </h3>
+            <p className="text-sm text-neutral-400 max-w-lg mx-auto mt-2">
+              Have questions regarding test series passes, billing, or doubt clearing? Our academic support desk is here for you.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <a
+              href="mailto:support@vigyanprep.com"
+              className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-amber-400/50 transition-all group flex flex-col items-center text-center space-y-3"
+            >
+              <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
+                ✉️
+              </div>
+              <h4 className="font-bold text-white text-base">Direct Email Support</h4>
+              <p className="text-xs text-amber-300 font-mono">support@vigyanprep.com</p>
+              <span className="text-[11px] text-neutral-400">Response within 2-4 hours</span>
+            </a>
+
+            <div className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 flex flex-col items-center text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg">
+                💬
+              </div>
+              <h4 className="font-bold text-white text-base">Academic Mentorship</h4>
+              <p className="text-xs text-neutral-300">Live doubt clearing for subscribed test series students</p>
+              <span className="text-[11px] text-emerald-400 font-semibold">Available Mon-Sat</span>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 flex flex-col items-center text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-lg">
+                🏛️
+              </div>
+              <h4 className="font-bold text-white text-base">Headquarters</h4>
+              <p className="text-xs text-neutral-300">Vigyan Prep Education Research</p>
+              <span className="text-[11px] text-neutral-400">India&apos;s Pure Science Entrance Hub</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

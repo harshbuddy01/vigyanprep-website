@@ -25,13 +25,24 @@ export default function Navbar() {
     };
     window.addEventListener("scroll", handleScroll);
 
-    // Check shared subdomain cookie & local storage
-    const token = getCookie("student_token") || (typeof window !== "undefined" ? localStorage.getItem("student_token") : null);
-    const name = getCookie("student_name") || (typeof window !== "undefined" ? localStorage.getItem("student_name") : null);
-    
-    setIsLoggedIn(!!token);
-    if (name) {
-      setStudentName(name);
+    // Check shared subdomain cookie
+    const token = getCookie("student_token");
+    if (!token) {
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.removeItem("student_token");
+          localStorage.removeItem("student_name");
+          localStorage.removeItem("student_email");
+        } catch (e) {}
+      }
+      setIsLoggedIn(false);
+      setStudentName("");
+    } else {
+      setIsLoggedIn(true);
+      const name = getCookie("student_name") || (typeof window !== "undefined" ? localStorage.getItem("student_name") : null);
+      if (name) {
+        setStudentName(name);
+      }
     }
 
     async function checkMaintenance() {
@@ -176,7 +187,7 @@ export default function Navbar() {
             <Link href="/about" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
               <Users className="w-4 h-4 text-amber-500" /> Team & Mentors
             </Link>
-            <Link href="/about" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
+            <Link href="/about#contact" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
               <Mail className="w-4 h-4 text-amber-500" /> Contact Us
             </Link>
           </div>
