@@ -182,38 +182,13 @@ export default function Navbar() {
               Vigyan.prep
             </div>
             <Link href="/about" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
-              <Info className="w-4 h-4 text-amber-500" /> Our Mission
+              <Info className="w-4 h-4 text-amber-500" /> What is Vigyan?
             </Link>
-            <Link href="/about" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
-              <Users className="w-4 h-4 text-amber-500" /> Team & Mentors
+            <Link href="/about#exams" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
+              <Microscope className="w-4 h-4 text-amber-500" /> Research Exam Hub
             </Link>
             <Link href="/about#contact" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
-              <Mail className="w-4 h-4 text-amber-500" /> Contact Us
-            </Link>
-          </div>
-        </div>
-
-        {/* Future */}
-        <div className="relative group">
-          <Link
-            href="/about"
-            className="px-5 py-2.5 rounded-[50px] text-[0.85rem] font-medium tracking-wide text-white/70 hover:text-white transition-all duration-300 block"
-          >
-            Future
-          </Link>
-          {/* Dropdown */}
-          <div className="absolute top-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-[#0c0c0c]/90 backdrop-blur-3xl border border-white/15 rounded-3xl p-5 min-w-[210px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 shadow-[0_30px_60px_rgba(0,0,0,0.7)] flex flex-col gap-2 z-50">
-            <div className="text-[10px] uppercase tracking-wider text-white/50 font-bold px-3">
-              Career Paths
-            </div>
-            <Link href="/about" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
-              <Microscope className="w-4 h-4 text-amber-500" /> Research
-            </Link>
-            <Link href="/about" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
-              <Rocket className="w-4 h-4 text-amber-500" /> Space Science
-            </Link>
-            <Link href="/about" className="px-3 py-2 rounded-xl text-sm text-white hover:bg-white/10 hover:text-amber-400 transition flex items-center gap-2.5">
-              <Laptop className="w-4 h-4 text-amber-500" /> Computational
+              <Mail className="w-4 h-4 text-amber-500" /> Academic Help Desk
             </Link>
           </div>
         </div>
