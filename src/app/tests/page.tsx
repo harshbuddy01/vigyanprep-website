@@ -229,25 +229,39 @@ export default function BuyTestPage() {
     }
   };
 
-  // Strict exam category filter
+  // Strict exam category filter with complete Bundle coverage
   const filteredPlans = plans.filter(plan => {
-    const pType = (plan.exam_type || "").toUpperCase();
-    const pName = (plan.name || "").toUpperCase();
-
     if (selectedExam === "ALL") {
-      // In "ALL PACKAGES", show trending / top featured test series
+      // In "ALL PACKAGES", show all active test series packages
       return true;
     }
+
+    const pType = (plan.exam_type || "").toUpperCase();
+    const pName = (plan.name || "").toUpperCase();
+    const bundleList: string[] = Array.isArray(plan.bundle_includes)
+      ? plan.bundle_includes.map(e => String(e).toUpperCase())
+      : [];
+
+    const matchesKeywords = (keywords: string[]) => {
+      // 1. Matches exam_type
+      if (keywords.some(k => pType.includes(k))) return true;
+      // 2. Matches plan name
+      if (keywords.some(k => pName.includes(k))) return true;
+      // 3. Matches bundle_includes array
+      if (bundleList.some(b => keywords.some(k => b.includes(k)))) return true;
+      return false;
+    };
+
     if (selectedExam === "IAT") {
-      return pType.includes("IAT") || pName.includes("IAT") || pType.includes("IISER") || pName.includes("IISER");
+      return matchesKeywords(["IAT", "IISER"]);
     }
     if (selectedExam === "NEST") {
-      return pType.includes("NEST") || pName.includes("NEST") || pType.includes("NISER") || pName.includes("NISER");
+      return matchesKeywords(["NEST", "NISER"]);
     }
     if (selectedExam === "CMI") {
-      return pType.includes("CMI") || pName.includes("CMI") || pType.includes("ISI") || pName.includes("ISI");
+      return matchesKeywords(["CMI", "ISI", "IISC"]);
     }
-    return true;
+    return matchesKeywords([selectedExam.toUpperCase()]);
   });
 
   const displayPlans = filteredPlans;
@@ -556,6 +570,10 @@ export default function BuyTestPage() {
               {displayPlans.map((plan, idx) => {
                 const isPopular = idx === 0 || plan.name.toLowerCase().includes("all") || plan.name.toLowerCase().includes("pro");
                 const displayPrice = plan.discount_price || plan.price;
+                const originalPrice = plan.price;
+                const discountPercent = plan.discount_price && originalPrice > plan.discount_price
+                  ? Math.round(((originalPrice - plan.discount_price) / originalPrice) * 100)
+                  : 0;
                 const isPlanBundle = plan.exam_type === 'BUNDLE' && Array.isArray(plan.bundle_includes) && plan.bundle_includes.length > 0;
                 const buttonState = getPlanButtonState(plan);
 
@@ -632,9 +650,13 @@ export default function BuyTestPage() {
                         {plan.discount_price && (
                           <span className={`text-sm line-through ${isPopular ? "text-neutral-400" : "text-neutral-600 font-bold"}`}>₹{plan.price}</span>
                         )}
-                        {plan.discount_price && (
-                          <span className="text-xs text-emerald-950 font-extrabold ml-auto bg-emerald-200/60 border border-emerald-400 px-2.5 py-1 rounded-full">
-                            Save 40% OFF
+                        {discountPercent > 0 && (
+                          <span className={`text-xs font-extrabold ml-auto px-2.5 py-1 rounded-full border ${
+                            isPopular
+                              ? "text-emerald-300 bg-emerald-950/80 border-emerald-500/50"
+                              : "text-emerald-950 bg-emerald-200/70 border-emerald-400"
+                          }`}>
+                            Save {discountPercent}% OFF
                           </span>
                         )}
                       </div>
