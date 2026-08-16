@@ -707,6 +707,73 @@ export default function BuyTestPage() {
             </div>
           )}
 
+          {/* ═══════════════════════════════════════════════════════════════════
+              SCHOLAR EQUAL OPPORTUNITY & NEED-BASED FINANCIAL ASSISTANCE CARD
+             ═══════════════════════════════════════════════════════════════════ */}
+          <div className="relative overflow-hidden rounded-3xl p-8 sm:p-12 bg-white/60 backdrop-blur-2xl border-2 border-amber-950/30 shadow-2xl space-y-6">
+            <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-amber-600/10 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
+              <div className="space-y-3 max-w-3xl">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-950/10 border border-amber-950/20 text-amber-950 text-xs font-bold uppercase tracking-wider">
+                  <Award size={14} className="text-amber-800" />
+                  <span>Equal Opportunity for Every Science Aspirant</span>
+                </div>
+                
+                <h3 className="font-serif text-2xl sm:text-3xl font-extrabold text-[#1c1815] leading-snug">
+                  Financial Constraints Will Never Stand Between You &amp; Pure Science Research.
+                </h3>
+                
+                <p className="text-xs sm:text-sm text-[#1c1815]/90 font-semibold leading-relaxed">
+                  At <strong>VigyanPrep</strong>, we believe genuine passion for pure sciences and research at <strong>IISER, NISER, CMI, and ISI</strong> should never be restricted by financial circumstances. If you are a dedicated student who wants to practice our test series but cannot afford the fee, <strong>please reach out to us directly</strong>. We provide 100% complimentary access and need-based fee waivers to deserving aspirants with complete dignity and respect.
+                </p>
+                
+                <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-amber-950 pt-2">
+                  <span className="flex items-center gap-1.5 bg-white/80 px-3 py-1.5 rounded-lg border border-amber-950/20">
+                    <CheckCircle2 size={15} className="text-emerald-700" /> 100% Free Need-Based Access
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-white/80 px-3 py-1.5 rounded-lg border border-amber-950/20">
+                    <ShieldCheck size={15} className="text-amber-800" /> Zero Judgment, Full Dignity
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-white/80 px-3 py-1.5 rounded-lg border border-amber-950/20">
+                    <Sparkles size={15} className="text-amber-800" /> Instant Activation
+                  </span>
+                </div>
+              </div>
+
+              {/* Direct Action Contact Card */}
+              <div className="p-6 rounded-2xl bg-[#1c1815] text-white border-2 border-amber-500/30 shadow-xl space-y-4 shrink-0 lg:w-80">
+                <div>
+                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Direct Contact &amp; Support Desk</span>
+                  <h4 className="text-base font-bold text-white mt-1">Talk to Us Directly</h4>
+                  <p className="text-xs text-neutral-300 mt-1">Call or WhatsApp for fee waivers, package assistance, or payment support.</p>
+                </div>
+
+                <div className="space-y-2 pt-1">
+                  <a
+                    href="tel:+917004283531"
+                    className="w-full py-3 px-4 bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md cursor-pointer"
+                  >
+                    <span>📞 Call: +91 7004283531</span>
+                  </a>
+
+                  <a
+                    href="https://wa.me/917004283531?text=Hello%20VigyanPrep%2C%20I%20am%20preparing%20for%20IISER%2FNISER%20and%20would%20like%20to%20request%20student%20assistance%2Ftest%20series%20access."
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md cursor-pointer"
+                  >
+                    <span>💬 WhatsApp: +91 7004283531</span>
+                  </a>
+                </div>
+
+                <p className="text-[10px] text-center text-neutral-400">
+                  Email: <a href="mailto:support@vigyanprep.com" className="text-amber-300 hover:underline">support@vigyanprep.com</a>
+                </p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 

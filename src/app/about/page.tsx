@@ -170,7 +170,19 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <a
+              href="tel:+917004283531"
+              className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-amber-400/50 transition-all group flex flex-col items-center text-center space-y-3"
+            >
+              <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
+                📞
+              </div>
+              <h4 className="font-bold text-white text-base">Direct Phone Desk</h4>
+              <p className="text-xs text-amber-300 font-mono">+91 7004283531</p>
+              <span className="text-[11px] text-neutral-400">Available for Student Enquiries</span>
+            </a>
+
             <a
               href="mailto:support@vigyanprep.com"
               className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-amber-400/50 transition-all group flex flex-col items-center text-center space-y-3"
@@ -183,14 +195,19 @@ export default function AboutPage() {
               <span className="text-[11px] text-neutral-400">Response within 2-4 hours</span>
             </a>
 
-            <div className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 flex flex-col items-center text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg">
+            <a
+              href="https://wa.me/917004283531"
+              target="_blank"
+              rel="noreferrer"
+              className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-emerald-400/50 transition-all group flex flex-col items-center text-center space-y-3"
+            >
+              <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
                 💬
               </div>
-              <h4 className="font-bold text-white text-base">Academic Mentorship</h4>
-              <p className="text-xs text-neutral-300">Live doubt clearing for subscribed test series students</p>
-              <span className="text-[11px] text-emerald-400 font-semibold">Available Mon-Sat</span>
-            </div>
+              <h4 className="font-bold text-white text-base">WhatsApp Support</h4>
+              <p className="text-xs text-emerald-400 font-mono">+91 7004283531</p>
+              <span className="text-[11px] text-emerald-400 font-semibold">Quick Doubt &amp; Fee Waiver</span>
+            </a>
 
             <div className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 flex flex-col items-center text-center space-y-3">
               <div className="w-12 h-12 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-lg">

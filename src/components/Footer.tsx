@@ -68,8 +68,18 @@ export default function Footer() {
           <div className="space-y-3">
             <h4 className="font-semibold uppercase tracking-wider text-amber-400">Contact & Support</h4>
             <ul className="space-y-2 text-neutral-300 font-light">
-              <li className="flex items-center gap-2"><Mail className="w-3.5 h-3.5 text-amber-400" /> support@vigyanprep.com</li>
-              <li className="flex items-center gap-2"><MessageSquare className="w-3.5 h-3.5 text-emerald-400" /> Live Chat Support</li>
+              <li className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-amber-400" />
+                <a href="mailto:support@vigyanprep.com" className="hover:text-white transition">support@vigyanprep.com</a>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-amber-400 font-bold">📞</span>
+                <a href="tel:+917004283531" className="hover:text-white transition">+91 7004283531</a>
+              </li>
+              <li className="flex items-center gap-2">
+                <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                <a href="https://wa.me/917004283531" target="_blank" rel="noreferrer" className="hover:text-white transition">WhatsApp Assistance</a>
+              </li>
             </ul>
           </div>
         </div>
