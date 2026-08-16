@@ -9,13 +9,9 @@ import {
   Search,
   BookOpen,
   GraduationCap,
-  Sparkles,
-  Layers,
-  Award,
   ArrowRight,
   X,
   CheckCircle2,
-  HelpCircle,
   ExternalLink,
   ChevronRight,
   Phone,
@@ -23,1026 +19,962 @@ import {
   MessageSquare,
   Building2,
   Atom,
-  Binary,
-  Compass,
-  Cpu,
-  Globe2,
   FlaskConical,
-  Microscope,
-  TrendingUp,
-  ShieldCheck,
+  Calculator,
+  Dna,
+  Layers,
+  Award,
   Zap,
+  Globe2,
+  Shield,
+  FileText,
+  Clock,
+  Check,
+  Compass,
+  ScrollText,
 } from "lucide-react";
 
-interface ExamDetails {
+interface ExamFolio {
   id: string;
+  folioNumber: string;
   name: string;
   shortName: string;
+  latinMotto?: string;
   badge: string;
-  category: "pure_science" | "math_stats" | "cs_physics" | "upcoming";
+  category: "pure_science" | "math_stats" | "cs_physics";
   tagline: string;
-  organizer: string;
-  degreeAwarded: string;
+  governingBody: string;
+  degreesConferred: string;
   duration: string;
   totalMarks: number | string;
-  questionCount: number | string;
-  patternSummary: string;
-  negativeMarking: string;
-  stipendInfo: string;
-  institutes: { name: string; location: string; highlight: string }[];
-  overview: string;
-  whyChosen: string;
-  keySubjects: string[];
-  syllabusBreakdown: { subject: string; keyTopics: string[]; weightage: string }[];
+  questionCount: string;
+  markingRules: string;
+  stipendFellowship: string;
+  summary: string;
+  institutes: {
+    name: string;
+    campus: string;
+    description: string;
+  }[];
+  patternBreakdown: {
+    section: string;
+    questions: string;
+    marks: string;
+    nature: string;
+  }[];
+  syllabusDepth: {
+    subject: string;
+    keyAreas: string[];
+    rigorNote: string;
+  }[];
   careerHorizons: string[];
-  vigyanAdvantage: string[];
-  officialUrl: string;
-  pyqAvailable: boolean;
+  vigyanDifference: string[];
+  officialPortal: string;
 }
 
-const EXAMS_DATABASE: ExamDetails[] = [
+const RESEARCH_EXAM_FOLIOS: ExamFolio[] = [
   {
     id: "iat",
+    folioNumber: "FOLIO I",
     name: "IISER Aptitude Test (IAT)",
     shortName: "IISER IAT",
-    badge: "Flagship Pure Science",
+    latinMotto: "Discite ad explorandum • Learn to explore",
+    badge: "Flagship Natural Sciences",
     category: "pure_science",
-    tagline: "The Premier Gateway to India's 7 Indian Institutes of Science Education & Research and IISc Bangalore",
-    organizer: "Joint Admissions Committee (JAC) / IISERs",
-    degreeAwarded: "5-Year BS-MS Dual Degree & 4-Year BS (Research)",
+    tagline: "The premier national gateway to the 7 Indian Institutes of Science Education and Research, IISc Bangalore, and IIT Madras BS Medical Sciences.",
+    governingBody: "Joint Admissions Committee (JAC) • Ministry of Education, Govt. of India",
+    degreesConferred: "5-Year BS-MS Dual Degree & 4-Year BS (Research)",
     duration: "180 Minutes (3 Hours)",
     totalMarks: 240,
     questionCount: "60 Questions (15 per subject)",
-    patternSummary: "Physics (15), Chemistry (15), Mathematics (15), Biology (15). Single Correct MCQ.",
-    negativeMarking: "+4 for correct, -1 for incorrect, 0 for unattempted",
-    stipendInfo: "INSPIRE-SHE & DISHA Scholarships (₹60,000/year + ₹20,000 research contingency)",
+    markingRules: "+4 Marks for Correct Answer • -1 Mark for Incorrect Answer • 0 for Unattempted",
+    stipendFellowship: "Eligible for INSPIRE-SHE & DISHA Fellowships (₹60,000/year + ₹20,000/year Summer Research Grant)",
+    summary:
+      "The IISER Aptitude Test is India's highest-standard examination for students dedicated to fundamental scientific inquiry. Unlike engineering exams that reward rapid formula substitution, IAT evaluates conceptual clarity, scientific reasoning, and interdisciplinary problem-solving across all four natural sciences.",
     institutes: [
-      { name: "IISER Pune", location: "Maharashtra", highlight: "NIRF Top Science Hub • World-leading Physics & Chemical Biology" },
-      { name: "IISER Kolkata", location: "West Bengal", highlight: "Centre of Excellence in Space Sciences (CESSI) & Earth Sciences" },
-      { name: "IISER Mohali", location: "Punjab", highlight: "Pioneering Quantum Computing, Structural Biology & Nano-Science" },
-      { name: "IISER Bhopal", location: "Madhya Pradesh", highlight: "BS in Engineering Sciences, Data Science & Natural Sciences" },
-      { name: "IISER Thiruvananthapuram", location: "Kerala", highlight: "Advanced Materials & Ocean Science Research Labs" },
-      { name: "IISER Tirupati", location: "Andhra Pradesh", highlight: "Ecology, Biophysics & Interdisciplinary Research Centre" },
-      { name: "IISER Berhampur", location: "Odisha", highlight: "Coastal Ecology, Materials & High-Energy Physics" },
-      { name: "IISc Bangalore (BS Research)", location: "Karnataka", highlight: "Admissions via IAT channel (Rank ~ Top 100-250)" },
-      { name: "IIT Madras (BS Medical Science)", location: "Tamil Nadu", highlight: "Admissions through IAT for interdisciplinary medical research" },
+      { name: "IISER Pune", campus: "Maharashtra", description: "Flagship research hub renowned for theoretical astrophysics, chemical biology, and quantum materials." },
+      { name: "IISER Kolkata", campus: "West Bengal", description: "Home to the Centre of Excellence in Space Sciences India (CESSI) and pioneering Earth sciences." },
+      { name: "IISER Mohali", campus: "Punjab", description: "Leading institute in nuclear magnetic resonance (NMR), structural biology, and quantum computing." },
+      { name: "IISER Bhopal", campus: "Madhya Pradesh", description: "Interdisciplinary center offering BS in Natural Sciences, Data Science, and Engineering Sciences." },
+      { name: "IISER Thiruvananthapuram", campus: "Kerala", description: "Advanced experimental physics, molecular ecology, and oceanic materials research." },
+      { name: "IISER Tirupati", campus: "Andhra Pradesh", description: "Frontier center in biophysics, climate sciences, and cancer biology." },
+      { name: "IISER Berhampur", campus: "Odisha", description: "Specialized in coastal ecosystems, high-energy materials, and computational sciences." },
+      { name: "IISc Bangalore (BS Research)", campus: "Karnataka", description: "Admits top IAT rankers (Top ~150 AIR) into India's #1 institution for scientific research." },
+      { name: "IIT Madras (BS Medical Sciences)", campus: "Tamil Nadu", description: "Pioneering interdisciplinary medical science and biomedical technology research." },
     ],
-    overview:
-      "The IISER Aptitude Test (IAT) is India's most prestigious entrance examination for school leavers passionate about fundamental sciences. Unlike conventional engineering tests that reward speed and mechanical calculations, IAT tests deep conceptual intuition, first-principles logic, and interdisciplinary problem-solving across Physics, Chemistry, Mathematics, and Biology.",
-    whyChosen:
-      "VigyanPrep was created primarily because standard coaching institutes treat IAT as an afterthought behind JEE and NEET. We offer rigorous, proctored mock testing, authentic previous year papers, and PhD-level analytical solutions tailored specifically to the IAT examination blueprint.",
-    keySubjects: ["Physics (15 Qs)", "Chemistry (15 Qs)", "Mathematics (15 Qs)", "Biology (15 Qs)"],
-    syllabusBreakdown: [
+    patternBreakdown: [
+      { section: "Physics", questions: "15 Questions", marks: "60 Marks", nature: "Single Correct Objective MCQ" },
+      { section: "Chemistry", questions: "15 Questions", marks: "60 Marks", nature: "Single Correct Objective MCQ" },
+      { section: "Mathematics", questions: "15 Questions", marks: "60 Marks", nature: "Single Correct Objective MCQ" },
+      { section: "Biology", questions: "15 Questions", marks: "60 Marks", nature: "Single Correct Objective MCQ" },
+    ],
+    syllabusDepth: [
       {
         subject: "Physics",
-        keyTopics: ["Mechanics & Rotational Dynamics", "Electromagnetism & Waves", "Thermodynamics & Kinetic Theory", "Optics & Modern Physics"],
-        weightage: "25% (60 Marks)",
+        keyAreas: ["Classical Mechanics & Rigid Body Dynamics", "Electromagnetism & Wave Optics", "Thermodynamics & Statistical Physics", "Atomic, Nuclear & Modern Physics"],
+        rigorNote: "Tests conceptual derivations rather than standard formula speed.",
       },
       {
         subject: "Chemistry",
-        keyTopics: ["Chemical Bonding & Periodic Trends", "Organic Reaction Mechanisms", "Chemical Kinetics & Equilibrium", "Coordination Compounds"],
-        weightage: "25% (60 Marks)",
+        keyAreas: ["Chemical Bonding & Molecular Orbital Theory", "Organic Reaction Mechanisms & Stereochemistry", "Chemical Kinetics & Ionic Equilibrium", "Coordination Compounds & Transition Metals"],
+        rigorNote: "High emphasis on fundamental chemical logic and reaction kinetics.",
       },
       {
         subject: "Mathematics",
-        keyTopics: ["Calculus & Differential Equations", "Vectors & 3D Geometry", "Combinatorics & Probability", "Matrices & Complex Numbers"],
-        weightage: "25% (60 Marks)",
+        keyAreas: ["Differential & Integral Calculus", "Vectors, 3D Geometry & Linear Algebra", "Combinatorics & Probability Distributions", "Sequences, Series & Complex Analysis"],
+        rigorNote: "Requires analytical deduction and geometric visualization.",
       },
       {
         subject: "Biology",
-        keyTopics: ["Genetics & Molecular Biology", "Cell Structure & Biochemistry", "Ecology & Evolution", "Human & Plant Physiology"],
-        weightage: "25% (60 Marks)",
+        keyAreas: ["Molecular Genetics & Cell Biology", "Human & Plant Physiology", "Ecology, Evolution & Biodiversity", "Biomolecules & Enzymology"],
+        rigorNote: "Designed to be accessible for PCM students with fundamental biological logic.",
       },
     ],
     careerHorizons: [
-      "Direct Ph.D. admissions with full fellowships at Harvard, MIT, Cambridge, Max Planck, Oxford, ETH Zürich & Caltech",
-      "Scientist & Research Officer positions at ISRO, DRDO, BARC, TIFR, and CSIR National Laboratories",
-      "High-impact R&D roles in Quantum Computing, Semiconductor Nanotech, Artificial Intelligence, and Biotech",
-      "Quantitative Modeling, Data Science, and algorithmic research roles in global analytical institutions",
+      "Direct Ph.D. admissions with full international fellowships at Harvard, MIT, Cambridge, Max Planck, Oxford, and ETH Zürich.",
+      "Scientist & Research Officer appointments at ISRO, DRDO, BARC, TIFR, and CSIR National Laboratories.",
+      "Industrial R&D leadership in Quantum Computing, Semiconductor Nanotech, Drug Discovery, and Clean Energy.",
+      "Quantitative modeling, algorithmic research, and data science leadership in global analytical firms.",
     ],
-    vigyanAdvantage: [
-      "NTA-standard zero-distraction black proctored test engine replicating the exact official CBT environment",
-      "Comprehensive chapter-wise and full-length PYQ tests covering 2017 to 2025 with step-by-step mathematical proofs",
-      "Balanced PCM / PCB strategy modules designed to help single-stream students maximize their 4th subject score",
-      "Instant percentile analytics, weak-area diagnostic mapping, and question-level peer difficulty metrics",
+    vigyanDifference: [
+      "Exact replica of the NTA zero-distraction proctored testing engine with live countdown and section palette.",
+      "Authentic previous year question solutions with step-by-step mathematical proofs and theoretical context.",
+      "Balanced PCM & PCB preparation strategies ensuring single-stream students maximize their fourth subject score.",
     ],
-    officialUrl: "https://iiseradmission.in",
-    pyqAvailable: true,
+    officialPortal: "https://iiseradmission.in",
   },
   {
     id: "nest",
+    folioNumber: "FOLIO II",
     name: "National Entrance Screening Test (NEST)",
     shortName: "NISER NEST",
+    latinMotto: "Ex atomo ad universum • From the atom to the cosmos",
     badge: "Atomic Energy Research",
     category: "pure_science",
-    tagline: "India's Apex Entrance for Atomic Energy-Backed Integrated M.Sc. Programs at NISER and UM-DAE CEBS",
-    organizer: "National Institute of Science Education and Research (NISER) & DAE",
-    degreeAwarded: "5-Year Integrated M.Sc. in Physics, Chemistry, Mathematics, Biology",
+    tagline: "India's apex entrance for Department of Atomic Energy integrated master's programs at NISER Bhubaneswar & UM-DAE CEBS Mumbai.",
+    governingBody: "National Institute of Science Education and Research (NISER) & Department of Atomic Energy (DAE)",
+    degreesConferred: "5-Year Integrated M.Sc. in Physics, Chemistry, Mathematics, and Biology",
     duration: "210 Minutes (3.5 Hours)",
     totalMarks: 180,
     questionCount: "68 Questions (17 per section, Best 3 of 4 scored)",
-    patternSummary: "4 Subject Sections (Physics, Chemistry, Maths, Biology). Total score is calculated from the BEST 3 subject scores (60 marks each = 180).",
-    negativeMarking: "MCQs: +2.5 for correct, -1 for incorrect. MSQs (Multiple Correct): Partial marking with NO negative marking.",
-    stipendInfo: "DAE DISHA Fellowship of ₹60,000/year (₹5,000/month) + ₹20,000/year Summer Project Contingency Grant to ALL enrolled students",
+    markingRules: "MCQ: +2.5 / -1 • MSQ (Multiple Correct): Partial Marking with NO Negative Marks",
+    stipendFellowship: "DAE DISHA Fellowship of ₹60,000/year (₹5,000/month) + ₹20,000/year Summer Project Grant to ALL students",
+    summary:
+      "Conducted jointly by NISER Bhubaneswar and UM-DAE CEBS Mumbai, NEST selects researchers for India's atomic energy, nuclear science, and basic science ecosystem. High-ranking graduates have direct interview eligibility for recruitment as Scientific Officer (Grade C) at the Bhabha Atomic Research Centre (BARC).",
     institutes: [
-      { name: "NISER Bhubaneswar", location: "Odisha", highlight: "Autonomous Institute under Department of Atomic Energy (DAE) • World-class High Energy & Nuclear Physics Labs" },
-      { name: "UM-DAE CEBS Mumbai", location: "Maharashtra", highlight: "University of Mumbai - DAE Centre for Excellence in Basic Sciences • Located inside Kalina Campus with direct BARC research synergy" },
+      { name: "NISER Bhubaneswar", campus: "Odisha", description: "Autonomous apex research institute under the Department of Atomic Energy with state-of-the-art nuclear and condensed matter physics facilities." },
+      { name: "UM-DAE CEBS Mumbai", campus: "Maharashtra", description: "Located inside University of Mumbai Kalina campus, operating in direct research partnership with BARC and TIFR scientists." },
     ],
-    overview:
-      "NEST is conducted collaboratively by NISER Bhubaneswar and UM-DAE CEBS Mumbai for students seeking direct entry into high-end nuclear, atomic, basic science, and energy research. Graduates of NISER and CEBS have direct interview opportunities for recruitment as Scientific Officer (Grade C) at the Bhabha Atomic Research Centre (BARC) and DAE units.",
-    whyChosen:
-      "NEST questions are famous for their analytical depth, non-standard conceptual framing, and multiple-correct question rigor. VigyanPrep equips aspirants with precise test series designed by NISER alumni and researchers to crack NEST's unique Section-wise Minimum Admissible Score (SMAS).",
-    keySubjects: ["Physics (17 Qs)", "Chemistry (17 Qs)", "Mathematics (17 Qs)", "Biology (17 Qs)"],
-    syllabusBreakdown: [
+    patternBreakdown: [
+      { section: "Physics", questions: "17 Questions (MCQ + MSQ)", marks: "60 Marks", nature: "Scored in Best 3 of 4" },
+      { section: "Chemistry", questions: "17 Questions (MCQ + MSQ)", marks: "60 Marks", nature: "Scored in Best 3 of 4" },
+      { section: "Mathematics", questions: "17 Questions (MCQ + MSQ)", marks: "60 Marks", nature: "Scored in Best 3 of 4" },
+      { section: "Biology", questions: "17 Questions (MCQ + MSQ)", marks: "60 Marks", nature: "Scored in Best 3 of 4" },
+    ],
+    syllabusDepth: [
       {
         subject: "Physics",
-        keyTopics: ["Rotational Mechanics & Gravitation", "Electromagnetic Induction & Modern Physics", "Wave Optics & Interference", "Fluid Dynamics & Thermodynamics"],
-        weightage: "60 Marks (Best 3 scored)",
+        keyAreas: ["Rotational Mechanics & Gravitation", "Electromagnetic Theory & Modern Physics", "Wave Interference, Optics & Thermodynamics", "Fluid Dynamics & Nuclear Physics"],
+        rigorNote: "Questions are non-standard with multi-step analytical constraints.",
       },
       {
         subject: "Chemistry",
-        keyTopics: ["Coordination Chemistry & Transition Elements", "Thermodynamics & Reaction Kinetics", "Organic Reaction Pathways & Biomolecules", "Surface Chemistry & Electrochemistry"],
-        weightage: "60 Marks (Best 3 scored)",
+        keyAreas: ["Coordination Chemistry & Transition Elements", "Chemical Thermodynamics & Reaction Kinetics", "Organic Synthesis & Stereochemistry", "Surface Chemistry & Electrochemistry"],
+        rigorNote: "Heavy emphasis on thermodynamic proofs and electronic structures.",
       },
       {
         subject: "Mathematics",
-        keyTopics: ["Combinatorics, Sequences & Series", "Definite Integrals & Differential Equations", "Analytical Geometry & Vectors", "Probability & Matrices"],
-        weightage: "60 Marks (Best 3 scored)",
+        keyAreas: ["Combinatorics, Sequences & Series", "Definite Integration & Differential Equations", "Analytical Geometry & Vector Spaces", "Probability & Matrices"],
+        rigorNote: "Requires rigorous algebraic manipulation and logical deduction.",
       },
       {
         subject: "Biology",
-        keyTopics: ["Biochemistry & Enzymology", "Cellular & Molecular Genetics", "Physiology & Homeostasis", "Ecology & Systematics"],
-        weightage: "60 Marks (Best 3 scored)",
+        keyAreas: ["Biochemistry, Enzymology & Cell Signaling", "Molecular Genetics & Recombinant DNA", "Plant & Animal Systems Physiology", "Ecology, Ethology & Evolution"],
+        rigorNote: "Experimental and data-interpretation questions.",
       },
     ],
     careerHorizons: [
-      "Direct interview eligibility for Scientific Officer (Group A / Grade C) in Bhabha Atomic Research Centre (BARC) and DAE units",
-      "Funded Ph.D. programs at top European (Max Planck, CERN, DESY) and American Ivy League scientific universities",
-      "Frontier careers in Nuclear Energy, Astrophysics, Radiation Biology, and Quantum Materials",
+      "Direct interview eligibility for Scientific Officer (Group A / Grade C) in Bhabha Atomic Research Centre (BARC) and DAE units.",
+      "Funded Ph.D. positions at CERN (Geneva), Max Planck Institutes (Germany), and top American institutions.",
+      "Frontier research careers in Nuclear Fusion, Astrophysics, Quantum Materials, and Structural Biophysics.",
     ],
-    vigyanAdvantage: [
-      "Targeted SMAS (Section-wise Minimum Admissible Score) and MAS calculation engine for exact rank prediction",
-      "Full coverage of multi-select (MSQ) questions with exact official partial marking rules",
-      "Curated test sets specifically calibrated to NEST's 3.5-hour endurance requirement",
+    vigyanDifference: [
+      "Accurate simulation of NEST's unique 'Best 3 of 4' subject scoring algorithm and SMAS cutoff calculation.",
+      "Full coverage of multi-select (MSQ) questions with official partial credit logic.",
+      "Dedicated test sets calibrated to the 3.5-hour deep analytical endurance requirement.",
     ],
-    officialUrl: "https://nestexam.in",
-    pyqAvailable: true,
+    officialPortal: "https://nestexam.in",
   },
   {
     id: "isi",
+    folioNumber: "FOLIO III",
     name: "Indian Statistical Institute Admission Test",
     shortName: "ISI B.Stat / B.Math",
+    latinMotto: "Bhinneshvaikyasya Darshanam • Unity in Diversity",
     badge: "Elite Mathematics & Statistics",
     category: "math_stats",
-    tagline: "The World's Gold Standard in Mathematical Statistics, Probability Theory, and Analytic Mastery",
-    organizer: "Indian Statistical Institute (ISI Kolkata & Bengaluru)",
-    degreeAwarded: "Bachelor of Statistics (Hons) at Kolkata / Bachelor of Mathematics (Hons) at Bengaluru",
+    tagline: "The world's gold standard in mathematical statistics, probability theory, and discrete mathematics.",
+    governingBody: "Indian Statistical Institute (Kolkata, Bengaluru, Delhi) • Ministry of Statistics & Programme Implementation",
+    degreesConferred: "Bachelor of Statistics (Hons) at Kolkata / Bachelor of Mathematics (Hons) at Bengaluru",
     duration: "4 Hours (2 Hours Objective UGA + 2 Hours Subjective Proofs UGB)",
-    totalMarks: "100 (UGA: 30 Qs) + 100 (UGB: 8 Descriptive Proofs)",
-    questionCount: "30 Objective + 8 Subjective Proof Questions",
-    patternSummary: "Forenoon: Multiple Choice (UGA) 30 Questions. Afternoon: Subjective Proof-Writing (UGB) 8 Questions requiring rigorous mathematical justification.",
-    negativeMarking: "UGA: +4 for correct, -1 for incorrect. UGB: Descriptive marking based on clarity and correctness of proofs.",
-    stipendInfo: "100% Tuition Waiver + ₹5,000/month Monthly Fellowship + Annual Contingency Allowance to all admitted students",
+    totalMarks: "100 (UGA) + 100 (UGB Proofs)",
+    questionCount: "30 Objective (UGA) + 8 Subjective Proofs (UGB)",
+    markingRules: "UGA: +4 / -1 • UGB: Graded subjectively on proof clarity, rigor, and mathematical correctness",
+    stipendFellowship: "100% Free Tuition + ₹5,000/month Monthly Scholarship + Annual Contingency Allowance to all admitted students",
+    summary:
+      "Founded in 1931 by Professor P.C. Mahalanobis, ISI is universally recognized as one of the world's most intellectually rigorous academies for mathematical statistics. Admitting only ~50-60 students nationwide, its undergraduate programs are renowned for producing world-class mathematicians, quantitative researchers, and theorists.",
     institutes: [
-      { name: "ISI Kolkata", location: "West Bengal", highlight: "Birthplace of Modern Statistics in India • Flagship B.Stat (Hons) program" },
-      { name: "ISI Bengaluru", location: "Karnataka", highlight: "Centre for Pure Mathematics, Probability & Theoretical Computer Science • B.Math (Hons)" },
-      { name: "ISI Delhi", location: "New Delhi", highlight: "Premier Centre for Quantitative Economics, Statistical Computing & Optimization" },
+      { name: "ISI Kolkata", campus: "West Bengal", description: "The historic headquarters of Indian statistics • Flagship B.Stat (Hons) program and theoretical statistics center." },
+      { name: "ISI Bengaluru", campus: "Karnataka", description: "World-class center for Pure Mathematics, Probability Theory, and Theoretical Computer Science • B.Math (Hons)." },
+      { name: "ISI Delhi", campus: "New Delhi", description: "Leading center for Quantitative Economics, Statistical Computing, and Operations Research." },
     ],
-    overview:
-      "Founded by Professor P.C. Mahalanobis, the Indian Statistical Institute is universally acclaimed as one of the world's most rigorous institutions for mathematics and statistics. Its undergraduate programs—B.Stat at Kolkata and B.Math at Bengaluru—are fiercely competitive, admitting only around 50 to 60 students per batch nationwide.",
-    whyChosen:
-      "ISI entrance cannot be cracked with formula memorization. It requires authentic mathematical proofs, elegant number theoretic arguments, and creative algebraic constructions. VigyanPrep provides comprehensive proof-writing rubrics, subjective solution breakdowns, and UGA timed test modules.",
-    keySubjects: ["Algebra & Polynomials", "Combinatorics & Graph Theory", "Number Theory", "Euclidean Geometry", "Calculus & Analysis"],
-    syllabusBreakdown: [
+    patternBreakdown: [
+      { section: "Forenoon Session (UGA)", questions: "30 Multiple Choice Questions", marks: "120 Marks (Scaled to 100)", nature: "Objective Mathematics" },
+      { section: "Afternoon Session (UGB)", questions: "8 Subjective Proof Questions", marks: "100 Marks", nature: "Descriptive Proof-Writing" },
+    ],
+    syllabusDepth: [
       {
         subject: "Algebra & Number Theory",
-        keyTopics: ["Modular Arithmetic, Divisibility & Primes", "Polynomial Roots, Symmetric Polynomials", "Inequalities (AM-GM, Cauchy-Schwarz)", "Matrices, Determinants & System of Equations"],
-        weightage: "35% of UGB Proofs",
+        keyAreas: ["Modular Arithmetic, Divisibility, Primes & Congruences", "Polynomial Roots, Symmetric Polynomials & Irreducibility", "Classical Inequalities (AM-GM, Cauchy-Schwarz, Jensen)", "Linear Algebra & Systems of Equations"],
+        rigorNote: "Proof-level depth equivalent to national and international Olympiads.",
       },
       {
-        subject: "Combinatorics & Probability",
-        keyTopics: ["Pigeonhole Principle & Inclusion-Exclusion", "Recurrence Relations & Generating Functions", "Combinatorial Proofs & Graph Foundations", "Basic Probability Models"],
-        weightage: "25% of UGB Proofs",
+        subject: "Combinatorics & Graph Theory",
+        keyAreas: ["Pigeonhole Principle & Extremal Arguments", "Inclusion-Exclusion & Generating Functions", "Recurrence Relations & Combinatorial Proofs", "Basic Graph Theory & Combinatorial Geometry"],
+        rigorNote: "Tests pure deductive ingenuity without routine formulas.",
       },
       {
         subject: "Geometry & Trigonometry",
-        keyTopics: ["Classical Euclidean Theorems & Circle Properties", "Coordinate Geometry & Conic Sections", "Trigonometric Sums & Functional Equations"],
-        weightage: "20% of UGB Proofs",
+        keyAreas: ["Classical Euclidean Geometry Proofs & Circle Properties", "Coordinate Geometry & Conic Sections", "Trigonometric Equations & Complex Numbers in Geometry"],
+        rigorNote: "Requires synthetic and analytic proof construction.",
       },
       {
         subject: "Calculus & Real Analysis",
-        keyTopics: ["Limits, Continuity & Differentiability", "Monotonicity, Extrema & Convexity", "Riemann Integration & Area Evaluation", "Sequences & Convergence"],
-        weightage: "20% of UGB Proofs",
+        keyAreas: ["Rigorous Limits, Continuity & Differentiability", "Monotonicity, Mean Value Theorems & Convexity", "Riemann Integration, Bounds & Improper Integrals", "Sequences, Series & Convergence Criteria"],
+        rigorNote: "Focuses on rigorous eps-delta intuition and foundational proofs.",
       },
     ],
     careerHorizons: [
-      "Quantitative Research & High-Frequency Trading (HFT) at top global hedge funds (Jane Street, Citadel, Jump Trading)",
-      "Ph.D. in Pure Mathematics / Statistics at Princeton, Stanford, Harvard, UC Berkeley, Paris-Saclay, and Cambridge",
-      "Frontier Machine Learning and Cryptography research at Google DeepMind, OpenAI, Microsoft Research, and Meta",
-      "Actuarial Science leadership and Chief Risk / Analytics Officer roles worldwide",
+      "Quantitative Research & High-Frequency Trading at top hedge funds (Jane Street, Citadel, Jump Trading, Tower Research).",
+      "Direct Ph.D. in Pure Mathematics or Statistics at Princeton, Stanford, Harvard, UC Berkeley, and Cambridge.",
+      "Frontier Machine Learning and Cryptography research at Google DeepMind, OpenAI, Microsoft Research, and Meta AI.",
     ],
-    vigyanAdvantage: [
-      "Subjective UGB proof-writing breakdowns with complete step-by-step deduction explanations",
-      "Timed UGA CBT objective mocks replicating the precise difficulty level of past 15 years",
-      "Mentorship and review frameworks modeled on Olympiad and research mathematics training",
+    vigyanDifference: [
+      "Subjective UGB proof-writing breakdowns with multiple alternative deduction pathways explained.",
+      "Timed UGA objective mock modules reflecting the exact difficulty spectrum of past 15 years.",
     ],
-    officialUrl: "https://isical.ac.in",
-    pyqAvailable: true,
+    officialPortal: "https://isical.ac.in",
   },
   {
     id: "cmi",
+    folioNumber: "FOLIO IV",
     name: "Chennai Mathematical Institute Entrance Exam",
     shortName: "CMI Entrance",
+    latinMotto: "Satyena Sarvam Pratishthitam • In Truth Everything is Established",
     badge: "Theoretical CS & Pure Math",
     category: "cs_physics",
-    tagline: "India's Apex Center for Pure Mathematics, Theoretical Computer Science, and Mathematical Physics",
-    organizer: "Chennai Mathematical Institute (CMI)",
-    degreeAwarded: "B.Sc. (Hons.) in Mathematics and Computer Science / Mathematics and Physics",
+    tagline: "India's premier academy for pure mathematics, theoretical computer science, and mathematical physics.",
+    governingBody: "Chennai Mathematical Institute (CMI)",
+    degreesConferred: "B.Sc. (Hons.) in Mathematics & Computer Science / Mathematics & Physics",
     duration: "180 Minutes (3 Hours)",
-    totalMarks: "100 Marks (Part A: 40 Marks + Part B: 60 Marks)",
-    questionCount: "Part A (10 Objective/Short Answer) + Part B (6 Subjective Proofs)",
-    patternSummary: "Part A tests quick accuracy in arithmetic, algebra, and discrete math. Part B consists of 6 in-depth proof questions requiring complete deductive reasoning.",
-    negativeMarking: "Part A: Specific rules per question. Part B: Graded subjectively with generous credit for valid partial steps.",
-    stipendInfo: "Full Tuition Fee Waiver & Monthly Scholarship of ₹5,000/month for top candidates",
+    totalMarks: 100,
+    questionCount: "Part A (10 Short Answer) + Part B (6 Subjective Proofs)",
+    markingRules: "Part A: Objective scoring • Part B: Rigorous proof grading with substantial credit for valid partial steps",
+    stipendFellowship: "Full Tuition Fee Waiver & Monthly Scholarship of ₹5,000/month for top candidates",
+    summary:
+      "Founded by Prof. C.S. Seshadri in 1989, CMI is an internationally celebrated center of mathematical excellence. Its undergraduate curriculum uniquely integrates foundational pure mathematics with deep theoretical computer science, algorithm design, and modern physics.",
     institutes: [
-      { name: "Chennai Mathematical Institute (CMI)", location: "SIPCOT IT Park, Siruseri, Tamil Nadu", highlight: "Global reputation in Algebraic Geometry, Algorithms, Automata Theory & Quantum Field Theory" },
+      { name: "Chennai Mathematical Institute (CMI)", campus: "Siruseri, Tamil Nadu", description: "Internationally renowned for algebraic geometry, automata theory, algorithms, and quantum field theory." },
     ],
-    overview:
-      "CMI is an internationally renowned autonomous research institute founded by Prof. C.S. Seshadri. It offers India's most intellectually stimulating undergraduate curriculum combining foundational pure mathematics with rigorous theoretical computer science and modern physics.",
-    whyChosen:
-      "CMI papers are famous for clean, elegant questions that test how a student thinks rather than how many questions they have memorized. VigyanPrep offers specialized proof training, algorithmic thinking modules, and past CMI entrance solution libraries.",
-    keySubjects: ["Discrete Mathematics & Logic", "Calculus & Real Analysis", "Algebra & Combinatorics", "Geometry & Complex Numbers"],
-    syllabusBreakdown: [
+    patternBreakdown: [
+      { section: "Part A", questions: "10 Short Answer / Objective Questions", marks: "40 Marks", nature: "Quick Precision & Problem Solving" },
+      { section: "Part B", questions: "6 In-Depth Proof Questions", marks: "60 Marks", nature: "Complete Deductive Mathematical Proofs" },
+    ],
+    syllabusDepth: [
       {
-        subject: "Discrete Mathematics & Proofs",
-        keyTopics: ["Mathematical Induction & Invariants", "Pigeonhole Principle & Extremal Arguments", "Graph Theory & Combinatorial Geometry", "Boolean Logic & Relations"],
-        weightage: "35% of Exam",
+        subject: "Discrete Mathematics & Logic",
+        keyAreas: ["Mathematical Induction & Invariants", "Pigeonhole Principle & Combinatorial Logic", "Graph Theory & Trees", "Relations, Partitions & Boolean Logic"],
+        rigorNote: "Tests algorithmic intuition and creative mathematical reasoning.",
       },
       {
         subject: "Algebra & Number Theory",
-        keyTopics: ["Polynomial Equations & Roots of Unity", "Integers, Modulo Congruence & GCD", "Functional Equations & Invertibility", "Inequalities & Optimization"],
-        weightage: "30% of Exam",
+        keyAreas: ["Polynomial Equations & Roots of Unity", "Modular Arithmetic & Diophantine Equations", "Functional Equations & Invertibility", "Inequalities & Optimization"],
+        rigorNote: "Olympiad-style creative algebraic constructions.",
       },
       {
         subject: "Calculus & Geometry",
-        keyTopics: ["Differentiation, Tangents & Maxima-Minima", "Definite Integrals & Sequences", "Coordinate Geometry & Analytic Proofs", "Complex Numbers in Geometry"],
-        weightage: "35% of Exam",
+        keyAreas: ["Differentiation, Tangents & Extreme Values", "Definite Integrals, Bounds & Sequences", "Analytic Geometry & Coordinate Proofs", "Complex Numbers in Geometry"],
+        rigorNote: "Focuses on deep conceptual understanding of continuous functions.",
       },
     ],
     careerHorizons: [
-      "Ph.D. in Theoretical Computer Science, Cryptography, and Pure Math at MIT, Stanford, Princeton, and INRIA France",
-      "Core Algorithm Engineer & Theoretical Research Scientist at DeepMind, Microsoft Research, IBM Quantum, and Google",
-      "Quantitative Strategist and Quantitative Developer at premier trading desks globally",
+      "Ph.D. in Theoretical Computer Science, Quantum Computing, and Pure Math at MIT, Stanford, Princeton, and INRIA France.",
+      "Core Algorithm Engineer & Theoretical Research Scientist at DeepMind, Microsoft Research, IBM Quantum, and Google.",
+      "Quantitative Strategist and Quantitative Developer at premier trading desks globally.",
     ],
-    vigyanAdvantage: [
-      "Rigorous Part B proof solution archive with multiple alternative solution techniques explained",
-      "Conceptual modules linking school mathematics to higher-level discrete algorithms and proofs",
+    vigyanDifference: [
+      "Detailed proof solution library with structural explanations of proof construction techniques.",
+      "Pedagogy that links high school math to undergraduate discrete mathematics and theoretical computer science.",
     ],
-    officialUrl: "https://cmi.ac.in",
-    pyqAvailable: true,
+    officialPortal: "https://cmi.ac.in",
   },
   {
     id: "iisc",
-    name: "IISc Bangalore BS (Research) Admissions",
+    folioNumber: "FOLIO V",
+    name: "IISc Bangalore Bachelor of Science (Research)",
     shortName: "IISc Research",
+    latinMotto: "Kalyanaya Shastram • Science for the Welfare of Humanity",
     badge: "India's #1 University (NIRF)",
     category: "pure_science",
-    tagline: "India's Apex Scientific Institution — 4-Year Bachelor of Science (Research) Degree",
-    organizer: "Indian Institute of Science (IISc Bangalore)",
-    degreeAwarded: "4-Year Bachelor of Science (Research) with optional 1-Year Master's (M.Sc.)",
-    duration: "Admissions through IISER IAT / JEE Advanced / NEET-UG",
-    totalMarks: "Based on IAT / JEE Adv Cutoff",
-    questionCount: "Follows respective entrance exam format",
-    patternSummary: "Admissions to IISc 4-Year BS (Research) are offered via the IISER IAT channel, JEE Advanced channel, and NEET-UG channel.",
-    negativeMarking: "Governed by the respective entrance examination rules.",
-    stipendInfo: "Eligible for INSPIRE-SHE (₹80,000/year) and IISc Institutional Fellowships for top students",
+    tagline: "India's crown jewel of scientific research — 4-Year Bachelor of Science (Research) Degree.",
+    governingBody: "Indian Institute of Science (IISc Bangalore)",
+    degreesConferred: "4-Year Bachelor of Science (Research) with optional 1-Year Master's (M.Sc.)",
+    duration: "Admissions via IISER IAT / JEE Advanced / NEET-UG",
+    totalMarks: "Cutoff-based on respective exam",
+    questionCount: "Governed by chosen entrance channel",
+    markingRules: "Follows respective exam guidelines",
+    stipendFellowship: "INSPIRE-SHE Fellowship (₹80,000/year) and IISc Institutional Merit Scholarships",
+    summary:
+      "Founded in 1909 by Jamsetji Tata and the Maharaja of Mysore, IISc Bangalore represents the apex of Indian scientific scholarship. Its 4-Year BS (Research) program provides a broad foundation across Physics, Chemistry, Mathematics, Biology, Environmental Sciences, and Materials before specialization.",
     institutes: [
-      { name: "IISc Bangalore", location: "Karnataka", highlight: "Rank #1 University in India (NIRF) • India's premier multi-disciplinary basic and applied science research campus" },
+      { name: "IISc Bangalore", campus: "Bengaluru, Karnataka", description: "Rank #1 University in India (NIRF) • Over 40 research departments and world-class laboratories." },
     ],
-    overview:
-      "Established in 1909 through the visionary partnership of Jamsetji Nusserwanji Tata and the Maharaja of Mysore, IISc Bangalore is the crown jewel of Indian scientific inquiry. The 4-Year BS (Research) curriculum allows students to explore Physics, Chemistry, Mathematics, Biology, Earth & Environmental Sciences, and Materials Science before specializing in their chosen discipline.",
-    whyChosen:
-      "With IISc adopting the IISER Aptitude Test (IAT) as one of its primary undergraduate admission modes, VigyanPrep provides the highest standard of preparation to help students reach the top percentile cutoff needed for IISc admission.",
-    keySubjects: ["Interdisciplinary Physics", "Chemical Sciences", "Mathematical Sciences", "Biological Sciences", "Earth & Environmental Sciences"],
-    syllabusBreakdown: [
+    patternBreakdown: [
+      { section: "Admissions Mode 1", questions: "IISER IAT Channel", marks: "Top ~150 AIR Cutoff", nature: "4-Subject Natural Sciences" },
+      { section: "Admissions Mode 2", questions: "JEE Advanced Channel", marks: "Top ~250-350 Cutoff", nature: "PCM Mathematics & Physics" },
+      { section: "Admissions Mode 3", questions: "NEET-UG Channel", marks: "Top ~100-200 Cutoff", nature: "PCB Life Sciences" },
+    ],
+    syllabusDepth: [
       {
         subject: "Interdisciplinary Natural Sciences",
-        keyTopics: ["Classical & Modern Physics", "Physical, Organic & Inorganic Chemistry", "Higher Secondary Mathematics", "Modern Cellular & Molecular Biology"],
-        weightage: "Equal 4-Subject Mastery Required",
+        keyAreas: ["Classical & Modern Physics", "Physical, Organic & Inorganic Chemistry", "Analytical Calculus & Algebra", "Cellular & Molecular Biology"],
+        rigorNote: "Demands mastery across both biological and physical-mathematical sciences.",
       },
     ],
     careerHorizons: [
-      "Direct fast-track Ph.D. admissions at MIT, Stanford, Harvard, Cambridge, Oxford, and Max Planck",
-      "Lead Research Scientist roles at ISRO, DAE, DRDO, CSIR, and national laboratories",
-      "Leadership in Deep-Tech Startups, Bio-Pharmaceutical Innovation, and Space Exploration Ventures",
+      "Direct fast-track Ph.D. admissions at MIT, Stanford, Harvard, Cambridge, Oxford, and Max Planck.",
+      "Lead Research Scientist roles at ISRO, DAE, DRDO, CSIR, and national laboratories.",
+      "Pioneering leadership in Deep-Tech, Biotechnology, Space Ventures, and Semiconductor R&D.",
     ],
-    vigyanAdvantage: [
-      "Comprehensive test series targeting the ultra-competitive 99.8+ percentile needed for IISc BS admission",
-      "In-depth interdisciplinary study material bridging high-school curriculum with university-level intuition",
+    vigyanDifference: [
+      "High-difficulty test papers calibrated specifically for the 99.8+ percentile benchmark needed for IISc admission.",
     ],
-    officialUrl: "https://iisc.ac.in/ug",
-    pyqAvailable: true,
+    officialPortal: "https://iisc.ac.in/ug",
   },
 ];
 
-const FUTURE_STREAMS = [
+const UPCOMING_MODULES = [
   {
-    name: "CUET PG Science",
-    tag: "Upcoming 2026-27",
-    description: "Central Universities entrance for M.Sc. in Physics, Chemistry, Mathematics, and Life Sciences.",
-    icon: FlaskConical,
+    code: "MOD-01",
+    title: "CUET PG Natural Sciences",
+    status: "Curriculum Design 2026-27",
+    description: "Central Universities postgraduate entrance for M.Sc. in Physics, Chemistry, Mathematics, and Life Sciences.",
   },
   {
-    name: "IIT JAM (Joint Admission Test for M.Sc.)",
-    tag: "Upcoming 2026-27",
-    description: "Direct entry to 2-year M.Sc., M.Sc.-Ph.D. Dual Degree programs across IITs and IISc.",
-    icon: Atom,
+    code: "MOD-02",
+    title: "IIT JAM (Joint Admission Test for M.Sc.)",
+    status: "Curriculum Design 2026-27",
+    description: "Gateway to 2-year M.Sc., M.Sc.-Ph.D. Dual Degree programs across all IITs and IISc Bangalore.",
   },
   {
-    name: "TIFR Graduate Studies (TIFR GS / JGEEBILS)",
-    tag: "Under Architecture",
-    description: "Apex fellowship exam for Integrated Ph.D. and Ph.D. programs at Tata Institute of Fundamental Research.",
-    icon: Microscope,
+    code: "MOD-03",
+    title: "TIFR Graduate Studies (TIFR GS)",
+    status: "Under Architecture",
+    description: "India's highest fellowship entrance for Integrated Ph.D. and Ph.D. at Tata Institute of Fundamental Research.",
   },
   {
-    name: "Science Olympiads (NSEP, NSEC, NSEB, INMO)",
-    tag: "Curriculum Integration",
-    description: "Foundational problem sets bridging Olympiad-level thinking with premier undergraduate research entrances.",
-    icon: Award,
+    code: "MOD-04",
+    title: "National Science Olympiads",
+    status: "Module Integration",
+    description: "Foundational problem sets bridging Olympiad-level deduction (INMO, NSEP, NSEC, NSEB) with research entrances.",
   },
 ];
 
 export default function AboutPage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedExam, setSelectedExam] = useState<ExamDetails | null>(null);
-  const [activeModalTab, setActiveModalTab] = useState<"overview" | "pattern" | "syllabus" | "career" | "advantage">("overview");
+  const [selectedFolio, setSelectedFolio] = useState<ExamFolio | null>(null);
+  const [activeDossierTab, setActiveDossierTab] = useState<"overview" | "campuses" | "pattern" | "syllabus" | "career">("overview");
 
   // Close modal on ESC key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedExam(null);
+      if (e.key === "Escape") setSelectedFolio(null);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Filter exams
-  const filteredExams = useMemo(() => {
-    return EXAMS_DATABASE.filter((exam) => {
+  const filteredFolios = useMemo(() => {
+    return RESEARCH_EXAM_FOLIOS.filter((folio) => {
       const matchesCategory =
         activeCategory === "all" ||
-        (activeCategory === "pure_science" && exam.category === "pure_science") ||
-        (activeCategory === "math_stats" && exam.category === "math_stats") ||
-        (activeCategory === "cs_physics" && exam.category === "cs_physics");
+        (activeCategory === "pure_science" && folio.category === "pure_science") ||
+        (activeCategory === "math_stats" && folio.category === "math_stats") ||
+        (activeCategory === "cs_physics" && folio.category === "cs_physics");
 
       const matchesSearch =
-        exam.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        exam.shortName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        exam.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        exam.institutes.some((inst) => inst.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        folio.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        folio.shortName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        folio.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        folio.institutes.some((inst) => inst.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
       return matchesCategory && matchesSearch;
     });
   }, [activeCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[#241e12] text-amber-50 selection:bg-amber-500 selection:text-black">
+    <div className="min-h-screen bg-[#15120e] text-[#f5efe6] selection:bg-[#c59b4c] selection:text-[#15120e] font-sans antialiased">
       <Navbar />
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          HERO SECTION: THE ESSENCE OF VIGYAN
+          CHAPTER I: THE OPENING ESSAY & MANIFESTO
          ═══════════════════════════════════════════════════════════════════════ */}
-      <header className="relative pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Subtle ambient lighting */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-gradient-to-b from-amber-500/10 via-orange-600/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <article className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 border-b border-stone-800/80">
+        <div className="max-w-4xl mx-auto">
+          
+          {/* Header Metadata */}
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-[#c59b4c] border-b border-stone-800 pb-3 mb-8 font-mono">
+            <span>Academic Treatise • No. 01</span>
+            <span>VigyanPrep Foundation</span>
+            <span>Est. 2024</span>
+          </div>
 
-        <div className="max-w-6xl mx-auto relative z-10">
-          {/* Eyebrow badge */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold tracking-widest uppercase shadow-lg shadow-black/40">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>The Ethos &amp; Academic Manifesto</span>
+          {/* Sanskrit Devanagari Inscription */}
+          <div className="text-center my-8">
+            <div className="text-4xl sm:text-6xl font-serif text-[#f5efe6] font-normal tracking-wide">
+              विज्ञानम्
+            </div>
+            <div className="text-xs uppercase tracking-[0.25em] text-stone-400 mt-2 font-mono">
+              [ vi-gyānam • Supreme Empirical Inquiry ]
             </div>
           </div>
 
-          {/* Main Headline */}
-          <div className="text-center max-w-4xl mx-auto mb-10">
-            <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-tight leading-[1.1] mb-6">
-              What is <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-orange-400">Vigyan</span>?
-            </h1>
-            <p className="text-base sm:text-xl text-neutral-300 font-light leading-relaxed max-w-3xl mx-auto">
-              Why we founded <strong className="text-amber-300 font-semibold">VigyanPrep</strong> as India&apos;s dedicated sanctuary for pure sciences, higher mathematics, and scientific research admissions.
+          {/* Title Headline */}
+          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal text-[#f5efe6] text-center leading-[1.15] mb-10">
+            What is <em className="italic font-serif text-[#c59b4c]">Vigyan</em>, and why did we build this sanctuary?
+          </h1>
+
+          {/* Sketch Plate: Figure 1 */}
+          <figure className="my-12 rounded-2xl overflow-hidden border border-stone-800 bg-[#1c1712] shadow-2xl">
+            <Image
+              src="/images/sketch-university-campus.jpg"
+              alt="Archival pen and ink sketch of a university research quadrangle and library"
+              width={1600}
+              height={750}
+              className="w-full h-auto object-cover opacity-90 filter grayscale contrast-110 hover:filter-none transition-all duration-700"
+              priority
+            />
+            <figcaption className="p-4 border-t border-stone-800/80 flex items-center justify-between text-xs text-stone-400 font-mono">
+              <span>Fig. 1.0 — The Academic Quadrangle of Pure Scientific Research</span>
+              <span>Archival Drawing</span>
+            </figcaption>
+          </figure>
+
+          {/* Two-Column Essay Body */}
+          <div className="prose prose-invert max-w-none text-stone-300 text-base sm:text-lg leading-[1.8] space-y-6 font-serif">
+            <p className="first-letter:float-left first-letter:text-6xl first-letter:font-serif first-letter:font-bold first-letter:mr-4 first-letter:text-[#c59b4c] first-letter:leading-none">
+              In the classical epistemological tradition of India, knowledge is not regarded as a static compilation of facts to be rehearsed under timed pressure. It is divided into two distinct orders: <strong>Gyan (ज्ञान)</strong>, the deep theoretical comprehension of reality, and <strong>Vigyan (विज्ञान)</strong>, the empirical, tested, and discerning pursuit of truth through first-principles observation, hypothesis, and rigorous mathematical proof.
+            </p>
+
+            <p>
+              The prefix <em>Vi (वि)</em> signifies distinction, analytical discernment, and empirical rigor. In modern parlance, <strong>Vigyan</strong> is the scientific method itself—the refusal to accept an assertion without deductive proof, experimentation, and reproducible evidence. It is the exact mindset that forged the foundational breakthroughs of Aryabhata, Bhaskara, Srinivasa Ramanujan, Satyendra Nath Bose, and C.V. Raman.
+            </p>
+
+            {/* Editorial Pullquote */}
+            <blockquote className="my-10 p-6 sm:p-8 border-l-2 border-[#c59b4c] bg-[#1c1712]/70 rounded-r-2xl not-italic">
+              <p className="text-xl sm:text-2xl font-serif text-[#f5efe6] leading-relaxed mb-3">
+                &ldquo;A student trained solely to crack engineering speed drills memorizes formulas. A scientist trained in Vigyan derives the universe from first principles.&rdquo;
+              </p>
+              <cite className="text-xs uppercase tracking-widest text-[#c59b4c] font-mono block not-italic">
+                — The VigyanPrep Academic Manifesto
+              </cite>
+            </blockquote>
+
+            <h2 className="font-serif text-2xl sm:text-3xl text-[#f5efe6] font-normal pt-6 border-t border-stone-800">
+              The Crisis of Modern Science Education
+            </h2>
+
+            <p>
+              Over the last two decades, commercial test preparation in India has transformed into an industrial coaching factory. Millions of students are drilled into 45-second mechanical shortcuts, trick-memorization, and robotic pattern recognition tailored exclusively for mass engineering and medical entrances.
+            </p>
+
+            <p>
+              In this factory model, pure scientific research was treated as an afterthought—a second choice for candidates who missed engineering cutoffs. But India&apos;s apex research academies—the <strong>7 IISERs, NISER Bhubaneswar, UM-DAE CEBS, the Indian Statistical Institute (ISI), Chennai Mathematical Institute (CMI), and IISc Bangalore</strong>—do not seek formula memorizers. They demand authentic mathematical proofs, interdisciplinary physical intuition, and experimental reasoning.
+            </p>
+
+            <p>
+              We established <strong className="text-[#f5efe6]">VigyanPrep</strong> to build an uncompromised, zero-distraction sanctuary exclusively dedicated to these premier scientific institutions. We provide the authentic examination environment, proof-based mathematical walkthroughs, and PhD-level analytical pedagogy that serious science aspirants deserve.
             </p>
           </div>
 
-          {/* Visual Sketch Hero Card */}
-          <div className="relative w-full rounded-3xl overflow-hidden border border-amber-500/20 shadow-2xl shadow-black/80 bg-neutral-950/80 mb-16">
-            <Image
-              src="/images/sketch-university-campus.jpg"
-              alt="Hand-drawn architectural sketch of university campus and global research library"
-              width={1600}
-              height={700}
-              className="w-full h-64 sm:h-96 md:h-[450px] object-cover opacity-85"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#241e12] via-[#241e12]/40 to-transparent" />
-            <div className="absolute bottom-6 sm:bottom-10 left-6 sm:left-10 right-6 sm:right-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
-              <div>
-                <span className="text-xs uppercase tracking-widest text-amber-400 font-bold block mb-1">
-                  Sanskrit Etymology
-                </span>
-                <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">
-                  विज्ञानम् (Vi-Gyanam) • The Empirical Pursuit of Universal Truth
-                </h2>
-              </div>
-              <a
-                href="#exams"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-black font-bold text-xs uppercase tracking-wider hover:scale-105 transition-all shadow-xl shadow-amber-500/20 shrink-0"
-              >
-                <span>Explore Exam Matrix</span>
-                <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          ETYMOLOGY & PHILOSOPHY: VI + GYAN
-         ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          
-          {/* Left Column: Conceptual Breakdown */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="inline-block">
-              <span className="text-xs uppercase tracking-widest text-amber-400 font-bold bg-amber-500/10 px-3 py-1 rounded-md border border-amber-500/20">
-                Linguistic &amp; Philosophical Roots
-              </span>
-            </div>
-            
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-100 leading-tight">
-              Why We Chose The Name <br />
-              <span className="text-amber-400 italic font-serif">&ldquo;Vigyan Prep&rdquo;</span>
-            </h2>
-
-            <div className="space-y-4 text-neutral-300 text-sm sm:text-base leading-relaxed font-light">
-              <p>
-                In the classical Sanskrit lexicon, the word <strong className="text-amber-200 font-semibold">विज्ञान (Vigyan)</strong> is composed of two profound linguistic pillars:
-              </p>
-
-              {/* Vi Card */}
-              <div className="p-5 rounded-2xl bg-neutral-900/70 border border-amber-500/20 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 font-serif font-bold text-lg flex items-center justify-center border border-amber-500/40">
-                    वि
-                  </div>
-                  <h3 className="font-serif font-bold text-lg text-amber-200">
-                    Vi (वि) — Distinguished, Empirical, Discerning
-                  </h3>
-                </div>
-                <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
-                  Signifies knowledge that is not based on blind dogma or superficial memorization. It represents <em>empirical discernment</em>—the scientific method of systematic hypothesis, rigorous experimentation, and mathematical proof.
-                </p>
-              </div>
-
-              {/* Gyan Card */}
-              <div className="p-5 rounded-2xl bg-neutral-900/70 border border-amber-500/20 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 font-serif font-bold text-lg flex items-center justify-center border border-orange-500/40">
-                    ज्ञान
-                  </div>
-                  <h3 className="font-serif font-bold text-lg text-amber-200">
-                    Gyan (ज्ञान) — Pure Conceptual Consciousness
-                  </h3>
-                </div>
-                <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
-                  The deepest understanding of the fundamental principles governing nature, matter, energy, space, time, and life.
-                </p>
-              </div>
-
-              <p className="pt-2 text-neutral-200 leading-relaxed border-l-2 border-amber-500/40 pl-4 italic">
-                &ldquo;Together, <strong>Vigyan (विज्ञान)</strong> is <em>Supreme Empirical Science</em>. We added <strong>Prep</strong> because our sole mission is to prepare the next generation of Indian scientists, mathematicians, and thinkers to conquer India&apos;s apex research entrance examinations.&rdquo;
-              </p>
-            </div>
-          </div>
-
-          {/* Right Column: Handcrafted Sketch & Stat Highlights */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="relative rounded-2xl overflow-hidden border border-amber-500/25 shadow-2xl bg-neutral-950">
+          {/* Student Journey Sketch: Figure 2 */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center my-14 pt-10 border-t border-stone-800">
+            <div className="md:col-span-6 rounded-2xl overflow-hidden border border-stone-800 bg-[#1c1712]">
               <Image
                 src="/images/sketch-student-studying.jpg"
-                alt="Hand-drawn sketch of a student solving deep science problems late at night"
+                alt="Student studying fundamental physics and mathematics late into the night"
                 width={800}
                 height={550}
                 className="w-full h-auto object-cover opacity-90"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 text-center">
-                <p className="text-xs text-amber-300 font-serif italic">
-                  &ldquo;A scientist is not someone who gives the right answers, but one who asks the right questions.&rdquo;
-                </p>
-              </div>
             </div>
-
-            {/* Core Values Strip */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl bg-neutral-900/60 border border-white/5 text-center">
-                <div className="text-2xl font-serif font-bold text-amber-400">100%</div>
-                <div className="text-[11px] text-neutral-400 uppercase tracking-wider mt-1">Research Exam Focus</div>
-              </div>
-              <div className="p-4 rounded-xl bg-neutral-900/60 border border-white/5 text-center">
-                <div className="text-2xl font-serif font-bold text-amber-400">₹0 Fee</div>
-                <div className="text-[11px] text-neutral-400 uppercase tracking-wider mt-1">Free PYQ Practice</div>
-              </div>
+            <div className="md:col-span-6 space-y-4 font-serif">
+              <span className="text-xs uppercase tracking-[0.2em] text-[#c59b4c] font-mono block">
+                The Philosophy of Mastery
+              </span>
+              <h3 className="text-2xl font-normal text-[#f5efe6]">
+                Three Pillars of the Vigyan Pedagogy
+              </h3>
+              <ul className="space-y-3 text-sm text-stone-300 font-sans leading-relaxed">
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#c59b4c] mt-2 shrink-0" />
+                  <span><strong>First-Principles Deduction:</strong> Every formula in Physics, Chemistry, and Mathematics is derived conceptually before application.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#c59b4c] mt-2 shrink-0" />
+                  <span><strong>Authentic Proof Rigor:</strong> Complete subjective walkthroughs for proof-based examinations like ISI and CMI.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#c59b4c] mt-2 shrink-0" />
+                  <span><strong>Zero-Distraction CBT Fidelity:</strong> Exact replica of the national testing interface without ads, popups, or gaming gimmicks.</span>
+                </li>
+              </ul>
             </div>
           </div>
 
         </div>
-      </section>
+      </article>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          WHY WE CHOSE ONLY PREMIER RESEARCH EXAMS (THE PROBLEM WE SOLVE)
+          CHAPTER II: THE APEX RESEARCH EXAM COMPENDIUM
          ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="p-8 sm:p-12 rounded-3xl bg-neutral-900/80 border border-amber-500/25 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-xs uppercase tracking-widest text-amber-400 font-bold">The Academic Gap</span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-white mt-2 mb-4">
-              Why We Chose These Specific Exams
+      <section id="exams" className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto scroll-mt-20">
+        
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-800 pb-6 mb-10">
+          <div>
+            <span className="text-xs uppercase tracking-[0.2em] text-[#c59b4c] font-mono block mb-2">
+              Chapter II • The Archival Compendium
+            </span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-normal text-[#f5efe6]">
+              Premier Research Admissions
             </h2>
-            <p className="text-sm sm:text-base text-neutral-300 font-light leading-relaxed">
-              India has millions of engineering and medical test prep websites. But for students whose true calling is fundamental science and pure mathematics, the options were virtually nonexistent.
+            <p className="text-stone-400 text-sm mt-2 max-w-xl font-serif">
+              An exhaustive academic index of India&apos;s apex undergraduate research examinations. Click any folio to review the institutional dossier.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            {/* Box 1 */}
-            <div className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-amber-400/40 transition-all space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center">
-                <Atom className="w-5 h-5" />
-              </div>
-              <h3 className="font-serif text-lg font-bold text-amber-100">
-                1. Beyond Rote Coaching Factories
-              </h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Traditional coaching platforms train students for speed and pattern repetition. But exams like <strong>IISER IAT, NISER NEST, ISI, and CMI</strong> demand conceptual understanding, formal proof construction, and scientific reasoning.
-              </p>
-            </div>
-
-            {/* Box 2 */}
-            <div className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-amber-400/40 transition-all space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center">
-                <Globe2 className="w-5 h-5" />
-              </div>
-              <h3 className="font-serif text-lg font-bold text-amber-100">
-                2. Gateway to Fully Funded Global Ph.D.s
-              </h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Graduates from IISERs, NISER, CEBS, and CMI receive direct fully funded Ph.D. offers from MIT, Harvard, Max Planck, CERN, and ETH Zürich with ₹60,000 to ₹80,000/yr Indian undergraduate research fellowships.
-              </p>
-            </div>
-
-            {/* Box 3 */}
-            <div className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-amber-400/40 transition-all space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center">
-                <Layers className="w-5 h-5" />
-              </div>
-              <h3 className="font-serif text-lg font-bold text-amber-100">
-                3. Future-Proof Modular Architecture
-              </h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                We engineered VigyanPrep with an extensible course engine. As our scientific community grows, we are scaling into <strong>CUET PG Science, IIT JAM, TIFR GS, and Science Olympiads</strong> without losing our pure-science purity.
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          INTERACTIVE EXAM UNIVERSE & DEEP DIVE EXPLORER
-         ═══════════════════════════════════════════════════════════════════════ */}
-      <section id="exams" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 scroll-mt-24">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <span className="text-xs uppercase tracking-widest text-amber-400 font-bold">Comprehensive Directory</span>
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-white mt-2 mb-4">
-            Explore All Research Exams
-          </h2>
-          <p className="text-sm sm:text-base text-neutral-300 font-light leading-relaxed">
-            Click on any examination below for a full deep dive into its syllabus blueprint, admitting institutes, marking scheme, and post-graduation research careers.
-          </p>
-        </div>
-
-        {/* Filter Bar & Search */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-neutral-900/60 p-3 rounded-2xl border border-white/10 backdrop-blur-md">
-          {/* Category Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 scrollbar-none">
-            <button
-              onClick={() => setActiveCategory("all")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
-                activeCategory === "all"
-                  ? "bg-amber-500 text-black shadow-md shadow-amber-500/20"
-                  : "text-neutral-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              All Exams ({EXAMS_DATABASE.length})
-            </button>
-            <button
-              onClick={() => setActiveCategory("pure_science")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
-                activeCategory === "pure_science"
-                  ? "bg-amber-500 text-black shadow-md shadow-amber-500/20"
-                  : "text-neutral-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              Pure Sciences (IAT, NEST, IISc)
-            </button>
-            <button
-              onClick={() => setActiveCategory("math_stats")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
-                activeCategory === "math_stats"
-                  ? "bg-amber-500 text-black shadow-md shadow-amber-500/20"
-                  : "text-neutral-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              Math &amp; Statistics (ISI)
-            </button>
-            <button
-              onClick={() => setActiveCategory("cs_physics")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
-                activeCategory === "cs_physics"
-                  ? "bg-amber-500 text-black shadow-md shadow-amber-500/20"
-                  : "text-neutral-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              Theoretical CS &amp; Math (CMI)
-            </button>
-          </div>
-
-          {/* Search Input */}
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+          {/* Search Box */}
+          <div className="relative w-full md:w-72">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
             <input
               type="text"
-              placeholder="Search IAT, NEST, ISI, CMI..."
+              placeholder="Filter by exam, campus, or subject..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-xl bg-neutral-950/80 border border-white/10 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400/50"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#1c1712] border border-stone-800 text-xs text-[#f5efe6] placeholder-stone-500 focus:outline-none focus:border-[#c59b4c] transition"
             />
           </div>
         </div>
 
-        {/* Exams Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {filteredExams.map((exam) => (
+        {/* Category Filters */}
+        <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2 scrollbar-none font-mono text-xs">
+          <button
+            onClick={() => setActiveCategory("all")}
+            className={`px-4 py-2 rounded-md transition-all border ${
+              activeCategory === "all"
+                ? "bg-[#c59b4c] text-[#15120e] font-bold border-[#c59b4c]"
+                : "bg-transparent text-stone-400 border-stone-800 hover:text-[#f5efe6] hover:border-stone-700"
+            }`}
+          >
+            [All Folios ({RESEARCH_EXAM_FOLIOS.length})]
+          </button>
+          <button
+            onClick={() => setActiveCategory("pure_science")}
+            className={`px-4 py-2 rounded-md transition-all border ${
+              activeCategory === "pure_science"
+                ? "bg-[#c59b4c] text-[#15120e] font-bold border-[#c59b4c]"
+                : "bg-transparent text-stone-400 border-stone-800 hover:text-[#f5efe6] hover:border-stone-700"
+            }`}
+          >
+            [Natural Sciences: IAT • NEST • IISc]
+          </button>
+          <button
+            onClick={() => setActiveCategory("math_stats")}
+            className={`px-4 py-2 rounded-md transition-all border ${
+              activeCategory === "math_stats"
+                ? "bg-[#c59b4c] text-[#15120e] font-bold border-[#c59b4c]"
+                : "bg-transparent text-stone-400 border-stone-800 hover:text-[#f5efe6] hover:border-stone-700"
+            }`}
+          >
+            [Mathematical Statistics: ISI]
+          </button>
+          <button
+            onClick={() => setActiveCategory("cs_physics")}
+            className={`px-4 py-2 rounded-md transition-all border ${
+              activeCategory === "cs_physics"
+                ? "bg-[#c59b4c] text-[#15120e] font-bold border-[#c59b4c]"
+                : "bg-transparent text-stone-400 border-stone-800 hover:text-[#f5efe6] hover:border-stone-700"
+            }`}
+          >
+            [Theoretical CS &amp; Math: CMI]
+          </button>
+        </div>
+
+        {/* Compendium Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16">
+          {filteredFolios.map((folio) => (
             <div
-              key={exam.id}
+              key={folio.id}
               onClick={() => {
-                setSelectedExam(exam);
-                setActiveModalTab("overview");
+                setSelectedFolio(folio);
+                setActiveDossierTab("overview");
               }}
-              className="group cursor-pointer p-6 rounded-2xl bg-neutral-900/60 border border-amber-500/20 hover:border-amber-400/60 hover:bg-neutral-900/90 transition-all duration-300 flex flex-col justify-between shadow-lg hover:shadow-2xl hover:shadow-amber-500/10 hover:-translate-y-1"
+              className="cursor-pointer group p-6 sm:p-8 rounded-2xl bg-[#1c1712] border border-stone-800 hover:border-[#c59b4c]/60 transition-all duration-300 flex flex-col justify-between hover:shadow-2xl hover:shadow-black/60 relative overflow-hidden"
             >
-              <div>
-                {/* Header Tag */}
-                <div className="flex items-center justify-between gap-2 mb-4">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300">
-                    {exam.badge}
-                  </span>
-                  <span className="text-[11px] text-neutral-400 font-mono">
-                    {exam.duration}
-                  </span>
+              <div className="space-y-4">
+                {/* Folio Metadata Strip */}
+                <div className="flex items-center justify-between border-b border-stone-800/80 pb-3 text-xs font-mono">
+                  <span className="text-[#c59b4c] font-bold">{folio.folioNumber}</span>
+                  <span className="text-stone-400">{folio.duration}</span>
                 </div>
 
-                {/* Title */}
-                <h3 className="font-serif text-2xl font-bold text-white group-hover:text-amber-300 transition-colors mb-2">
-                  {exam.name}
-                </h3>
-                <p className="text-xs text-neutral-300 line-clamp-2 leading-relaxed mb-4">
-                  {exam.tagline}
+                {/* Main Titles */}
+                <div>
+                  <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#f5efe6] group-hover:text-[#c59b4c] transition-colors">
+                    {folio.name}
+                  </h3>
+                  {folio.latinMotto && (
+                    <div className="text-[11px] italic text-stone-400 font-serif mt-0.5">
+                      {folio.latinMotto}
+                    </div>
+                  )}
+                </div>
+
+                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-sans line-clamp-2">
+                  {folio.tagline}
                 </p>
 
-                {/* Key Metrics */}
-                <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-neutral-950/60 border border-white/5 text-[11px] text-neutral-400 mb-4">
+                {/* Key Metrics Row */}
+                <div className="grid grid-cols-3 gap-2 p-3 rounded-xl bg-[#15120e] border border-stone-800/80 text-[11px] font-mono">
                   <div>
-                    <span className="text-neutral-300 font-medium block">Total Marks</span>
-                    <span className="text-amber-400 font-bold">{exam.totalMarks}</span>
+                    <span className="text-stone-500 block">Total Marks</span>
+                    <span className="text-[#f5efe6] font-bold">{folio.totalMarks}</span>
                   </div>
                   <div>
-                    <span className="text-neutral-300 font-medium block">Questions</span>
-                    <span className="text-amber-400 font-bold">{exam.questionCount}</span>
+                    <span className="text-stone-500 block">Questions</span>
+                    <span className="text-[#f5efe6] font-bold">{folio.questionCount.split(' ')[0]} Qs</span>
+                  </div>
+                  <div>
+                    <span className="text-stone-500 block">Degree</span>
+                    <span className="text-[#c59b4c] font-bold truncate block">{folio.degreesConferred.split(' ')[0]}</span>
                   </div>
                 </div>
 
-                {/* Institutes Sample */}
-                <div className="space-y-1 mb-4">
-                  <span className="text-[10px] uppercase tracking-wider text-neutral-300 font-bold">
-                    Participating Institutes:
-                  </span>
+                {/* Campuses Tag Strip */}
+                <div className="text-[11px] font-mono text-stone-400">
+                  <span className="text-stone-500 block mb-1">Apex Campuses:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {exam.institutes.slice(0, 3).map((inst, i) => (
-                      <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-neutral-300">
+                    {folio.institutes.slice(0, 3).map((inst, i) => (
+                      <span key={i} className="px-2 py-0.5 rounded bg-stone-900 border border-stone-800 text-stone-300">
                         {inst.name}
                       </span>
                     ))}
-                    {exam.institutes.length > 3 && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 font-bold">
-                        +{exam.institutes.length - 3} more
+                    {folio.institutes.length > 3 && (
+                      <span className="px-2 py-0.5 rounded bg-[#c59b4c]/10 text-[#c59b4c] font-bold">
+                        +{folio.institutes.length - 3} more
                       </span>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Card Footer CTA */}
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-semibold text-amber-400 group-hover:text-amber-300">
-                <span>View Full Deep Dive</span>
-                <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              {/* Bottom CTA */}
+              <div className="pt-5 mt-5 border-t border-stone-800/80 flex items-center justify-between text-xs font-mono text-[#c59b4c] group-hover:translate-x-1 transition-transform">
+                <span>[ Read Academic Dossier → ]</span>
+                <ChevronRight className="w-4 h-4" />
               </div>
             </div>
           ))}
         </div>
 
-        {/* FUTURE EXPANSION HORIZON SECTION */}
-        <div className="p-8 sm:p-10 rounded-3xl bg-neutral-900/40 border border-dashed border-amber-500/30">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-6">
+        {/* ═══════════════════════════════════════════════════════════════════
+            FUTURE ARCHITECTURAL HORIZONS (MODULAR SCALING)
+           ═══════════════════════════════════════════════════════════════════ */}
+        <div className="p-8 sm:p-10 rounded-2xl bg-[#1c1712] border border-stone-800">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-800 pb-6 mb-8">
             <div>
-              <span className="text-xs uppercase tracking-widest text-amber-400 font-bold">Expanding Architecture</span>
-              <h3 className="font-serif text-2xl sm:text-3xl font-bold text-white mt-1">
-                Upcoming Course Horizons (2026–2027)
+              <span className="text-xs uppercase tracking-[0.2em] text-[#c59b4c] font-mono block mb-1">
+                Extensible Architecture
+              </span>
+              <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#f5efe6]">
+                Upcoming Academic Course Modules (2026–2027)
               </h3>
-              <p className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-2xl">
-                Our scalable test framework is actively being extended to cover higher undergraduate &amp; graduate basic science admissions across India.
-              </p>
             </div>
-            <div className="px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider shrink-0">
-              Future Modules
-            </div>
+            <span className="text-xs font-mono text-stone-400 bg-stone-900 px-3 py-1.5 rounded-lg border border-stone-800 shrink-0">
+              Future Expansion Engine
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {FUTURE_STREAMS.map((stream, idx) => {
-              const Icon = stream.icon;
-              return (
-                <div key={idx} className="p-5 rounded-2xl bg-neutral-950/50 border border-white/5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Icon className="w-5 h-5 text-amber-400" />
-                    <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 text-amber-300 border border-white/10">
-                      {stream.tag}
-                    </span>
-                  </div>
-                  <h4 className="font-bold text-sm text-amber-100">{stream.name}</h4>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed">{stream.description}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 font-mono text-xs">
+            {UPCOMING_MODULES.map((mod, i) => (
+              <div key={i} className="p-4 rounded-xl bg-[#15120e] border border-stone-800/80 space-y-2">
+                <div className="flex items-center justify-between text-[#c59b4c]">
+                  <span>{mod.code}</span>
+                  <span className="text-[10px] text-stone-500 uppercase">{mod.status}</span>
                 </div>
-              );
-            })}
+                <h4 className="font-serif font-bold text-sm text-[#f5efe6]">{mod.title}</h4>
+                <p className="text-[11px] text-stone-400 font-sans leading-relaxed">{mod.description}</p>
+              </div>
+            ))}
           </div>
         </div>
 
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          INTERACTIVE DEEP DIVE MODAL FOR EXAM
+          INTERACTIVE ACADEMIC DOSSIER MODAL
          ═══════════════════════════════════════════════════════════════════════ */}
-      {selectedExam && (
+      {selectedFolio && (
         <div
-          className="fixed inset-0 z-[4000] bg-black/80 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
-          onClick={() => setSelectedExam(null)}
+          className="fixed inset-0 z-[4000] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+          onClick={() => setSelectedFolio(null)}
         >
           <div
-            className="relative w-full max-w-4xl bg-[#16120b] border border-amber-500/30 rounded-3xl shadow-2xl shadow-black overflow-hidden my-8 max-h-[90vh] flex flex-col"
+            className="relative w-full max-w-4xl bg-[#17130e] border border-stone-700 rounded-2xl shadow-2xl overflow-hidden my-8 max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
-            <div className="p-6 sm:p-8 bg-gradient-to-b from-neutral-900 to-[#16120b] border-b border-white/10 flex items-start justify-between gap-4 relative">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300">
-                    {selectedExam.badge}
-                  </span>
-                  <span className="text-xs text-neutral-400 font-mono">
-                    {selectedExam.degreeAwarded}
-                  </span>
+            {/* Dossier Header */}
+            <div className="p-6 sm:p-8 bg-[#1c1712] border-b border-stone-800 flex items-start justify-between gap-4">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2 text-xs font-mono text-[#c59b4c]">
+                  <span>{selectedFolio.folioNumber}</span>
+                  <span>•</span>
+                  <span>{selectedFolio.governingBody}</span>
                 </div>
-                <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">
-                  {selectedExam.name}
+                <h2 className="font-serif text-2xl sm:text-4xl font-normal text-[#f5efe6]">
+                  {selectedFolio.name}
                 </h2>
-                <p className="text-xs sm:text-sm text-neutral-300 font-light">
-                  {selectedExam.tagline}
+                <p className="text-xs sm:text-sm text-stone-300 font-sans max-w-2xl">
+                  {selectedFolio.tagline}
                 </p>
               </div>
 
-              {/* Close Button */}
               <button
-                onClick={() => setSelectedExam(null)}
-                className="p-2.5 rounded-full bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10 transition shrink-0"
-                aria-label="Close modal"
+                onClick={() => setSelectedFolio(null)}
+                className="p-2 rounded-lg bg-stone-900 border border-stone-800 text-stone-400 hover:text-white transition shrink-0"
+                aria-label="Close dossier"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Modal Navigation Tabs */}
-            <div className="flex items-center gap-2 px-6 sm:px-8 border-b border-white/10 bg-neutral-950/60 overflow-x-auto scrollbar-none">
+            {/* Dossier Tabs */}
+            <div className="flex items-center gap-2 px-6 sm:px-8 border-b border-stone-800 bg-[#15120e] overflow-x-auto scrollbar-none font-mono text-xs">
               <button
-                onClick={() => setActiveModalTab("overview")}
-                className={`py-3.5 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-2 ${
-                  activeModalTab === "overview"
-                    ? "border-amber-400 text-amber-400"
-                    : "border-transparent text-neutral-400 hover:text-neutral-200"
+                onClick={() => setActiveDossierTab("overview")}
+                className={`py-3.5 px-3 border-b-2 transition-all whitespace-nowrap ${
+                  activeDossierTab === "overview"
+                    ? "border-[#c59b4c] text-[#c59b4c] font-bold"
+                    : "border-transparent text-stone-400 hover:text-stone-200"
                 }`}
               >
-                <Building2 className="w-3.5 h-3.5" />
-                <span>Overview &amp; Campuses</span>
+                [1. Overview &amp; Fellowship]
               </button>
 
               <button
-                onClick={() => setActiveModalTab("pattern")}
-                className={`py-3.5 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-2 ${
-                  activeModalTab === "pattern"
-                    ? "border-amber-400 text-amber-400"
-                    : "border-transparent text-neutral-400 hover:text-neutral-200"
+                onClick={() => setActiveDossierTab("campuses")}
+                className={`py-3.5 px-3 border-b-2 transition-all whitespace-nowrap ${
+                  activeDossierTab === "campuses"
+                    ? "border-[#c59b4c] text-[#c59b4c] font-bold"
+                    : "border-transparent text-stone-400 hover:text-stone-200"
                 }`}
               >
-                <Layers className="w-3.5 h-3.5" />
-                <span>Paper Pattern</span>
+                [2. Participating Institutes]
               </button>
 
               <button
-                onClick={() => setActiveModalTab("syllabus")}
-                className={`py-3.5 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-2 ${
-                  activeModalTab === "syllabus"
-                    ? "border-amber-400 text-amber-400"
-                    : "border-transparent text-neutral-400 hover:text-neutral-200"
+                onClick={() => setActiveDossierTab("pattern")}
+                className={`py-3.5 px-3 border-b-2 transition-all whitespace-nowrap ${
+                  activeDossierTab === "pattern"
+                    ? "border-[#c59b4c] text-[#c59b4c] font-bold"
+                    : "border-transparent text-stone-400 hover:text-stone-200"
                 }`}
               >
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Syllabus Blueprint</span>
+                [3. Paper Blueprint]
               </button>
 
               <button
-                onClick={() => setActiveModalTab("career")}
-                className={`py-3.5 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-2 ${
-                  activeModalTab === "career"
-                    ? "border-amber-400 text-amber-400"
-                    : "border-transparent text-neutral-400 hover:text-neutral-200"
+                onClick={() => setActiveDossierTab("syllabus")}
+                className={`py-3.5 px-3 border-b-2 transition-all whitespace-nowrap ${
+                  activeDossierTab === "syllabus"
+                    ? "border-[#c59b4c] text-[#c59b4c] font-bold"
+                    : "border-transparent text-stone-400 hover:text-stone-200"
                 }`}
               >
-                <TrendingUp className="w-3.5 h-3.5" />
-                <span>Research &amp; Careers</span>
+                [4. Syllabus Rigor]
               </button>
 
               <button
-                onClick={() => setActiveModalTab("advantage")}
-                className={`py-3.5 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-2 ${
-                  activeModalTab === "advantage"
-                    ? "border-amber-400 text-amber-400"
-                    : "border-transparent text-neutral-400 hover:text-neutral-200"
+                onClick={() => setActiveDossierTab("career")}
+                className={`py-3.5 px-3 border-b-2 transition-all whitespace-nowrap ${
+                  activeDossierTab === "career"
+                    ? "border-[#c59b4c] text-[#c59b4c] font-bold"
+                    : "border-transparent text-stone-400 hover:text-stone-200"
                 }`}
               >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>The Vigyan Advantage</span>
+                [5. Research Horizons]
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6 text-sm text-neutral-300">
+            {/* Dossier Body */}
+            <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6 text-sm text-stone-300 font-sans">
               
-              {/* TAB 1: OVERVIEW & CAMPUSES */}
-              {activeModalTab === "overview" && (
-                <div className="space-y-6">
+              {/* TAB 1: OVERVIEW & FELLOWSHIP */}
+              {activeDossierTab === "overview" && (
+                <div className="space-y-6 font-serif">
                   <div>
-                    <h3 className="font-serif text-lg font-bold text-amber-200 mb-2">About The Examination</h3>
-                    <p className="text-neutral-300 leading-relaxed">{selectedExam.overview}</p>
+                    <h3 className="text-xl text-[#f5efe6] font-normal mb-2">Examination Summary &amp; Scope</h3>
+                    <p className="text-stone-300 text-base leading-relaxed">{selectedFolio.summary}</p>
                   </div>
 
                   {/* Stipend Card */}
-                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3">
-                    <Award className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-bold text-amber-200 text-xs uppercase tracking-wider">Scholarship &amp; Research Stipend</h4>
-                      <p className="text-xs text-neutral-300 mt-1">{selectedExam.stipendInfo}</p>
-                    </div>
+                  <div className="p-5 rounded-xl bg-[#1c1712] border border-stone-800 font-sans space-y-2">
+                    <span className="text-xs uppercase tracking-widest text-[#c59b4c] font-mono block">
+                      Fellowship &amp; Research Stipend
+                    </span>
+                    <p className="text-sm text-stone-200 leading-relaxed">{selectedFolio.stipendFellowship}</p>
                   </div>
 
-                  {/* Admitting Campuses */}
-                  <div>
-                    <h3 className="font-serif text-lg font-bold text-amber-200 mb-3">
-                      Admitting Premier Campuses ({selectedExam.institutes.length})
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {selectedExam.institutes.map((inst, i) => (
-                        <div key={i} className="p-3.5 rounded-xl bg-neutral-950/60 border border-white/5">
-                          <div className="flex items-center justify-between text-xs font-bold text-white">
-                            <span>{inst.name}</span>
-                            <span className="text-[10px] text-amber-400 font-normal">{inst.location}</span>
-                          </div>
-                          <p className="text-[11px] text-neutral-400 mt-1 leading-normal">{inst.highlight}</p>
-                        </div>
-                      ))}
+                  {/* Governing Authority */}
+                  <div className="grid grid-cols-2 gap-4 font-mono text-xs">
+                    <div className="p-3.5 rounded-lg bg-[#15120e] border border-stone-800">
+                      <span className="text-stone-500 block">Conferred Degrees</span>
+                      <span className="text-[#f5efe6] font-bold mt-1 block">{selectedFolio.degreesConferred}</span>
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {/* TAB 2: PAPER PATTERN */}
-              {activeModalTab === "pattern" && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div className="p-4 rounded-2xl bg-neutral-950/60 border border-white/5 text-center">
-                      <span className="text-[10px] uppercase tracking-wider text-neutral-400 block">Exam Duration</span>
-                      <span className="font-serif text-lg font-bold text-amber-300 mt-1 block">{selectedExam.duration}</span>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-neutral-950/60 border border-white/5 text-center">
-                      <span className="text-[10px] uppercase tracking-wider text-neutral-400 block">Total Marks</span>
-                      <span className="font-serif text-lg font-bold text-amber-300 mt-1 block">{selectedExam.totalMarks}</span>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-neutral-950/60 border border-white/5 text-center">
-                      <span className="text-[10px] uppercase tracking-wider text-neutral-400 block">Questions</span>
-                      <span className="font-serif text-lg font-bold text-amber-300 mt-1 block">{selectedExam.questionCount}</span>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-neutral-950/60 border border-white/5 text-center">
-                      <span className="text-[10px] uppercase tracking-wider text-neutral-400 block">Official Portal</span>
+                    <div className="p-3.5 rounded-lg bg-[#15120e] border border-stone-800">
+                      <span className="text-stone-500 block">Official Portal</span>
                       <a
-                        href={selectedExam.officialUrl}
+                        href={selectedFolio.officialPortal}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-amber-400 hover:underline mt-2"
+                        className="text-[#c59b4c] hover:underline inline-flex items-center gap-1 mt-1 font-bold"
                       >
                         <span>Visit Website</span>
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
                   </div>
+                </div>
+              )}
 
-                  <div className="p-5 rounded-2xl bg-neutral-950/70 border border-white/10 space-y-4">
-                    <h3 className="font-serif text-base font-bold text-amber-200">Question Format &amp; Marking Scheme</h3>
-                    <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">{selectedExam.patternSummary}</p>
-                    <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
-                      <strong>Marking Policy:</strong> {selectedExam.negativeMarking}
-                    </div>
+              {/* TAB 2: CAMPUSES */}
+              {activeDossierTab === "campuses" && (
+                <div className="space-y-4">
+                  <h3 className="font-serif text-xl text-[#f5efe6] font-normal">
+                    Admitting Institutes &amp; Centers of Excellence ({selectedFolio.institutes.length})
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {selectedFolio.institutes.map((inst, i) => (
+                      <div key={i} className="p-4 rounded-xl bg-[#1c1712] border border-stone-800 space-y-1.5">
+                        <div className="flex items-center justify-between text-xs font-bold text-[#f5efe6]">
+                          <span>{inst.name}</span>
+                          <span className="text-[#c59b4c] font-mono font-normal">{inst.campus}</span>
+                        </div>
+                        <p className="text-xs text-stone-400 leading-relaxed font-sans">{inst.description}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
 
-              {/* TAB 3: SYLLABUS BLUEPRINT */}
-              {activeModalTab === "syllabus" && (
+              {/* TAB 3: PATTERN */}
+              {activeDossierTab === "pattern" && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-3 gap-4 font-mono text-xs text-center">
+                    <div className="p-4 rounded-xl bg-[#1c1712] border border-stone-800">
+                      <span className="text-stone-500 block">Duration</span>
+                      <span className="text-lg text-[#f5efe6] font-serif font-bold mt-1 block">{selectedFolio.duration}</span>
+                    </div>
+                    <div className="p-4 rounded-xl bg-[#1c1712] border border-stone-800">
+                      <span className="text-stone-500 block">Total Marks</span>
+                      <span className="text-lg text-[#f5efe6] font-serif font-bold mt-1 block">{selectedFolio.totalMarks}</span>
+                    </div>
+                    <div className="p-4 rounded-xl bg-[#1c1712] border border-stone-800">
+                      <span className="text-stone-500 block">Total Questions</span>
+                      <span className="text-lg text-[#f5efe6] font-serif font-bold mt-1 block">{selectedFolio.questionCount}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs uppercase tracking-widest text-[#c59b4c] font-mono">Sectional Matrix</h4>
+                    <div className="border border-stone-800 rounded-xl overflow-hidden font-mono text-xs">
+                      <table className="w-full text-left">
+                        <thead className="bg-[#15120e] text-stone-400 border-b border-stone-800">
+                          <tr>
+                            <th className="p-3">Section</th>
+                            <th className="p-3">Questions</th>
+                            <th className="p-3">Marks</th>
+                            <th className="p-3">Format</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-stone-800/80">
+                          {selectedFolio.patternBreakdown.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-stone-900/40">
+                              <td className="p-3 font-bold text-[#f5efe6]">{row.section}</td>
+                              <td className="p-3 text-stone-300">{row.questions}</td>
+                              <td className="p-3 text-[#c59b4c]">{row.marks}</td>
+                              <td className="p-3 text-stone-400">{row.nature}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-[#15120e] border border-stone-800 text-xs font-mono text-stone-300">
+                    <strong className="text-[#c59b4c]">Marking Protocol:</strong> {selectedFolio.markingRules}
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 4: SYLLABUS RIGOR */}
+              {activeDossierTab === "syllabus" && (
                 <div className="space-y-4">
-                  <h3 className="font-serif text-lg font-bold text-amber-200">Subject-Wise Blueprint</h3>
+                  <h3 className="font-serif text-xl text-[#f5efe6] font-normal">Subject-Wise Curricular Depth</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {selectedExam.syllabusBreakdown.map((item, idx) => (
-                      <div key={idx} className="p-4 rounded-2xl bg-neutral-950/70 border border-white/10 space-y-3">
-                        <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                          <h4 className="font-bold text-white text-sm">{item.subject}</h4>
-                          <span className="text-[10px] text-amber-400 font-bold px-2 py-0.5 rounded-full bg-amber-500/10">
-                            {item.weightage}
-                          </span>
+                    {selectedFolio.syllabusDepth.map((sub, sIdx) => (
+                      <div key={sIdx} className="p-4 rounded-xl bg-[#1c1712] border border-stone-800 space-y-2.5">
+                        <div className="flex items-center justify-between border-b border-stone-800 pb-2">
+                          <h4 className="font-bold text-[#f5efe6] text-sm">{sub.subject}</h4>
                         </div>
-                        <ul className="space-y-1.5 text-xs text-neutral-300">
-                          {item.keyTopics.map((topic, tIdx) => (
-                            <li key={tIdx} className="flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                              <span>{topic}</span>
+                        <ul className="space-y-1 text-xs text-stone-300">
+                          {sub.keyAreas.map((area, aIdx) => (
+                            <li key={aIdx} className="flex items-center gap-2">
+                              <span className="w-1 h-1 rounded-full bg-[#c59b4c]" />
+                              <span>{area}</span>
                             </li>
                           ))}
                         </ul>
+                        <div className="pt-2 border-t border-stone-800/80 text-[11px] text-[#c59b4c] italic font-serif">
+                          Note: {sub.rigorNote}
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* TAB 4: CAREERS */}
-              {activeModalTab === "career" && (
+              {/* TAB 5: CAREER */}
+              {activeDossierTab === "career" && (
                 <div className="space-y-4">
-                  <h3 className="font-serif text-lg font-bold text-amber-200">Global Horizons &amp; Scientific Career Trajectories</h3>
+                  <h3 className="font-serif text-xl text-[#f5efe6] font-normal">Global Postgraduate &amp; Research Destinations</h3>
                   <div className="space-y-3">
-                    {selectedExam.careerHorizons.map((career, cIdx) => (
-                      <div key={cIdx} className="flex items-start gap-3 p-3.5 rounded-xl bg-neutral-950/60 border border-white/5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                        <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed">{career}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* TAB 5: VIGYAN ADVANTAGE */}
-              {activeModalTab === "advantage" && (
-                <div className="space-y-4">
-                  <h3 className="font-serif text-lg font-bold text-amber-200">How VigyanPrep Helps You Crack {selectedExam.shortName}</h3>
-                  <div className="space-y-3">
-                    {selectedExam.vigyanAdvantage.map((adv, aIdx) => (
-                      <div key={aIdx} className="flex items-start gap-3 p-3.5 rounded-xl bg-neutral-950/60 border border-white/5">
-                        <Zap className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                        <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed">{adv}</p>
+                    {selectedFolio.careerHorizons.map((car, cIdx) => (
+                      <div key={cIdx} className="flex items-start gap-3 p-3.5 rounded-xl bg-[#1c1712] border border-stone-800 text-xs sm:text-sm text-stone-200">
+                        <Check className="w-4 h-4 text-[#c59b4c] shrink-0 mt-0.5" />
+                        <span>{car}</span>
                       </div>
                     ))}
                   </div>
@@ -1051,25 +983,23 @@ export default function AboutPage() {
 
             </div>
 
-            {/* Modal Footer Action Bar */}
-            <div className="p-4 sm:p-6 bg-neutral-950 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="text-xs text-neutral-400 text-center sm:text-left">
-                Direct access to official previous year questions &amp; NTA test series.
-              </div>
+            {/* Dossier Footer Action Bar */}
+            <div className="p-4 sm:p-6 bg-[#15120e] border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs">
+              <span className="text-stone-500">Practice with official past year examinations.</span>
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Link
                   href="/pyq"
-                  onClick={() => setSelectedExam(null)}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-neutral-900 border border-amber-500/30 text-amber-300 font-bold text-xs uppercase tracking-wider hover:bg-neutral-800 transition text-center"
+                  onClick={() => setSelectedFolio(null)}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-stone-900 border border-stone-700 text-[#f5efe6] hover:bg-stone-800 transition text-center"
                 >
-                  Practice PYQ Papers
+                  View Past Papers Archive
                 </Link>
                 <Link
                   href="/tests"
-                  onClick={() => setSelectedExam(null)}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-black font-bold text-xs uppercase tracking-wider hover:scale-105 transition text-center shadow-lg shadow-amber-500/20"
+                  onClick={() => setSelectedFolio(null)}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[#c59b4c] text-[#15120e] font-bold hover:bg-[#d6aa57] transition text-center"
                 >
-                  Join Test Series
+                  Join Proctored Test Series
                 </Link>
               </div>
             </div>
@@ -1079,121 +1009,64 @@ export default function AboutPage() {
       )}
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          THE STUDENT JOURNEY
+          CHAPTER III: DIRECT ACADEMIC HELP DESK
          ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="p-8 sm:p-12 rounded-3xl bg-neutral-900/60 border border-amber-500/25 backdrop-blur-sm">
-          <div className="text-center mb-10">
-            <span className="text-xs uppercase tracking-widest text-amber-400 font-semibold">The Roadmap</span>
-            <h3 className="font-serif text-2xl sm:text-4xl font-bold text-amber-100 mt-2">
-              From Aspirant → Researcher → Global Scientist
+      <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto border-t border-stone-800 scroll-mt-20">
+        <div className="p-8 sm:p-12 rounded-2xl bg-[#1c1712] border border-stone-800 space-y-8">
+          
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs uppercase tracking-[0.2em] text-[#c59b4c] font-mono block">
+              Chapter III • Communications
+            </span>
+            <h3 className="font-serif text-3xl sm:text-4xl font-normal text-[#f5efe6]">
+              Academic Support &amp; Leadership Directory
             </h3>
-          </div>
-
-          <div className="space-y-6">
-            <div className="flex items-start gap-4 p-5 rounded-2xl bg-neutral-950/50 border border-white/5">
-              <div className="w-10 h-10 rounded-full bg-amber-500 text-black font-bold flex items-center justify-center shrink-0 text-sm shadow-lg shadow-amber-500/40">
-                1
-              </div>
-              <div>
-                <h4 className="font-serif font-bold text-amber-100 text-base">First-Principles Conceptual Intuition</h4>
-                <p className="text-xs sm:text-sm text-neutral-400 mt-1 leading-relaxed">
-                  Moving away from formula memorization into genuine conceptual mastery of physics derivations, reaction mechanisms, mathematical proofs, and biological systems.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-5 rounded-2xl bg-neutral-950/50 border border-white/5">
-              <div className="w-10 h-10 rounded-full bg-amber-500 text-black font-bold flex items-center justify-center shrink-0 text-sm shadow-lg shadow-amber-500/40">
-                2
-              </div>
-              <div>
-                <h4 className="font-serif font-bold text-amber-100 text-base">Proctored Timed CBT Mock Simulations</h4>
-                <p className="text-xs sm:text-sm text-neutral-400 mt-1 leading-relaxed">
-                  Attempt official past year papers in our exact NTA zero-distraction black test portal with live countdown timers, palette flags, and instant percentile diagnostics.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-5 rounded-2xl bg-neutral-950/50 border border-white/5">
-              <div className="w-10 h-10 rounded-full bg-amber-500 text-black font-bold flex items-center justify-center shrink-0 text-sm shadow-lg shadow-amber-500/40">
-                3
-              </div>
-              <div>
-                <h4 className="font-serif font-bold text-amber-100 text-base">Admissions to Top Research Campuses &amp; Fellowships</h4>
-                <p className="text-xs sm:text-sm text-neutral-400 mt-1 leading-relaxed">
-                  Securing top AIR ranks to join IISER Pune, Kolkata, Mohali, Bhopal, TVM, Tirupati, Berhampur, NISER Bhubaneswar, CEBS Mumbai, ISI, CMI, and IISc with INSPIRE / DISHA fellowships.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          CONTACT & ACADEMIC HELP DESK
-         ═══════════════════════════════════════════════════════════════════════ */}
-      <section id="contact" className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 scroll-mt-24">
-        <div className="p-8 sm:p-12 rounded-3xl bg-neutral-900/70 border border-amber-500/25 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="text-center mb-10">
-            <span className="text-xs uppercase tracking-widest text-amber-400 font-semibold">Get In Touch</span>
-            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-white mt-2">
-              Academic Support &amp; Student Help Desk
-            </h3>
-            <p className="text-sm text-neutral-400 max-w-lg mx-auto mt-2 font-light">
-              Have questions regarding test series passes, fee waivers, or doubt clearing? Our research academic desk is here for you.
+            <p className="text-xs sm:text-sm text-stone-400 font-serif">
+              Have queries regarding paper solutions, proctored mock access, or fee waivers? Our academic desk responds within 2–4 hours.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs">
+            
             <a
               href="tel:+917004283531"
-              className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-amber-400/50 transition-all group flex flex-col items-center text-center space-y-3"
+              className="p-5 rounded-xl bg-[#15120e] border border-stone-800 hover:border-[#c59b4c] transition group flex flex-col items-center text-center space-y-2"
             >
-              <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
-                <Phone className="w-5 h-5" />
-              </div>
-              <h4 className="font-bold text-white text-base">Direct Phone Desk</h4>
-              <p className="text-xs text-amber-300 font-mono">+91 7004283531</p>
-              <span className="text-[11px] text-neutral-400">Available for Student Enquiries</span>
+              <Phone className="w-5 h-5 text-[#c59b4c]" />
+              <div className="font-bold text-[#f5efe6]">Telephone Desk</div>
+              <div className="text-[#c59b4c]">+91 7004283531</div>
+              <span className="text-[10px] text-stone-500 font-sans">Direct Student Inquiries</span>
             </a>
 
             <a
               href="mailto:support@vigyanprep.com"
-              className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-amber-400/50 transition-all group flex flex-col items-center text-center space-y-3"
+              className="p-5 rounded-xl bg-[#15120e] border border-stone-800 hover:border-[#c59b4c] transition group flex flex-col items-center text-center space-y-2"
             >
-              <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
-                <Mail className="w-5 h-5" />
-              </div>
-              <h4 className="font-bold text-white text-base">Direct Email Support</h4>
-              <p className="text-xs text-amber-300 font-mono">support@vigyanprep.com</p>
-              <span className="text-[11px] text-neutral-400">Response within 2-4 hours</span>
+              <Mail className="w-5 h-5 text-[#c59b4c]" />
+              <div className="font-bold text-[#f5efe6]">Institutional Email</div>
+              <div className="text-[#c59b4c] truncate max-w-full">support@vigyanprep.com</div>
+              <span className="text-[10px] text-stone-500 font-sans">Academic &amp; Solution Desk</span>
             </a>
 
             <a
               href="https://wa.me/917004283531"
               target="_blank"
               rel="noreferrer"
-              className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 hover:border-emerald-400/50 transition-all group flex flex-col items-center text-center space-y-3"
+              className="p-5 rounded-xl bg-[#15120e] border border-stone-800 hover:border-[#c59b4c] transition group flex flex-col items-center text-center space-y-2"
             >
-              <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
-                <MessageSquare className="w-5 h-5" />
-              </div>
-              <h4 className="font-bold text-white text-base">WhatsApp Support</h4>
-              <p className="text-xs text-emerald-400 font-mono">+91 7004283531</p>
-              <span className="text-[11px] text-emerald-400 font-semibold">Quick Doubt &amp; Fee Waiver</span>
+              <MessageSquare className="w-5 h-5 text-emerald-400" />
+              <div className="font-bold text-[#f5efe6]">WhatsApp Support</div>
+              <div className="text-emerald-400">+91 7004283531</div>
+              <span className="text-[10px] text-stone-500 font-sans">Quick Doubt Clearing</span>
             </a>
 
-            <div className="p-6 rounded-2xl bg-neutral-950/60 border border-white/10 flex flex-col items-center text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-lg">
-                <Building2 className="w-5 h-5" />
-              </div>
-              <h4 className="font-bold text-white text-base">Headquarters</h4>
-              <p className="text-xs text-neutral-300">Vigyan Prep Education Research</p>
-              <span className="text-[11px] text-neutral-400">India&apos;s Pure Science Entrance Hub</span>
+            <div className="p-5 rounded-xl bg-[#15120e] border border-stone-800 flex flex-col items-center text-center space-y-2">
+              <Building2 className="w-5 h-5 text-[#c59b4c]" />
+              <div className="font-bold text-[#f5efe6]">Headquarters</div>
+              <div className="text-stone-300 font-sans text-xs">Vigyan Prep Education</div>
+              <span className="text-[10px] text-stone-500 font-sans">India&apos;s Pure Science Entrance Hub</span>
             </div>
+
           </div>
         </div>
       </section>
