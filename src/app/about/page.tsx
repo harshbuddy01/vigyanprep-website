@@ -137,17 +137,17 @@ export default function AboutPage() {
 
                       <div className="relative h-36 sm:h-44 w-full rounded overflow-hidden bg-[#e0d6bd]">
                         <Image
-                          src="/images/sketch-university-campus.jpg"
-                          alt="University research campus sketch"
+                          src="/images/iiser_campus_real.jpg"
+                          alt="Premier Indian research institute campus (IISER & IISc)"
                           fill
-                          className="object-cover sepia-[0.2]"
+                          className="object-cover"
                           priority
                         />
                       </div>
                       
                       <div className="pt-2 text-center">
                         <span className="font-serif italic text-xs text-[#5c4d3e] font-semibold">
-                          The 7 IISER Campuses &amp; IISc Bangalore
+                          The 7 IISER Campuses, NISER &amp; IISc Bangalore
                         </span>
                       </div>
                     </div>
@@ -159,16 +159,16 @@ export default function AboutPage() {
 
                       <div className="relative h-32 sm:h-36 w-full rounded overflow-hidden bg-[#e0d6bd]">
                         <Image
-                          src="/images/sketch-student-studying.jpg"
-                          alt="Student working on first-principles derivations"
+                          src="/images/pure_science_lab_real.jpg"
+                          alt="Undergraduate student working on first-principles physics and optics derivations"
                           fill
-                          className="object-cover sepia-[0.2]"
+                          className="object-cover"
                         />
                       </div>
                       
                       <div className="pt-2 text-center">
                         <span className="font-serif italic text-xs text-[#5c4d3e] font-semibold">
-                          First-Principles Problem Solving
+                          First-Principles Laboratory Research
                         </span>
                       </div>
                     </div>
