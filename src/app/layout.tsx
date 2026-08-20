@@ -2,6 +2,59 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 
+import { Outfit, Plus_Jakarta_Sans, Cormorant_Garamond, Caveat, DM_Sans, Manrope, Architects_Daughter } from 'next/font/google';
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+  variable: '--font-outfit',
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-plus-jakarta',
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-cormorant',
+});
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-caveat',
+});
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-dm-sans',
+});
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-manrope',
+});
+
+const architectsDaughter = Architects_Daughter({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+  variable: '--font-architects-daughter',
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://vigyanprep.com"),
   title: {
@@ -110,7 +163,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className="dark h-full antialiased scroll-smooth">
+    <html lang="en" className={`dark h-full antialiased scroll-smooth ${outfit.variable} ${plusJakarta.variable} ${cormorant.variable} ${caveat.variable} ${dmSans.variable} ${manrope.variable} ${architectsDaughter.variable}`}>
       <head>
         <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
@@ -118,7 +171,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Architects+Daughter&family=Caveat:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&display=swap"
           rel="stylesheet"
         />
         <link

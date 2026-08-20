@@ -14,16 +14,16 @@
 
 @layer utilities {
   .font-display-custom {
-    font-family: 'Dirtyline36days', 'Cormorant Garamond', serif;
+    font-family: 'Dirtyline36days', var(--font-cormorant), serif;
   }
   .font-handwriting {
-    font-family: 'Caveat', 'Kalam', cursive;
+    font-family: var(--font-caveat), 'Kalam', cursive;
   }
   .font-sketch {
-    font-family: 'Architects Daughter', 'Caveat', cursive;
+    font-family: var(--font-architects-daughter), var(--font-caveat), cursive;
   }
   .font-serif-vintage {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: var(--font-cormorant), Georgia, serif;
   }
 }
 
