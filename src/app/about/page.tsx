@@ -175,65 +175,65 @@ const GATEWAYS: GatewayDossier[] = [
 
 const POSTCARD_FAQS = [
   {
-    num: "Q.01",
-    q: "Why is VigyanPrep different from JEE/NEET coachings?",
-    a: "Commercial coachings train students exclusively for engineering and medical speed-tests with 30-second formula cramming. Entrance exams for IISER, NISER, ISI, and CMI demand deep deductive proofs, physical intuition from first principles, and 4-subject balance. VigyanPrep is built ground-up exclusively for this research curriculum."
+    num: "Q.",
+    q: "Why is VigyanPrep different from commercial JEE/NEET coachings?",
+    a: "Mainstream coachings focus entirely on 30-second formula shortcuts and engineering/medical speed tests. Entrance exams for IISER, NISER, ISI, and CMI demand deep deductive proofs, physical intuition from first principles, and 4-subject balance. VigyanPrep is built ground-up exclusively for this research curriculum."
   },
   {
-    num: "Q.02",
-    q: "Are the Previous Year Papers (PYQs) 100% free?",
-    a: "Yes. All official past year papers for IISER IAT and NISER NEST are completely free to attempt in our authentic Computer-Based Testing (CBT) interface with real countdown timers, question palettes, and step-by-step verified explanations."
+    num: "Q.",
+    q: "Are the Previous Year Papers (PYQs) completely free to attempt?",
+    a: "Yes. All official past year papers for IISER IAT and NISER NEST are 100% free to attempt in our authentic Computer-Based Testing (CBT) interface with real countdown timers, question palettes, and step-by-step verified explanations."
   },
   {
-    num: "Q.03",
-    q: "Can a PCM student crack IISER IAT without Biology?",
+    num: "Q.",
+    q: "Can a PCM student crack IISER IAT without a Biology background?",
     a: "Yes! In IAT, questions are asked across all 4 subjects (15 each). PCM students can maximize marks in Physics, Chemistry, and Math while picking up high-scoring foundational topics in Biology using our structured revision modules."
   },
   {
-    num: "Q.04",
-    q: "What scholarships & stipends do admitted students receive?",
+    num: "Q.",
+    q: "What scholarships & stipends do admitted research students receive?",
     a: "Eligible students at IISERs, NISER, and IISc receive DST INSPIRE-SHE or DAE DISHA fellowships of ₹60,000/year plus ₹20,000/year summer research project grants (total ₹80,000/yr). ISI and CMI provide 100% tuition waivers and monthly living stipends."
   }
 ];
 
 export default function AboutPage() {
-  const [activeChapter, setActiveChapter] = useState<number>(1);
+  const [activeSection, setActiveSection] = useState<"codex" | "gateways" | "disciplines" | "inquiries" | "helpdesk">("codex");
   const [selectedGatewayId, setSelectedGatewayId] = useState<string>("iat");
-  const [expandedPostcard, setExpandedPostcard] = useState<number | null>(null);
+  const [expandedFaqIndex, setExpandedFaqIndex] = useState<number | null>(null);
 
   const activeGateway = GATEWAYS.find((g) => g.id === selectedGatewayId) || GATEWAYS[0];
 
   return (
-    <div className="min-h-screen bg-[#110f0d] text-[#2c241d] font-sans selection:bg-[#c99742] selection:text-black relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#181512] text-[#2c241d] font-serif selection:bg-[#c99742] selection:text-black relative overflow-x-hidden">
       <Navbar />
 
-      {/* Desk Wood Texture & Ambient Warm Lamp Glow */}
-      <div className="fixed inset-0 pointer-events-none opacity-40 bg-[radial-gradient(ellipse_at_top,#2a221b_0%,#0e0c0a_100%)] z-0" />
-      <div className="fixed top-12 left-1/2 -translate-x-1/2 w-[850px] h-[450px] bg-amber-500/10 rounded-full blur-[140px] pointer-events-none z-0" />
+      {/* Atmospheric Wooden Desk Backdrop with Ambient Top Light */}
+      <div className="fixed inset-0 pointer-events-none opacity-50 bg-[radial-gradient(ellipse_at_top,#2f241a_0%,#0d0b09_100%)] z-0" />
+      <div className="fixed top-10 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-amber-500/10 rounded-full blur-[160px] pointer-events-none z-0" />
 
-      {/* Main Journal Workspace Container */}
-      <main className="relative z-10 pt-28 sm:pt-36 pb-24 px-4 sm:px-6 lg:px-10 max-w-7xl mx-auto">
+      {/* Main Interactive Stage */}
+      <main className="relative z-10 pt-28 sm:pt-36 pb-24 px-3 sm:px-6 lg:px-10 max-w-7xl mx-auto">
         
         {/* ═══════════════════════════════════════════════════════════════════════
-            TOP LEATHER CHAPTER BOOKMARK TABS
+            TOP NAVIGATION TABS (STYLE MATCHING VINTAGE CHRONICLES)
            ═══════════════════════════════════════════════════════════════════════ */}
         <div className="flex items-center justify-center sm:justify-end gap-2 mb-3 px-2 flex-wrap">
           {[
-            { id: 1, label: "Chapter I: The Codex", icon: "📖" },
-            { id: 2, label: "Chapter II: Gateways", icon: "🏛️" },
-            { id: 3, label: "Chapter III: Disciplines", icon: "🔬" },
-            { id: 4, label: "Chapter IV: Postcards", icon: "📮" },
-            { id: 5, label: "Chapter V: Dispatch", icon: "✉️" }
+            { id: "codex", label: "The Chronicles", icon: "📖" },
+            { id: "gateways", label: "Target Gateways", icon: "🏛️" },
+            { id: "disciplines", label: "Laboratory Bench", icon: "🔬" },
+            { id: "inquiries", label: "Common Inquiries", icon: "📮" },
+            { id: "helpdesk", label: "The Help Desk", icon: "✉️" }
           ].map((tab) => {
-            const isActive = activeChapter === tab.id;
+            const isActive = activeSection === tab.id;
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveChapter(tab.id)}
+                onClick={() => setActiveSection(tab.id as any)}
                 className={`px-4 py-2 rounded-t-xl text-xs font-serif font-bold transition-all shadow-md cursor-pointer border-t-2 ${
                   isActive
                     ? "bg-[#faf5e8] text-[#1c1815] border-[#c99742] translate-y-1 shadow-lg z-20 font-black"
-                    : "bg-[#241f1a] text-[#b8a690] border-[#3d332a] hover:bg-[#2d2620] hover:text-white"
+                    : "bg-[#28221c] text-[#b8a690] border-[#3d332a] hover:bg-[#342b23] hover:text-white"
                 }`}
               >
                 <span className="mr-1.5">{tab.icon}</span>
@@ -244,30 +244,27 @@ export default function AboutPage() {
         </div>
 
         {/* ═══════════════════════════════════════════════════════════════════════
-            THE OPEN DOUBLE-PAGE RESEARCH LEDGER JOURNAL
+            VIEW 1: THE VIGYAN CHRONICLES (OPEN DUAL-PAGE JOURNAL SPREAD)
            ═══════════════════════════════════════════════════════════════════════ */}
-        <div className="relative bg-[#faf5e8] border border-[#d6cbaf] rounded-3xl shadow-[0_30px_90px_rgba(0,0,0,0.85),0_0_0_12px_#231d17] overflow-hidden min-h-[720px] flex flex-col justify-between">
-          
-          {/* Subtle 24px Graph Grid Ruling Pattern */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.035] bg-[linear-gradient(to_right,#000_1px,transparent_1px),linear-gradient(to_bottom,#000_1px,transparent_1px)] [background-size:24px_24px]" />
+        {activeSection === "codex" && (
+          <div className="relative bg-[#faf5e8] border border-[#d6cbaf] rounded-3xl shadow-[0_30px_90px_rgba(0,0,0,0.85),0_0_0_12px_#231d17] overflow-hidden min-h-[700px]">
+            
+            {/* 24px Graph Grid Pattern */}
+            <div className="absolute inset-0 pointer-events-none opacity-[0.035] bg-[linear-gradient(to_right,#000_1px,transparent_1px),linear-gradient(to_bottom,#000_1px,transparent_1px)] [background-size:24px_24px]" />
 
-          {/* Central Book Spine Shadow & Fold Gradient */}
-          <div className="hidden lg:block absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-16 pointer-events-none bg-gradient-to-r from-black/10 via-black/25 to-black/10 z-20" />
+            {/* Central Book Spine Shadow */}
+            <div className="hidden lg:block absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-16 pointer-events-none bg-gradient-to-r from-black/10 via-black/25 to-black/10 z-20" />
 
-          {/* ═══════════════════════════════════════════════════════════════════
-              CHAPTER I: THE FOUNDING CODEX & SANSKRIT GENESIS
-             ═══════════════════════════════════════════════════════════════════ */}
-          {activeChapter === 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-12 relative z-10 p-6 sm:p-10 lg:p-14 gap-8 lg:gap-14">
               
-              {/* LEFT PAGE: THE CHRONICLES & MANIFESTO */}
+              {/* LEFT PAGE: THE CHRONICLES ESSAY */}
               <div className="lg:col-span-6 space-y-6 lg:pr-6 border-b lg:border-b-0 lg:border-r border-[#e0d6bd] pb-8 lg:pb-0 relative">
                 
-                {/* Red Ledger Margin Line on Left */}
+                {/* Red Margin Rule */}
                 <div className="hidden sm:block absolute top-0 bottom-0 left-[-16px] w-[1.5px] bg-[#d97768]/40" />
 
                 <div>
-                  <span className="font-serif italic text-sm text-[#8c672b] tracking-wider block mb-1">
+                  <span className="font-serif italic text-base text-[#8c672b] tracking-wider block mb-1">
                     Chapter I.
                   </span>
                   <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-black text-[#1c1815] uppercase tracking-wider leading-[1.08]">
@@ -275,23 +272,23 @@ export default function AboutPage() {
                   </h1>
                 </div>
 
-                {/* Drop Cap Body */}
+                {/* Drop Cap Essay */}
                 <div className="text-sm sm:text-base text-[#382f27] font-serif leading-relaxed space-y-4">
                   <p className="first-letter:float-left first-letter:text-5xl sm:first-letter:text-6xl first-letter:font-serif first-letter:font-black first-letter:text-[#9e2a2b] first-letter:mr-3 first-letter:leading-[0.85] first-letter:pt-1">
-                    Born from a profound reverence for empirical science and mathematical deduction, <strong>VigyanPrep</strong> was established not as a conventional coaching factory, but as an authentic sanctuary for India&apos;s research scholars. We believe that true scientific learning is an art form—one that bridges fundamental first principles with the living spirit of discovery.
+                    Born from a profound reverence for pure empirical science and mathematical deduction, <strong>VigyanPrep</strong> was established not merely as a test platform, but as an artisanal sanctuary for India&apos;s research scholars. We believe that true scientific learning is an art form—one that bridges the curiosity of the student with the deep, immutable laws of nature.
                   </p>
                   
                   {/* Parchment Quote Box */}
                   <blockquote className="p-4 rounded-xl bg-[#f0e8d5] border-l-4 border-[#9e2a2b] text-xs sm:text-sm italic text-[#4a3f35] shadow-xs">
-                    &ldquo;In a landscape dominated by 30-second formula shortcuts for engineering and medical entrances, we built a dedicated home for those whose passion lies in theoretical physics, molecular biology, pure mathematics, and chemical synthesis.&rdquo;
+                    &ldquo;Our journey began with a clear mission: mapping the rigorous terrain of IISER, NISER, ISI, and CMI. Driven by an intense passion for foundational science over rote formula drills.&rdquo;
                   </blockquote>
 
                   <p className="text-xs sm:text-sm text-[#4a3f35] font-light leading-relaxed">
-                    We do not teach mechanical rote tricks; we cultivate <strong>Scientific Thinkers</strong>. Aspirants capable of deriving equations from core postulates, writing rigorous subjective proofs, and exploring the frontiers of IISER, NISER, ISI, CMI, and IISc.
+                    We do not cultivate formula-memorizers; we cultivate <strong>Scientific Artisans</strong>. Students whose intuition is grounded in first principles, capable of proving theorems, predicting chemical thermodynamics, and unlocking fellowships at premier research institutions.
                   </p>
                 </div>
 
-                {/* Sanskrit Etymology Stamp */}
+                {/* Sanskrit Seal */}
                 <div className="p-4 rounded-2xl bg-[#efe5cf] border border-[#d8caa8] flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-[#9e2a2b] text-[#fbf7ee] font-serif font-black text-2xl flex items-center justify-center shrink-0 shadow-sm">
                     वि
@@ -304,27 +301,26 @@ export default function AboutPage() {
                   </div>
                 </div>
 
-                {/* Red Circular Rubber Stamp Effect */}
+                {/* Red Circular Rubber Stamp */}
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-dashed border-[#9e2a2b]/70 text-[#9e2a2b] font-mono text-[10px] uppercase font-bold tracking-widest -rotate-2">
-                  <span>★ OFFICIAL PURE SCIENCE SANCTUARY • VERIFIED CBT ★</span>
+                  <span>★ OFFICIAL PURE SCIENCE SANCTUARY • APPROVED CBT ★</span>
                 </div>
               </div>
 
-              {/* RIGHT PAGE: TAPED POLAROID ARTIFACTS & FIELD NOTES */}
+              {/* RIGHT PAGE: REAL TAPED POLAROIDS & FIELD NOTES */}
               <div className="lg:col-span-6 space-y-6 lg:pl-6 relative flex flex-col justify-between">
                 
                 <div className="space-y-6">
                   
                   {/* Pinned Polaroid 1: Research Campus */}
                   <div className="relative p-3.5 bg-white rounded-lg shadow-xl border border-[#ded4bc] max-w-sm mx-auto sm:rotate-2 hover:rotate-0 transition-transform duration-300">
-                    
-                    {/* Frosted Scotch Tape on Top */}
+                    {/* Frosted Tape */}
                     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-28 h-7 bg-white/45 backdrop-blur-xs border border-white/60 shadow-xs rotate-[-2deg] z-10" />
 
                     <div className="relative h-44 sm:h-52 w-full rounded overflow-hidden bg-[#e0d6bd]">
                       <Image
                         src="/images/sketch-university-campus.jpg"
-                        alt="IISER and IISc research campus sketch"
+                        alt="University research campus sketch"
                         fill
                         className="object-cover sepia-[0.25]"
                         priority
@@ -333,15 +329,14 @@ export default function AboutPage() {
                     
                     <div className="pt-2 text-center">
                       <span className="font-serif italic text-xs text-[#5c4d3e] font-semibold">
-                        The 7 IISER Campuses, IISc Bangalore &amp; NISER
+                        The 7 IISER Campuses, NISER &amp; IISc Bangalore
                       </span>
                     </div>
                   </div>
 
-                  {/* Pinned Polaroid 2: First Principles Laboratory */}
+                  {/* Pinned Polaroid 2: First Principles Study */}
                   <div className="relative p-3.5 bg-white rounded-lg shadow-xl border border-[#ded4bc] max-w-sm mx-auto sm:-rotate-2 hover:rotate-0 transition-transform duration-300">
-                    
-                    {/* Frosted Scotch Tape on Top */}
+                    {/* Frosted Tape */}
                     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-28 h-7 bg-white/45 backdrop-blur-xs border border-white/60 shadow-xs rotate-[3deg] z-10" />
 
                     <div className="relative h-36 sm:h-40 w-full rounded overflow-hidden bg-[#e0d6bd]">
@@ -355,360 +350,315 @@ export default function AboutPage() {
                     
                     <div className="pt-2 text-center">
                       <span className="font-serif italic text-xs text-[#5c4d3e] font-semibold">
-                        Dedication to First-Principles Problem Solving
+                        First-Principles Problem Solving
                       </span>
                     </div>
                   </div>
 
                 </div>
 
-                {/* Bottom Field Note Card with Brass Paper Clip Effect */}
+                {/* Bottom Field Note Card with Paperclip */}
                 <div className="relative p-5 bg-[#f5ecda] rounded-2xl border border-[#d6c7a7] shadow-sm space-y-2">
-                  {/* Brass Paperclip */}
                   <div className="paper-clip !-top-3 !right-8" />
-                  
-                  <h3 className="font-serif font-bold text-sm text-[#1c1815]">Field Note: Why 4-Subject Balance Matters</h3>
+                  <h3 className="font-serif font-bold text-sm text-[#1c1815]">Curated Exclusively For Research Scholars</h3>
                   <p className="text-xs text-[#544637] leading-relaxed">
-                    In IISER IAT, all 4 subjects (Physics, Chemistry, Math, Biology) carry equal weightage (60 marks each). We empower PCM students to score in Biology and PCB students to conquer Mathematics.
+                    100% free official past year papers in authentic Computer-Based Testing (CBT) mode, accompanied by complete mathematical proofs and verified derivations.
                   </p>
                 </div>
 
               </div>
 
             </div>
-          )}
+          </div>
+        )}
 
-          {/* ═══════════════════════════════════════════════════════════════════
-              CHAPTER II: THE 5 RESEARCH GATEWAYS (INTERACTIVE DOSSIERS)
-             ═══════════════════════════════════════════════════════════════════ */}
-          {activeChapter === 2 && (
-            <div className="p-6 sm:p-10 lg:p-14 relative z-10 space-y-8">
-              
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#e0d6bd] pb-4">
-                <div>
-                  <span className="font-serif italic text-sm text-[#8c672b]">Chapter II.</span>
-                  <h2 className="font-serif text-3xl sm:text-4xl font-black text-[#1c1815] uppercase tracking-wider">
-                    TARGET RESEARCH DOSSIERS
-                  </h2>
+        {/* ═══════════════════════════════════════════════════════════════════════
+            VIEW 2: TARGET GATEWAYS (INTERACTIVE DOSSIERS)
+           ═══════════════════════════════════════════════════════════════════════ */}
+        {activeSection === "gateways" && (
+          <div className="relative bg-[#faf5e8] border border-[#d6cbaf] rounded-3xl shadow-[0_30px_90px_rgba(0,0,0,0.85),0_0_0_12px_#231d17] p-6 sm:p-10 lg:p-14 space-y-8 min-h-[700px]">
+            
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#e0d6bd] pb-4">
+              <div>
+                <span className="font-serif italic text-sm text-[#8c672b]">Chapter II.</span>
+                <h2 className="font-serif text-3xl sm:text-4xl font-black text-[#1c1815] uppercase tracking-wider">
+                  RESEARCH ADMISSION DOSSIERS
+                </h2>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                {GATEWAYS.map((g) => (
+                  <button
+                    key={g.id}
+                    onClick={() => setSelectedGatewayId(g.id)}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
+                      selectedGatewayId === g.id
+                        ? "bg-[#1c1815] text-[#faf5e8] shadow"
+                        : "bg-[#efe6d1] text-[#4a3f35] hover:bg-[#e4dac1]"
+                    }`}
+                  >
+                    {g.shortName}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Gateway Breakdown */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              <div className="lg:col-span-6 space-y-5 bg-[#f4ebda] p-6 rounded-2xl border border-[#d6c7a7]">
+                <div className="flex items-center justify-between">
+                  <span className="px-2.5 py-0.5 rounded bg-[#9e2a2b] text-white font-mono text-[10px] font-bold uppercase tracking-wider">
+                    {activeGateway.code}
+                  </span>
+                  <span className="text-xs font-serif text-[#695a4c] font-bold">
+                    {activeGateway.degree}
+                  </span>
                 </div>
 
-                {/* Gateway Tabs */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                  {GATEWAYS.map((g) => (
-                    <button
-                      key={g.id}
-                      onClick={() => setSelectedGatewayId(g.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
-                        selectedGatewayId === g.id
-                          ? "bg-[#1c1815] text-[#faf5e8] shadow"
-                          : "bg-[#efe6d1] text-[#4a3f35] hover:bg-[#e4dac1]"
-                      }`}
-                    >
-                      {g.shortName}
-                    </button>
+                <div>
+                  <h3 className="font-serif text-2xl font-bold text-[#1c1815]">
+                    {activeGateway.name}
+                  </h3>
+                  <p className="text-xs text-[#544637] mt-1 leading-relaxed">
+                    {activeGateway.tagline}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-center text-xs">
+                  <div className="p-2.5 rounded-xl bg-white border border-[#ded3b9]">
+                    <span className="text-[10px] uppercase font-mono text-neutral-500 block">Duration</span>
+                    <strong className="text-[#1c1815]">{activeGateway.duration}</strong>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-white border border-[#ded3b9]">
+                    <span className="text-[10px] uppercase font-mono text-neutral-500 block">Total Marks</span>
+                    <strong className="text-[#1c1815]">{activeGateway.marks}</strong>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-white border border-[#ded3b9] col-span-2 sm:col-span-1">
+                    <span className="text-[10px] uppercase font-mono text-neutral-500 block">Questions</span>
+                    <strong className="text-[#1c1815]">{activeGateway.questions.split(' ')[0]}</strong>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#eadeca] border border-[#cfbe9e] text-xs text-[#3d332a]">
+                  <strong className="font-bold block text-[#1c1815] mb-0.5">💰 Fellowship &amp; Stipend:</strong>
+                  <span>{activeGateway.stipend}</span>
+                </div>
+
+                <div className="flex items-center gap-3 pt-2">
+                  <Link
+                    href={activeGateway.pyqUrl}
+                    className="px-4 py-2 rounded-xl bg-[#9e2a2b] hover:bg-[#852324] text-white font-serif font-bold text-xs shadow transition text-center flex items-center gap-1.5"
+                  >
+                    <span>Solve Official Free PYQs</span>
+                    <ChevronRight size={14} />
+                  </Link>
+                  <a
+                    href={activeGateway.officialUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-white hover:bg-neutral-50 border border-[#d6c7a7] text-[#1c1815] font-serif font-bold text-xs transition inline-flex items-center gap-1"
+                  >
+                    <span>Official Site</span>
+                    <ExternalLink size={13} />
+                  </a>
+                </div>
+              </div>
+
+              <div className="lg:col-span-6 space-y-4">
+                <h3 className="font-serif text-lg font-bold text-[#1c1815]">
+                  Admitting Premier Campuses ({activeGateway.institutes.length})
+                </h3>
+                <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-2">
+                  {activeGateway.institutes.map((inst, i) => (
+                    <div key={i} className="p-3.5 rounded-xl bg-white border border-[#ded3b9] shadow-xs text-xs space-y-1">
+                      <div className="flex items-center justify-between font-serif font-bold text-[#1c1815]">
+                        <span className="text-sm">{inst.name}</span>
+                        <span className="text-[11px] font-mono text-[#8c672b] font-normal">{inst.location}</span>
+                      </div>
+                      <p className="text-[11px] text-[#544637] leading-relaxed">{inst.highlight}</p>
+                    </div>
                   ))}
                 </div>
               </div>
+            </div>
 
-              {/* Active Gateway Dossier Card */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                {/* Left Specs */}
-                <div className="lg:col-span-6 space-y-5 bg-[#f4ebda] p-6 rounded-2xl border border-[#d6c7a7]">
-                  <div className="flex items-center justify-between">
-                    <span className="px-2.5 py-0.5 rounded bg-[#9e2a2b] text-white font-mono text-[10px] font-bold uppercase tracking-wider">
-                      {activeGateway.code}
-                    </span>
-                    <span className="text-xs font-serif text-[#695a4c] font-bold">
-                      {activeGateway.degree}
-                    </span>
-                  </div>
+          </div>
+        )}
 
-                  <div>
-                    <h3 className="font-serif text-2xl font-bold text-[#1c1815]">
-                      {activeGateway.name}
+        {/* ═══════════════════════════════════════════════════════════════════════
+            VIEW 3: LABORATORY BENCH (4 DISCIPLINES)
+           ═══════════════════════════════════════════════════════════════════════ */}
+        {activeSection === "disciplines" && (
+          <div className="relative bg-[#faf5e8] border border-[#d6cbaf] rounded-3xl shadow-[0_30px_90px_rgba(0,0,0,0.85),0_0_0_12px_#231d17] p-6 sm:p-10 lg:p-14 space-y-8 min-h-[700px]">
+            <div>
+              <span className="font-serif italic text-sm text-[#8c672b]">Chapter III.</span>
+              <h2 className="font-serif text-3xl sm:text-4xl font-black text-[#1c1815] uppercase tracking-wider">
+                THE FOUR LABORATORY DISCIPLINES
+              </h2>
+              <p className="text-xs sm:text-sm text-[#544637] mt-1">
+                Bridging pure sciences into a unified, deductive problem-solving architecture.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="p-5 rounded-2xl bg-[#f4ebda] border border-[#d6c7a7] space-y-3 shadow-xs">
+                <div className="h-28 rounded-xl bg-white border border-[#ded3b9] flex items-center justify-center p-2">
+                  <RayOpticsSketch className="w-16 h-16 text-[#8c672b]" />
+                </div>
+                <h3 className="font-serif font-bold text-base text-[#1c1815]">I. Physical Principles</h3>
+                <p className="text-xs text-[#544637] leading-relaxed">
+                  Rigid bodies mechanics, wave optics, electromagnetic induction, kinetic theory, and quantum modern physics.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#f4ebda] border border-[#d6c7a7] space-y-3 shadow-xs">
+                <div className="h-28 rounded-xl bg-white border border-[#ded3b9] flex items-center justify-center p-2">
+                  <BenzeneOrbitalSketch className="w-16 h-16 text-[#9e2a2b]" />
+                </div>
+                <h3 className="font-serif font-bold text-base text-[#1c1815]">II. Molecular Chemistry</h3>
+                <p className="text-xs text-[#544637] leading-relaxed">
+                  Organic reaction mechanisms, coordination complexes, chemical thermodynamics, molecular orbitals, and kinetics.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#f4ebda] border border-[#d6c7a7] space-y-3 shadow-xs">
+                <div className="h-28 rounded-xl bg-white border border-[#ded3b9] flex items-center justify-center p-2">
+                  <CalculusIntegralSketch className="w-16 h-16 text-[#2b4c7e]" />
+                </div>
+                <h3 className="font-serif font-bold text-base text-[#1c1815]">III. Mathematical Rigor</h3>
+                <p className="text-xs text-[#544637] leading-relaxed">
+                  Riemann integration, discrete combinatorics, matrix algebra, probability, and Olympiad-grade subjective proofs.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#f4ebda] border border-[#d6c7a7] space-y-3 shadow-xs">
+                <div className="h-28 rounded-xl bg-white border border-[#ded3b9] flex items-center justify-center p-2">
+                  <DNAHelixSketch className="w-16 h-16 text-[#2d6a4f]" />
+                </div>
+                <h3 className="font-serif font-bold text-base text-[#1c1815]">IV. Biological Systems</h3>
+                <p className="text-xs text-[#544637] leading-relaxed">
+                  Recombinant genetics, cellular physiology, biomolecules, evolutionary ecology, and metabolic pathways.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════════════════════════════════
+            VIEW 4: COMMON INQUIRIES (PINNED POSTCARDS — MATCHING SCREENSHOT 2)
+           ═══════════════════════════════════════════════════════════════════════ */}
+        {activeSection === "inquiries" && (
+          <div className="relative py-8 space-y-8">
+            <div className="text-center max-w-xl mx-auto space-y-2">
+              <h2 className="font-serif text-4xl sm:text-5xl font-black text-[#faf5e8] tracking-wider">
+                Common Inquiries
+              </h2>
+              <p className="font-serif italic text-base text-[#c99742]">
+                Tap a postcard to read
+              </p>
+            </div>
+
+            {/* Pinned Vintage Postcards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto pt-6">
+              {POSTCARD_FAQS.map((faq, idx) => {
+                const isExpanded = expandedFaqIndex === idx;
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => setExpandedFaqIndex(isExpanded ? null : idx)}
+                    className="relative p-7 bg-[#faf5e8] rounded-xl shadow-2xl border-l-4 border-l-[#9e2a2b] border border-[#ded4bc] cursor-pointer hover:scale-[1.02] transition-all duration-300 space-y-4 group"
+                  >
+                    {/* Translucent Masking Tape at Top */}
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-28 h-7 bg-white/45 backdrop-blur-xs border border-white/60 shadow-xs rotate-[-1deg]" />
+
+                    <div className="flex items-center justify-between">
+                      <span className="font-serif italic text-2xl font-bold text-[#9e2a2b]">
+                        {faq.num}
+                      </span>
+                      <span className="text-[11px] font-serif font-bold tracking-widest text-[#8c672b] uppercase group-hover:underline">
+                        {isExpanded ? "Hide Answer" : "Tap to Answer"}
+                      </span>
+                    </div>
+
+                    <h3 className="font-serif text-lg font-bold text-[#1c1815] leading-snug">
+                      {faq.q}
                     </h3>
-                    <p className="text-xs text-[#544637] mt-1 leading-relaxed">
-                      {activeGateway.tagline}
-                    </p>
-                  </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-center text-xs">
-                    <div className="p-2.5 rounded-xl bg-white border border-[#ded3b9]">
-                      <span className="text-[10px] uppercase font-mono text-neutral-500 block">Duration</span>
-                      <strong className="text-[#1c1815]">{activeGateway.duration}</strong>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-white border border-[#ded3b9]">
-                      <span className="text-[10px] uppercase font-mono text-neutral-500 block">Total Marks</span>
-                      <strong className="text-[#1c1815]">{activeGateway.marks}</strong>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-white border border-[#ded3b9] col-span-2 sm:col-span-1">
-                      <span className="text-[10px] uppercase font-mono text-neutral-500 block">Questions</span>
-                      <strong className="text-[#1c1815]">{activeGateway.questions.split(' ')[0]}</strong>
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-[#eadeca] border border-[#cfbe9e] text-xs text-[#3d332a]">
-                    <strong className="font-bold block text-[#1c1815] mb-0.5">💰 Fellowship &amp; Stipend:</strong>
-                    <span>{activeGateway.stipend}</span>
-                  </div>
-
-                  <div className="flex items-center gap-3 pt-2">
-                    <Link
-                      href={activeGateway.pyqUrl}
-                      className="px-4 py-2 rounded-xl bg-[#9e2a2b] hover:bg-[#852324] text-white font-serif font-bold text-xs shadow transition text-center flex items-center gap-1.5"
-                    >
-                      <span>Solve Official Free PYQs</span>
-                      <ChevronRight size={14} />
-                    </Link>
-                    <a
-                      href={activeGateway.officialUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-3.5 py-2 rounded-xl bg-white hover:bg-neutral-50 border border-[#d6c7a7] text-[#1c1815] font-serif font-bold text-xs transition inline-flex items-center gap-1"
-                    >
-                      <span>Official Site</span>
-                      <ExternalLink size={13} />
-                    </a>
-                  </div>
-                </div>
-
-                {/* Right Participating Campuses */}
-                <div className="lg:col-span-6 space-y-4">
-                  <h3 className="font-serif text-lg font-bold text-[#1c1815]">
-                    Admitting Premier Campuses ({activeGateway.institutes.length})
-                  </h3>
-                  <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-2">
-                    {activeGateway.institutes.map((inst, i) => (
-                      <div key={i} className="p-3.5 rounded-xl bg-white border border-[#ded3b9] shadow-xs text-xs space-y-1">
-                        <div className="flex items-center justify-between font-serif font-bold text-[#1c1815]">
-                          <span className="text-sm">{inst.name}</span>
-                          <span className="text-[11px] font-mono text-[#8c672b] font-normal">{inst.location}</span>
-                        </div>
-                        <p className="text-[11px] text-[#544637] leading-relaxed">{inst.highlight}</p>
+                    {isExpanded && (
+                      <div className="pt-4 border-t border-[#eadeca] text-xs sm:text-sm text-[#544637] leading-relaxed font-normal">
+                        {faq.a}
                       </div>
-                    ))}
+                    )}
                   </div>
-                </div>
-
-              </div>
-
+                );
+              })}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* ═══════════════════════════════════════════════════════════════════
-              CHAPTER III: THE 4 SCIENTIFIC DISCIPLINES (LABORATORY SKETCHES)
-             ═══════════════════════════════════════════════════════════════════ */}
-          {activeChapter === 3 && (
-            <div className="p-6 sm:p-10 lg:p-14 relative z-10 space-y-8">
-              <div>
-                <span className="font-serif italic text-sm text-[#8c672b]">Chapter III.</span>
-                <h2 className="font-serif text-3xl sm:text-4xl font-black text-[#1c1815] uppercase tracking-wider">
-                  THE FOUR LABORATORY DISCIPLINES
+        {/* ═══════════════════════════════════════════════════════════════════════
+            VIEW 5: THE HELP DESK (MATCHING SCREENSHOT 3)
+           ═══════════════════════════════════════════════════════════════════════ */}
+        {activeSection === "helpdesk" && (
+          <div className="relative py-12 flex justify-center items-center">
+            <div className="relative w-full max-w-2xl bg-[#faf5e8] border border-[#d6cbaf] rounded-3xl shadow-[0_30px_90px_rgba(0,0,0,0.85)] p-8 sm:p-14 text-center space-y-8">
+              
+              {/* Paper Top Clip */}
+              <div className="paper-clip !-top-4 !right-1/2 !translate-x-1/2" />
+
+              <div className="space-y-2">
+                <h2 className="font-serif text-4xl sm:text-5xl font-extrabold text-[#1c1815] tracking-tight">
+                  The Help <span className="font-serif italic font-normal text-[#8c672b]">Desk</span>
                 </h2>
-                <p className="text-xs sm:text-sm text-[#544637] mt-1">
-                  Bridging pure sciences into a unified, deductive problem-solving architecture.
+                <p className="text-xs sm:text-sm text-[#695a4c] font-serif leading-relaxed max-w-md mx-auto">
+                  For pure science curriculum guidance, test series assistance, or general admission queries.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                {/* Physics */}
-                <div className="p-5 rounded-2xl bg-[#f4ebda] border border-[#d6c7a7] space-y-3 shadow-xs">
-                  <div className="h-28 rounded-xl bg-white border border-[#ded3b9] flex items-center justify-center p-2">
-                    <RayOpticsSketch className="w-16 h-16 text-[#8c672b]" />
-                  </div>
-                  <h3 className="font-serif font-bold text-base text-[#1c1815]">I. Physical Principles</h3>
-                  <p className="text-xs text-[#544637] leading-relaxed">
-                    Mechanics of rigid bodies, wave optics, electromagnetic induction, kinetic theory, and quantum modern physics.
-                  </p>
-                </div>
-
-                {/* Chemistry */}
-                <div className="p-5 rounded-2xl bg-[#f4ebda] border border-[#d6c7a7] space-y-3 shadow-xs">
-                  <div className="h-28 rounded-xl bg-white border border-[#ded3b9] flex items-center justify-center p-2">
-                    <BenzeneOrbitalSketch className="w-16 h-16 text-[#9e2a2b]" />
-                  </div>
-                  <h3 className="font-serif font-bold text-base text-[#1c1815]">II. Molecular Chemistry</h3>
-                  <p className="text-xs text-[#544637] leading-relaxed">
-                    Organic reaction mechanisms, coordination complexes, chemical thermodynamics, molecular orbitals, and kinetics.
-                  </p>
-                </div>
-
-                {/* Mathematics */}
-                <div className="p-5 rounded-2xl bg-[#f4ebda] border border-[#d6c7a7] space-y-3 shadow-xs">
-                  <div className="h-28 rounded-xl bg-white border border-[#ded3b9] flex items-center justify-center p-2">
-                    <CalculusIntegralSketch className="w-16 h-16 text-[#2b4c7e]" />
-                  </div>
-                  <h3 className="font-serif font-bold text-base text-[#1c1815]">III. Mathematical Rigor</h3>
-                  <p className="text-xs text-[#544637] leading-relaxed">
-                    Riemann integration, discrete combinatorics, matrix algebra, probability, and Olympiad-grade subjective proofs.
-                  </p>
-                </div>
-
-                {/* Biology */}
-                <div className="p-5 rounded-2xl bg-[#f4ebda] border border-[#d6c7a7] space-y-3 shadow-xs">
-                  <div className="h-28 rounded-xl bg-white border border-[#ded3b9] flex items-center justify-center p-2">
-                    <DNAHelixSketch className="w-16 h-16 text-[#2d6a4f]" />
-                  </div>
-                  <h3 className="font-serif font-bold text-base text-[#1c1815]">IV. Biological Systems</h3>
-                  <p className="text-xs text-[#544637] leading-relaxed">
-                    Recombinant genetics, cellular physiology, biomolecules, evolutionary ecology, and metabolic pathways.
-                  </p>
-                </div>
-
-              </div>
-            </div>
-          )}
-
-          {/* ═══════════════════════════════════════════════════════════════════
-              CHAPTER IV: PINNED POSTCARDS & FIELD INQUIRIES
-             ═══════════════════════════════════════════════════════════════════ */}
-          {activeChapter === 4 && (
-            <div className="p-6 sm:p-10 lg:p-14 relative z-10 space-y-8">
-              <div className="text-center max-w-xl mx-auto space-y-1">
-                <span className="font-serif italic text-sm text-[#8c672b]">Chapter IV.</span>
-                <h2 className="font-serif text-3xl sm:text-4xl font-black text-[#1c1815] uppercase tracking-wider">
-                  COMMON INQUIRIES
-                </h2>
-                <p className="font-serif italic text-xs text-[#695a4c]">
-                  Tap a postcard to reveal verified academic guidance
-                </p>
-              </div>
-
-              {/* Taped Postcards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto pt-4">
-                {POSTCARD_FAQS.map((faq, idx) => {
-                  const isExpanded = expandedPostcard === idx;
-                  return (
-                    <div
-                      key={idx}
-                      onClick={() => setExpandedPostcard(isExpanded ? null : idx)}
-                      className="relative p-6 bg-white rounded-xl shadow-md border-l-4 border-l-[#9e2a2b] border border-[#ded4bc] cursor-pointer hover:shadow-lg transition-all duration-200 space-y-3 group"
-                    >
-                      {/* Frosted Tape */}
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-white/50 backdrop-blur-xs border border-white/60 shadow-xs rotate-[-1deg]" />
-
-                      <div className="flex items-center justify-between">
-                        <span className="font-serif italic text-lg font-bold text-[#9e2a2b]">
-                          {faq.num}
-                        </span>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8c672b] group-hover:underline">
-                          {isExpanded ? "Hide Answer" : "Tap to Answer →"}
-                        </span>
-                      </div>
-
-                      <h3 className="font-serif font-bold text-sm text-[#1c1815] leading-snug">
-                        {faq.q}
-                      </h3>
-
-                      {isExpanded && (
-                        <div className="pt-3 border-t border-[#eadeca] text-xs text-[#544637] leading-relaxed font-light">
-                          {faq.a}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* ═══════════════════════════════════════════════════════════════════
-              CHAPTER V: MENTORSHIP DISPATCH & HELPDESK
-             ═══════════════════════════════════════════════════════════════════ */}
-          {activeChapter === 5 && (
-            <div className="p-6 sm:p-10 lg:p-14 relative z-10 space-y-8">
-              <div className="text-center max-w-lg mx-auto space-y-1">
-                <span className="font-serif italic text-sm text-[#8c672b]">Chapter V.</span>
-                <h2 className="font-serif text-3xl sm:text-4xl font-black text-[#1c1815] uppercase tracking-wider">
-                  MENTORSHIP DISPATCH
-                </h2>
-                <p className="text-xs text-[#695a4c] font-serif italic">
-                  Direct academic correspondence with our pure science counselors
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto pt-2 text-xs">
+              {/* Lined Directory List */}
+              <div className="space-y-4 text-left font-serif text-sm border-t border-b border-[#e0d6bd] py-6">
                 
                 <a
                   href="tel:+917004283531"
-                  className="p-6 rounded-2xl bg-white border border-[#ded4bc] hover:border-[#9e2a2b] shadow-sm transition flex flex-col items-center text-center space-y-2 group"
+                  className="flex items-center justify-between p-3.5 rounded-xl hover:bg-[#f2e8d4] text-[#1c1815] transition group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[#f4ebda] text-[#9e2a2b] flex items-center justify-center font-bold">
-                    <Phone size={20} />
-                  </div>
-                  <h3 className="font-serif font-bold text-sm text-[#1c1815]">Phone Helpline</h3>
-                  <p className="font-mono font-bold text-[#9e2a2b]">+91 7004283531</p>
-                  <span className="text-[10px] text-neutral-400">Direct Student Enquiries</span>
-                </a>
-
-                <a
-                  href="mailto:support@vigyanprep.com"
-                  className="p-6 rounded-2xl bg-white border border-[#ded4bc] hover:border-[#9e2a2b] shadow-sm transition flex flex-col items-center text-center space-y-2 group"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-[#f4ebda] text-[#9e2a2b] flex items-center justify-center font-bold">
-                    <Mail size={20} />
-                  </div>
-                  <h3 className="font-serif font-bold text-sm text-[#1c1815]">Email Helpdesk</h3>
-                  <p className="font-mono font-bold text-[#9e2a2b]">support@vigyanprep.com</p>
-                  <span className="text-[10px] text-neutral-400">2-4 Hours Response Time</span>
+                  <span className="font-bold">Phone Helpline (+91 7004283531)</span>
+                  <span className="text-[#8c672b] group-hover:translate-x-1 transition-transform">→</span>
                 </a>
 
                 <a
                   href="https://wa.me/917004283531"
                   target="_blank"
                   rel="noreferrer"
-                  className="p-6 rounded-2xl bg-white border border-[#ded4bc] hover:border-[#2d6a4f] shadow-sm transition flex flex-col items-center text-center space-y-2 group"
+                  className="flex items-center justify-between p-3.5 rounded-xl hover:bg-[#f2e8d4] text-[#9e2a2b] font-bold transition group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[#e8f4ed] text-[#2d6a4f] flex items-center justify-center font-bold">
-                    <MessageSquare size={20} />
-                  </div>
-                  <h3 className="font-serif font-bold text-sm text-[#1c1815]">WhatsApp Chat</h3>
-                  <p className="font-mono font-bold text-[#2d6a4f]">+91 7004283531</p>
-                  <span className="text-[10px] text-neutral-400">Instant Doubt Clearing</span>
+                  <span>WhatsApp Mentorship Assistance</span>
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </a>
 
-                <div className="p-6 rounded-2xl bg-white border border-[#ded4bc] shadow-sm flex flex-col items-center text-center space-y-2">
-                  <div className="w-12 h-12 rounded-xl bg-[#f4ebda] text-[#1c1815] flex items-center justify-center font-bold">
-                    <Building2 size={20} />
-                  </div>
-                  <h3 className="font-serif font-bold text-sm text-[#1c1815]">Academic Center</h3>
-                  <p className="text-neutral-600 text-xs">VigyanPrep Pure Science</p>
-                  <span className="text-[10px] text-neutral-400">New Delhi • India</span>
+                <a
+                  href="mailto:support@vigyanprep.com"
+                  className="flex items-center justify-between p-3.5 rounded-xl hover:bg-[#f2e8d4] text-[#1c1815] transition group"
+                >
+                  <span className="font-bold">Email Helpdesk (support@vigyanprep.com)</span>
+                  <span className="text-[#8c672b] group-hover:translate-x-1 transition-transform">→</span>
+                </a>
+
+                <div className="flex items-center justify-between p-3.5 rounded-xl text-[#695a4c]">
+                  <span>Academic Center (New Delhi, India)</span>
+                  <span className="text-xs font-mono font-bold">Pure Science Division</span>
                 </div>
 
               </div>
-            </div>
-          )}
 
-          {/* ═══════════════════════════════════════════════════════════════════
-              JOURNAL FOOTER: PROGRESSIVE CHAPTER TURNING BAR
-             ═══════════════════════════════════════════════════════════════════ */}
-          <div className="p-5 sm:p-6 bg-[#efe5cf] border-t border-[#ded3b9] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-serif z-20">
-            <span className="text-[#695a4c] italic">
-              The VigyanPrep Research Ledger • Vol. 2025–2026
-            </span>
+              <div className="text-xs text-[#8c672b] font-serif italic">
+                Our mentoring team is available 7 days a week (9:00 AM – 9:00 PM IST)
+              </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                disabled={activeChapter === 1}
-                onClick={() => setActiveChapter(Math.max(1, activeChapter - 1))}
-                className="px-3.5 py-1.5 rounded-lg bg-white border border-[#d6c7a7] text-[#1c1815] font-bold disabled:opacity-40 cursor-pointer hover:bg-neutral-50 transition"
-              >
-                ← Previous Page
-              </button>
-              <button
-                disabled={activeChapter === 5}
-                onClick={() => setActiveChapter(Math.min(5, activeChapter + 1))}
-                className="px-3.5 py-1.5 rounded-lg bg-[#9e2a2b] text-white font-bold disabled:opacity-40 cursor-pointer hover:bg-[#852324] transition"
-              >
-                Next Chapter →
-              </button>
             </div>
           </div>
-
-        </div>
+        )}
 
       </main>
 
