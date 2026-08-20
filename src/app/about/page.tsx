@@ -27,11 +27,21 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#1c1917] text-[#2c241d] font-serif selection:bg-[#c99742] selection:text-black relative overflow-x-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-[#14100c] text-[#2c241d] font-serif selection:bg-[#c99742] selection:text-black relative overflow-x-hidden flex flex-col justify-between">
       <Navbar />
 
-      {/* Atmospheric Wooden Desk Backdrop with Ambient Top Glow */}
-      <div className="fixed inset-0 pointer-events-none opacity-40 bg-[radial-gradient(ellipse_at_center,#2c221a_0%,#0e0c0a_100%)] z-0" />
+      {/* Atmospheric Archival Library Background with Warm Soft Vignette */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <Image
+          src="/images/archival_library_backdrop.jpg"
+          alt="Antique grand university research library with warm golden reading lamps"
+          fill
+          className="object-cover opacity-35 scale-105 blur-[2px]"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#14100c] via-[#14100c]/70 to-[#14100c]/85" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#14100c_90%)]" />
+      </div>
 
       {/* Main Interactive Stage */}
       <main className="relative z-10 pt-24 sm:pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex-1 flex flex-col justify-center items-center">
