@@ -36,11 +36,11 @@ export default function AboutPage() {
           src="/images/archival_library_backdrop.jpg"
           alt="Antique grand university research library with warm golden reading lamps"
           fill
-          className="object-cover opacity-35 scale-105 blur-[2px]"
+          className="object-cover opacity-80"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#14100c] via-[#14100c]/70 to-[#14100c]/85" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#14100c_90%)]" />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(15,12,9,0.85)_100%)]" />
       </div>
 
       {/* Main Interactive Stage */}
@@ -110,7 +110,7 @@ export default function AboutPage() {
                     {/* Essay Body with Drop Cap */}
                     <div className="text-sm sm:text-base text-[#382f27] font-serif leading-[1.8] space-y-4">
                       <p className="first-letter:float-left first-letter:text-5xl sm:first-letter:text-6xl first-letter:font-serif first-letter:font-black first-letter:text-[#9e2a2b] first-letter:mr-3 first-letter:leading-[0.85] first-letter:pt-1">
-                        Born from a profound reverence for pure empirical science and mathematical deduction, <strong>VigyanPrep</strong> was established not merely as a test platform, but as an artisanal sanctuary for India&apos;s research scholars. We believe that true scientific learning is an art form—one that bridges the soul of the inquirer with the immutable laws of nature.
+                        Born from a profound reverence for pure empirical science and mathematical deduction, <strong>VigyanPrep</strong>{" "}was established not merely as a test platform, but as an artisanal sanctuary for India&apos;s research scholars. We believe that true scientific learning is an art form—one that bridges the soul of the inquirer with the immutable laws of nature.
                       </p>
                       
                       {/* Pull Quote */}
