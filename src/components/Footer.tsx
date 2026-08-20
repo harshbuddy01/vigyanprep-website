@@ -59,6 +59,7 @@ export default function Footer() {
             <h4 className="font-semibold uppercase tracking-wider text-amber-400">Platform</h4>
             <ul className="space-y-2 text-neutral-300 font-light">
               <li><Link href="/about" className="hover:text-white transition">About Our Mission</Link></li>
+              <li><Link href="/security" className="hover:text-white transition">Security &amp; Integrity</Link></li>
               <li><Link href="/sciencenews" className="hover:text-white transition">Science News</Link></li>
               <li><Link href="/your-doubt" className="hover:text-white transition">Doubt Solver</Link></li>
               <li><a href="https://test.vigyanprep.com" className="hover:text-white transition">Test Portal</a></li>
