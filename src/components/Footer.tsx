@@ -48,10 +48,10 @@ export default function Footer() {
           <div className="space-y-3">
             <h4 className="font-semibold uppercase tracking-wider text-amber-400">Target Exams</h4>
             <ul className="space-y-2 text-neutral-300 font-light">
-              <li><Link href="/courses/iat" className="hover:text-white transition">IISER IAT 2025</Link></li>
-              <li><Link href="/courses/nest" className="hover:text-white transition">NISER NEST 2025</Link></li>
-              <li><Link href="/courses/cmi" className="hover:text-white transition">IISc Bangalore & CMI</Link></li>
-              <li><Link href="/pyq/iiser" className="hover:text-white transition">Solved Question Papers</Link></li>
+              <li><Link href="/tests" className="hover:text-white transition">IISER IAT 2026</Link></li>
+              <li><Link href="/tests" className="hover:text-white transition">NISER NEST 2026</Link></li>
+              <li><Link href="/tests" className="hover:text-white transition">IISc Bangalore & CMI</Link></li>
+              <li><Link href="/pyq" className="hover:text-white transition">Solved Question Papers</Link></li>
             </ul>
           </div>
 
@@ -60,8 +60,7 @@ export default function Footer() {
             <ul className="space-y-2 text-neutral-300 font-light">
               <li><Link href="/about" className="hover:text-white transition">About Our Mission</Link></li>
               <li><Link href="/security" className="hover:text-white transition">Security &amp; Integrity</Link></li>
-              <li><Link href="/sciencenews" className="hover:text-white transition">Science News</Link></li>
-              <li><Link href="/your-doubt" className="hover:text-white transition">Doubt Solver</Link></li>
+              <li><Link href="/pyq" className="hover:text-white transition">Practice Archive</Link></li>
               <li><a href="https://test.vigyanprep.com" className="hover:text-white transition">Test Portal</a></li>
             </ul>
           </div>
@@ -88,6 +87,11 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-500 gap-4 relative z-10">
           <p>© {new Date().getFullYear()} Vigyan.prep • All Rights Reserved</p>
+          <div className="flex items-center gap-3">
+            <Link href="/security" className="hover:text-neutral-300 transition">Privacy & Security</Link>
+            <span className="text-neutral-600">•</span>
+            <Link href="/about" className="hover:text-neutral-300 transition">About</Link>
+          </div>
           <p className="font-serif italic text-neutral-400">Gateway to Future Science</p>
         </div>
 

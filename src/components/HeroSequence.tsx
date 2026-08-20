@@ -48,7 +48,7 @@ export default function HeroSequence() {
         {/* Call to Action Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
           <Link
-            href="/courses/iat"
+            href="/tests"
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 text-black font-bold text-xs uppercase tracking-wider hover:scale-105 transition-all shadow-xl shadow-amber-500/20"
           >
             <span>Explore Courses</span>
