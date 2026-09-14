@@ -23,13 +23,18 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        const { data: signUpData, error } = await supabase.auth.signUp({
           email,
           password,
           options: { data: { full_name: fullName } },
         });
         if (error) throw error;
-        await supabase.from("students").upsert({ email, full_name: fullName }, { onConflict: "email" });
+        const authUserId = signUpData?.user?.id;
+        await supabase.from("students").upsert({
+          ...(authUserId ? { id: authUserId } : {}),
+          email,
+          full_name: fullName
+        }, { onConflict: "email" });
         setMessage({ text: "Account created successfully! Check your email to confirm.", type: "success" });
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
