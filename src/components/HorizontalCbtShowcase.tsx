@@ -15,206 +15,243 @@ import {
   Brain,
   Sparkles,
   X,
+  ExternalLink,
 } from "lucide-react";
 
 export default function HorizontalCbtShowcase() {
   const [showDemoModal, setShowDemoModal] = useState(false);
 
   return (
-    <section className="relative w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#0a0c10] text-[#e6e8ec] overflow-hidden select-none border-t border-b border-white/[0.06]">
-      {/* Ambient background glow & celestial backdrop */}
-      <div className="absolute top-1/3 right-1/4 w-[650px] h-[450px] bg-gradient-to-br from-amber-500/[0.08] via-amber-600/[0.04] to-transparent blur-[140px] pointer-events-none rounded-full" />
-      <div className="absolute bottom-10 left-10 w-[400px] h-[300px] bg-amber-700/[0.05] blur-[120px] pointer-events-none rounded-full" />
+    <section className="relative w-full bg-[#08090c] text-[#e6e8ec] overflow-hidden select-none border-t border-b border-white/[0.06]">
+      {/* Ambient background glow orbs */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-amber-500/[0.07] via-amber-600/[0.03] to-transparent blur-[140px] pointer-events-none rounded-full" />
+      <div className="absolute bottom-10 right-10 w-[500px] h-[350px] bg-amber-600/[0.04] blur-[120px] pointer-events-none rounded-full" />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* ═══════════ MAIN 2-COLUMN HERO ═══════════ */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center mb-16 lg:mb-20">
-          {/* Left Column: Typography, Badges, CTAs */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/[0.08] border border-amber-500/30 text-amber-300 text-xs font-mono font-medium">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Interactive Platform Preview</span>
+      {/* ═══════════════════════════════════════════════════════════════════
+          DESKTOP & TABLET VIEW (md and up):
+          Pixel-Perfect Uncut Retina Artwork with Interactive SaaS Hotspots
+          ═══════════════════════════════════════════════════════════════════ */}
+      <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20 relative z-10">
+        <div className="relative w-full rounded-2xl overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.9),0_0_60px_rgba(245,158,11,0.05)] border border-white/[0.08] group">
+          {/* Main Uncut Retina Showcase Visual */}
+          <Image
+            src="/images/cbt-showcase-retina.webp"
+            alt="VigyanPrep Authentic TCS-iON CBT Platform — Same Questions. Real Exam Experience."
+            width={2048}
+            height={1246}
+            priority
+            quality={95}
+            className="w-full h-auto block select-none pointer-events-none"
+          />
+
+          {/* ─── INTERACTIVE CLICK HOTSPOTS ─── */}
+
+          {/* Hotspot 1: Explore Test Series Button */}
+          <Link
+            href="/tests"
+            className="absolute left-[3.8%] top-[54.5%] w-[16.5%] h-[6.8%] rounded-full cursor-pointer transition-all duration-250 hover:bg-amber-400/[0.15] hover:ring-2 hover:ring-amber-400/50 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] flex items-center justify-center group/btn"
+            title="Explore VigyanPrep Test Series & Free CBT Mocks"
+          >
+            <span className="sr-only">Explore Test Series</span>
+          </Link>
+
+          {/* Hotspot 2: Watch Demo Button */}
+          <button
+            type="button"
+            onClick={() => setShowDemoModal(true)}
+            className="absolute left-[20.8%] top-[54.5%] w-[12%] h-[6.8%] rounded-full cursor-pointer transition-all duration-250 hover:bg-white/[0.12] hover:ring-2 hover:ring-white/40 hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] flex items-center justify-center group/demo"
+            title="Watch Full-Screen Interactive CBT Simulator Demo"
+          >
+            <span className="sr-only">Watch Demo</span>
+          </button>
+
+          {/* Hotspot 3: Laptop Display — Links directly to live Student Portal */}
+          <a
+            href="https://test.vigyanprep.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute left-[40.5%] top-[14.5%] w-[56.5%] h-[64%] rounded-2xl cursor-pointer transition-all duration-300 hover:ring-2 hover:ring-amber-400/40 hover:bg-amber-500/[0.03]"
+            title="Click to launch the live VigyanPrep Student CBT Test Portal"
+          >
+            <span className="sr-only">Open Student CBT Portal</span>
+            {/* Subtle floating launch indicator on hover */}
+            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-xs font-mono text-amber-400 flex items-center gap-1.5 shadow-xl">
+              <span>Launch Live CBT</span>
+              <ExternalLink size={12} />
             </div>
+          </a>
 
-            {/* Headline */}
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.12] text-white">
-              <span>Same Questions.</span>
-              <br />
-              <span
-                className="bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400 bg-clip-text text-transparent italic font-normal"
-                style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}
-              >
-                Real Exam
-              </span>{" "}
-              <span>Experience.</span>
-            </h2>
+          {/* Hotspots 4-7: Bottom 4 Feature Cards */}
+          <Link
+            href="/tests"
+            className="absolute left-[2.5%] bottom-[2.5%] w-[23%] h-[16%] rounded-xl cursor-pointer transition-all hover:bg-white/[0.04] hover:ring-1 hover:ring-white/20"
+            title="Learn about TCS-iON CBT Like Interface"
+          >
+            <span className="sr-only">TCS-iON CBT Interface</span>
+          </Link>
 
-            {/* Subtitle */}
-            <p className="text-neutral-400 text-sm sm:text-base leading-relaxed max-w-xl">
-              Our platform{" "}
-              <strong className="text-white font-medium">
-                perfectly replicates the TCS-iON CBT environment
-              </strong>{" "}
-              for{" "}
-              <strong className="text-white font-medium">
-                IISER IAT &amp; NISER NEST
-              </strong>{" "}
-              — from the 60-question palette to instant All-India percentile rankings.
-            </p>
+          <Link
+            href="/tests"
+            className="absolute left-[26.5%] bottom-[2.5%] w-[23%] h-[16%] rounded-xl cursor-pointer transition-all hover:bg-white/[0.04] hover:ring-1 hover:ring-white/20"
+            title="Learn about All-India Rankings"
+          >
+            <span className="sr-only">All-India Rankings</span>
+          </Link>
 
-            {/* 4 Feature Pills in Row */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="flex items-center gap-2 text-xs text-neutral-300">
-                <div className="w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
-                </div>
-                <div>
-                  <div className="font-bold text-white font-mono">100%</div>
-                  <div className="text-[10px] text-neutral-400">NTA Pattern</div>
-                </div>
-              </div>
+          <Link
+            href="/pyq"
+            className="absolute left-[50.5%] bottom-[2.5%] w-[23%] h-[16%] rounded-xl cursor-pointer transition-all hover:bg-white/[0.04] hover:ring-1 hover:ring-white/20"
+            title="Learn about Detailed Analytics"
+          >
+            <span className="sr-only">Detailed Analytics</span>
+          </Link>
 
-              <div className="flex items-center gap-2 text-xs text-neutral-300">
-                <div className="w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
-                  <Atom className="w-3.5 h-3.5 text-amber-400" />
-                </div>
-                <div>
-                  <div className="font-bold text-white font-mono">KaTeX</div>
-                  <div className="text-[10px] text-neutral-400">Scientific Formulas</div>
-                </div>
-              </div>
+          <a
+            href="https://test.vigyanprep.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute left-[74.5%] bottom-[2.5%] w-[23%] h-[16%] rounded-xl cursor-pointer transition-all hover:bg-white/[0.04] hover:ring-1 hover:ring-white/20"
+            title="Learn about Adaptive Practice"
+          >
+            <span className="sr-only">Adaptive Practice</span>
+          </a>
+        </div>
+      </div>
 
-              <div className="flex items-center gap-2 text-xs text-neutral-300">
-                <div className="w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
-                  <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
-                </div>
-                <div>
-                  <div className="font-bold text-white font-mono">Instant</div>
-                  <div className="text-[10px] text-neutral-400">AIR Percentiles</div>
-                </div>
-              </div>
+      {/* ═══════════════════════════════════════════════════════════════════
+          MOBILE VIEW (< md screens):
+          Fully Responsive Clean Vertical Stack — Razor-Sharp Legibility
+          ═══════════════════════════════════════════════════════════════════ */}
+      <div className="block md:hidden px-4 py-16 space-y-8 max-w-xl mx-auto">
+        {/* Pill Badge */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/[0.08] border border-amber-500/30 text-amber-300 text-xs font-mono font-medium">
+          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <span>Interactive Platform Preview</span>
+        </div>
 
-              <div className="flex items-center gap-2 text-xs text-neutral-300">
-                <div className="w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
-                  <FileText className="w-3.5 h-3.5 text-amber-400" />
-                </div>
-                <div>
-                  <div className="font-bold text-white font-mono">Detailed</div>
-                  <div className="text-[10px] text-neutral-400">Performance Analysis</div>
-                </div>
-              </div>
-            </div>
+        {/* Mobile Headline */}
+        <h2 className="text-3xl font-extrabold tracking-tight leading-tight text-white">
+          <span>Same Questions.</span>
+          <br />
+          <span
+            className="bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400 bg-clip-text text-transparent italic font-normal"
+            style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}
+          >
+            Real Exam
+          </span>{" "}
+          <span>Experience.</span>
+        </h2>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-3">
-              <Link
-                href="/tests"
-                className="px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-zinc-950 font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-[0_4px_25px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_30px_rgba(245,158,11,0.35)] transition transform hover:-translate-y-0.5 cursor-pointer"
-              >
-                <span>Explore Test Series</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+        {/* Mobile Subtitle */}
+        <p className="text-neutral-400 text-sm leading-relaxed">
+          Our platform{" "}
+          <strong className="text-white font-medium">
+            perfectly replicates the TCS-iON CBT environment
+          </strong>{" "}
+          for{" "}
+          <strong className="text-white font-medium">
+            IISER IAT &amp; NISER NEST
+          </strong>{" "}
+          — from the 60-question palette to instant All-India percentile rankings.
+        </p>
 
-              <button
-                type="button"
-                onClick={() => setShowDemoModal(true)}
-                className="px-5 py-3 rounded-full bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-white/10 hover:border-amber-400/40 font-semibold text-xs flex items-center gap-2 transition cursor-pointer"
-              >
-                <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
-                  <Play className="w-2.5 h-2.5 fill-white text-white translate-x-0.5" />
-                </div>
-                <span>Watch Demo</span>
-              </button>
+        {/* Mobile 4 Feature Badges */}
+        <div className="grid grid-cols-2 gap-3 pt-1">
+          <div className="flex items-center gap-2 text-xs text-neutral-300 bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.06]">
+            <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+            <div>
+              <div className="font-bold text-white font-mono">100%</div>
+              <div className="text-[10px] text-neutral-400">NTA Pattern</div>
             </div>
           </div>
 
-          {/* Right Column: Realistic Desktop / Laptop Display */}
-          <div className="lg:col-span-7 relative flex items-center justify-center">
-            {/* The Laptop Visual with Books and Ambient Space Glow */}
-            <div className="relative w-full max-w-[680px] drop-shadow-[0_25px_50px_rgba(0,0,0,0.85)] group">
-              <Image
-                src="/images/cbt-laptop-preview.webp"
-                alt="VigyanPrep Authentic TCS-iON CBT Platform on Desktop"
-                width={720}
-                height={480}
-                priority
-                className="w-full h-auto object-contain rounded-xl select-none pointer-events-none transition-transform duration-500 group-hover:scale-[1.01]"
-              />
+          <div className="flex items-center gap-2 text-xs text-neutral-300 bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.06]">
+            <Atom className="w-4 h-4 text-amber-400 shrink-0" />
+            <div>
+              <div className="font-bold text-white font-mono">KaTeX</div>
+              <div className="text-[10px] text-neutral-400">Formulas</div>
+            </div>
+          </div>
 
-              {/* Click-through overlay to open Student Portal */}
-              <a
-                href="https://test.vigyanprep.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute inset-0 z-20 cursor-pointer"
-                title="Click to open VigyanPrep Student CBT Test Portal"
-              >
-                <span className="sr-only">Open VigyanPrep Student CBT Portal</span>
-              </a>
+          <div className="flex items-center gap-2 text-xs text-neutral-300 bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.06]">
+            <TrendingUp className="w-4 h-4 text-amber-400 shrink-0" />
+            <div>
+              <div className="font-bold text-white font-mono">Instant</div>
+              <div className="text-[10px] text-neutral-400">AIR Percentile</div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs text-neutral-300 bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.06]">
+            <FileText className="w-4 h-4 text-amber-400 shrink-0" />
+            <div>
+              <div className="font-bold text-white font-mono">Detailed</div>
+              <div className="text-[10px] text-neutral-400">Analysis</div>
             </div>
           </div>
         </div>
 
-        {/* ═══════════ BOTTOM 4-CARD FEATURE STRIP ═══════════ */}
-        <div className="pt-10 border-t border-white/[0.07] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {/* Card 1: CBT Like Interface */}
-          <div className="flex items-start gap-3.5">
-            <div className="w-11 h-11 rounded-full bg-amber-500/[0.08] border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-400 mt-0.5">
-              <ClipboardList className="w-5 h-5" />
-            </div>
+        {/* Mobile CTAs */}
+        <div className="flex flex-col sm:flex-row items-stretch gap-3 pt-2">
+          <Link
+            href="/tests"
+            className="w-full py-3.5 px-6 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-zinc-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 text-center"
+          >
+            <span>Explore Test Series</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setShowDemoModal(true)}
+            className="w-full py-3.5 px-5 rounded-full bg-zinc-900 border border-white/10 text-zinc-200 font-semibold text-xs flex items-center justify-center gap-2"
+          >
+            <Play className="w-3 h-3 fill-white text-white" />
+            <span>Watch Demo</span>
+          </button>
+        </div>
+
+        {/* Mobile Laptop Visual */}
+        <div className="relative pt-4">
+          <Image
+            src="/images/cbt-laptop-preview.webp"
+            alt="VigyanPrep Student CBT Test Portal"
+            width={720}
+            height={480}
+            className="w-full h-auto rounded-xl border border-white/[0.08] shadow-2xl"
+          />
+        </div>
+
+        {/* Mobile 4 Feature Cards */}
+        <div className="space-y-3 pt-4 border-t border-white/[0.07]">
+          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-start gap-3">
+            <ClipboardList className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-bold text-white mb-1">
-                TCS-iON CBT Like Interface
-              </h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Exact interface &amp; question palette for real exam practice.
-              </p>
+              <div className="text-xs font-bold text-white">TCS-iON CBT Like Interface</div>
+              <div className="text-[11px] text-neutral-400 mt-0.5">Exact interface &amp; question palette for real exam practice.</div>
             </div>
           </div>
 
-          {/* Card 2: All-India Rankings */}
-          <div className="flex items-start gap-3.5">
-            <div className="w-11 h-11 rounded-full bg-amber-500/[0.08] border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-400 mt-0.5">
-              <BarChart3 className="w-5 h-5" />
-            </div>
+          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-start gap-3">
+            <BarChart3 className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-bold text-white mb-1">
-                All-India Rankings
-              </h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Compare your percentile with aspirants across India.
-              </p>
+              <div className="text-xs font-bold text-white">All-India Rankings</div>
+              <div className="text-[11px] text-neutral-400 mt-0.5">Compare your percentile with aspirants across India.</div>
             </div>
           </div>
 
-          {/* Card 3: Detailed Analytics */}
-          <div className="flex items-start gap-3.5">
-            <div className="w-11 h-11 rounded-full bg-amber-500/[0.08] border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-400 mt-0.5">
-              <FileText className="w-5 h-5" />
-            </div>
+          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-start gap-3">
+            <FileText className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-bold text-white mb-1">
-                Detailed Analytics
-              </h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Topic-wise strengths, weakness and AI-powered insights.
-              </p>
+              <div className="text-xs font-bold text-white">Detailed Analytics</div>
+              <div className="text-[11px] text-neutral-400 mt-0.5">Topic-wise strengths, weakness and AI-powered insights.</div>
             </div>
           </div>
 
-          {/* Card 4: Adaptive Practice */}
-          <div className="flex items-start gap-3.5">
-            <div className="w-11 h-11 rounded-full bg-amber-500/[0.08] border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-400 mt-0.5">
-              <Brain className="w-5 h-5" />
-            </div>
+          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-start gap-3">
+            <Brain className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-bold text-white mb-1">
-                Adaptive Practice
-              </h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Smart question selection based on your performance.
-              </p>
+              <div className="text-xs font-bold text-white">Adaptive Practice</div>
+              <div className="text-[11px] text-neutral-400 mt-0.5">Smart question selection based on your performance.</div>
             </div>
           </div>
         </div>
