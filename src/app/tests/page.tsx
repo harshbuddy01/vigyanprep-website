@@ -38,6 +38,9 @@ export default function BuyTestPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // Tracks which exam types the student already has an active subscription for
   const [subscribedExamTypes, setSubscribedExamTypes] = useState<string[]>([]);
+  // Tracks if the student owns an active All-in-One (Bundle) pass
+  const [userHasBundle, setUserHasBundle] = useState(false);
+  const [userBundleCoveredExams, setUserBundleCoveredExams] = useState<string[]>([]);
 
   // Load Razorpay Script dynamically
   const loadRazorpayScript = () => {
@@ -91,15 +94,29 @@ export default function BuyTestPage() {
           // This handles both single-exam subs (e.g. exam_type="IAT")
           // and bundle subs (bundle_includes=["IAT","NEST"])
           const examTypes: string[] = [];
+          let hasBundle = false;
+          const bundleExams: string[] = [];
+
           for (const sub of data.subscriptions || []) {
-            const planExamType = sub.plan?.exam_type || sub.exam_type || '';
-            const bundleIncludes: string[] = sub.bundle_includes || sub.plan?.bundle_includes || [];
+            const planExamType = (sub.plan?.exam_type || sub.exam_type || '').toUpperCase();
+            const rawBundleIncludes = sub.bundle_includes || sub.plan?.bundle_includes || [];
+            const bundleIncludes: string[] = Array.isArray(rawBundleIncludes)
+              ? rawBundleIncludes.map((e: string) => String(e).toUpperCase())
+              : [];
+
             if (planExamType === 'BUNDLE' && bundleIncludes.length > 0) {
-              bundleIncludes.forEach((e: string) => { if (!examTypes.includes(e)) examTypes.push(e); });
+              hasBundle = true;
+              bundleIncludes.forEach((e: string) => {
+                if (!bundleExams.includes(e)) bundleExams.push(e);
+                if (!examTypes.includes(e)) examTypes.push(e);
+              });
             } else if (planExamType && !examTypes.includes(planExamType)) {
               examTypes.push(planExamType);
             }
           }
+
+          setUserHasBundle(hasBundle);
+          setUserBundleCoveredExams(bundleExams);
           setSubscribedExamTypes(examTypes);
         }
       } catch (err) {
@@ -258,13 +275,42 @@ export default function BuyTestPage() {
     if (selectedExam === "NEST") {
       return matchesKeywords(["NEST", "NISER"]);
     }
+    if (selectedExam === "JEE") {
+      return matchesKeywords(["JEE"]);
+    }
     if (selectedExam === "CMI") {
       return matchesKeywords(["CMI", "ISI", "IISC"]);
     }
     return matchesKeywords([selectedExam.toUpperCase()]);
   });
 
-  const displayPlans = filteredPlans;
+  // Smart Display Logic:
+  // If student owns an active All-in-One (Bundle) pass:
+  // - Don't show redundant individual cards (e.g. IAT, NEST, JEE) that are already included in their bundle
+  // - Show the Master Bundle card prominently at the top
+  // - Only show separate unowned exams (like CMI)
+  const displayPlans = filteredPlans
+    .filter(plan => {
+      const isPlanBundle = (plan.exam_type || '').toUpperCase() === 'BUNDLE' || 
+        (Array.isArray(plan.bundle_includes) && plan.bundle_includes.length > 1);
+      
+      // If student owns the bundle, hide individual plans for exams already included in their bundle
+      if (userHasBundle && !isPlanBundle) {
+        const planExam = (plan.exam_type || '').toUpperCase();
+        if (userBundleCoveredExams.includes(planExam)) {
+          return false; // Redundant! Already included in student's active bundle
+        }
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      // Put bundle / subscribed pass first
+      const isBundleA = (a.exam_type || '').toUpperCase() === 'BUNDLE' || (Array.isArray(a.bundle_includes) && a.bundle_includes.length > 1);
+      const isBundleB = (b.exam_type || '').toUpperCase() === 'BUNDLE' || (Array.isArray(b.bundle_includes) && b.bundle_includes.length > 1);
+      if (isBundleA && !isBundleB) return -1;
+      if (!isBundleA && isBundleB) return 1;
+      return 0;
+    });
 
   const scrollToPricing = (examCode: string) => {
     setSelectedExam(examCode);
@@ -531,7 +577,7 @@ export default function BuyTestPage() {
 
           {/* Exam Filter Pills */}
           <div className="flex justify-center gap-2 flex-wrap">
-            {["ALL", "IAT", "NEST", "CMI"].map((cat) => (
+            {["ALL", "IAT", "NEST", "JEE", "CMI"].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedExam(cat)}
@@ -545,6 +591,37 @@ export default function BuyTestPage() {
               </button>
             ))}
           </div>
+
+          {/* Active All-in-One Master Pass Banner */}
+          {userHasBundle && (
+            <div className="p-6 rounded-3xl bg-emerald-950/15 border-2 border-emerald-500/40 text-emerald-950 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 shadow-lg backdrop-blur-xl">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-xl shadow-md shrink-0">
+                  ✓
+                </div>
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h4 className="font-serif font-bold text-lg text-[#1c1815]">
+                      All-in-One Master Pass Active
+                    </h4>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-600 text-white shadow-xs">
+                      Enrolled
+                    </span>
+                  </div>
+                  <p className="text-xs text-emerald-900 font-extrabold leading-relaxed">
+                    You have full access to all scheduled CBT mocks for <strong>{userBundleCoveredExams.join(', ')}</strong>. Individual cards already covered by your pass are hidden for your convenience.
+                  </p>
+                </div>
+              </div>
+              <a
+                href="https://test.vigyanprep.com/dashboard"
+                className="w-full md:w-auto px-7 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs uppercase tracking-wider shrink-0 transition shadow-md flex items-center justify-center gap-2 text-center"
+              >
+                <span>Go to Student Portal</span>
+                <span>→</span>
+              </a>
+            </div>
+          )}
 
           {loadingPlans ? (
             <div className="text-center py-20 bg-white/40 backdrop-blur-2xl border-2 border-amber-950/30 rounded-3xl shadow-2xl">
@@ -598,7 +675,7 @@ export default function BuyTestPage() {
                     )}
                     {buttonState === 'access' && (
                       <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md">
-                        ✓ SUBSCRIBED
+                        {isPlanBundle ? '✓ ALL-IN-ONE PASS ACTIVE' : '✓ SUBSCRIBED'}
                       </div>
                     )}
                     {buttonState === 'upgrade' && (
@@ -694,7 +771,7 @@ export default function BuyTestPage() {
                           }`}
                         >
                           <CheckCircle2 size={16} />
-                          <span>Access Tests → Go to Dashboard</span>
+                          <span>{isPlanBundle ? 'Access All Mocks → Go to Dashboard' : 'Access Tests → Go to Dashboard'}</span>
                         </a>
                       ) : buttonState === 'upgrade' ? (
                         <button
