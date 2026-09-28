@@ -47,6 +47,15 @@ export default function BuyTestPage() {
 
   // User auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userHasTrial, setUserHasTrial] = useState(false);
+  const [userHasPaidPass, setUserHasPaidPass] = useState(false);
+  const [trialPassDetails, setTrialPassDetails] = useState<{
+    name: string;
+    expiresAt: string | null;
+    hoursRemaining: number;
+    minutesRemaining: number;
+    formattedTimeLeft: string;
+  } | null>(null);
   // Tracks which exam types the student already has an active subscription for
   const [subscribedExamTypes, setSubscribedExamTypes] = useState<string[]>([]);
   // Tracks if the student owns an active All-in-One (Bundle) pass
@@ -93,7 +102,7 @@ export default function BuyTestPage() {
     }
 
     // If the student is logged in, fetch their active subscriptions
-    // so we can change the buy button to "Access Tests" for already-purchased plans
+    // so we can distinguish demo/trial passes from paid enrollments
     async function fetchSubscriptions(authToken: string) {
       try {
         const res = await fetch("https://api.vigyanprep.com/api/student/subscriptions", {
@@ -101,34 +110,78 @@ export default function BuyTestPage() {
         });
         if (res.ok) {
           const data = await res.json();
-          // Collect all exam types the student has active access to
-          // This handles both single-exam subs (e.g. exam_type="IAT")
-          // and bundle subs (bundle_includes=["IAT","NEST"])
           const examTypes: string[] = [];
-          let hasBundle = false;
+          let hasPaidBundle = false;
+          let hasTrial = false;
+          let trialInfo = null;
+          let hasPaid = false;
           const bundleExams: string[] = [];
 
           for (const sub of data.subscriptions || []) {
+            const isTrial = sub.is_trial === true ||
+              sub.plan_id === 'e0000000-0000-0000-0000-000000000024' ||
+              (sub.plan?.name || sub.plan_name || '').toLowerCase().includes('trial') ||
+              (sub.plan?.name || sub.plan_name || '').toLowerCase().includes('demo') ||
+              sub.amount_paid === 0;
+
             const planExamType = (sub.plan?.exam_type || sub.exam_type || '').toUpperCase();
             const rawBundleIncludes = sub.bundle_includes || sub.plan?.bundle_includes || [];
             const bundleIncludes: string[] = Array.isArray(rawBundleIncludes)
               ? rawBundleIncludes.map((e: string) => String(e).toUpperCase())
               : [];
 
-            if (planExamType === 'BUNDLE' && bundleIncludes.length > 0) {
-              hasBundle = true;
-              bundleIncludes.forEach((e: string) => {
-                if (!bundleExams.includes(e)) bundleExams.push(e);
-                if (!examTypes.includes(e)) examTypes.push(e);
-              });
-            } else if (planExamType && !examTypes.includes(planExamType)) {
-              examTypes.push(planExamType);
+            if (isTrial) {
+              hasTrial = true;
+              const expiresAt = sub.expires_at ? new Date(sub.expires_at) : null;
+              const now = new Date();
+              let hoursLeft = 24;
+              let minsLeft = 0;
+              let formatted = "24 Hours Left";
+              if (expiresAt) {
+                const diffMs = expiresAt.getTime() - now.getTime();
+                if (diffMs > 0) {
+                  hoursLeft = Math.floor(diffMs / (1000 * 60 * 60));
+                  minsLeft = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                  formatted = `${hoursLeft}h ${minsLeft}m remaining`;
+                } else {
+                  formatted = "Expired";
+                }
+              }
+              trialInfo = {
+                name: sub.plan?.name || "24-Hour VIP Demo Pass",
+                expiresAt: sub.expires_at,
+                hoursRemaining: hoursLeft,
+                minutesRemaining: minsLeft,
+                formattedTimeLeft: formatted
+              };
+            } else {
+              hasPaid = true;
+              if (planExamType === 'BUNDLE' && bundleIncludes.length > 0) {
+                hasPaidBundle = true;
+                bundleIncludes.forEach((e: string) => {
+                  if (!bundleExams.includes(e)) bundleExams.push(e);
+                  if (!examTypes.includes(e)) examTypes.push(e);
+                });
+              } else if (planExamType && !examTypes.includes(planExamType)) {
+                examTypes.push(planExamType);
+              }
             }
           }
 
-          setUserHasBundle(hasBundle);
+          setUserHasTrial(hasTrial);
+          setTrialPassDetails(trialInfo);
+          setUserHasPaidPass(hasPaid);
+          setUserHasBundle(hasPaidBundle);
           setUserBundleCoveredExams(bundleExams);
           setSubscribedExamTypes(examTypes);
+
+          if (typeof window !== 'undefined') {
+            if (hasTrial && !hasPaid) {
+              localStorage.setItem("student_is_demo", "true");
+            } else {
+              localStorage.removeItem("student_is_demo");
+            }
+          }
         }
       } catch (err) {
         console.error("Failed to fetch subscriptions:", err);
@@ -142,7 +195,16 @@ export default function BuyTestPage() {
   // Helper: determine button state for a plan card
   // Returns: 'access' | 'upgrade' | 'buy'
   const getPlanButtonState = (plan: Plan): 'access' | 'upgrade' | 'buy' => {
-    if (!isLoggedIn || subscribedExamTypes.length === 0) return 'buy';
+    if (!isLoggedIn) return 'buy';
+
+    // If student only has a Demo Pass, every paid plan is an UPGRADE opportunity
+    if (userHasTrial && !userHasPaidPass) {
+      if (isTrialPlan(plan)) return 'access';
+      return 'upgrade';
+    }
+
+    if (subscribedExamTypes.length === 0) return 'buy';
+
     const isBundle = plan.exam_type === 'BUNDLE' && Array.isArray(plan.bundle_includes) && plan.bundle_includes.length > 0;
     if (isBundle) {
       const covered = plan.bundle_includes!.filter(e => subscribedExamTypes.includes(e));
@@ -376,8 +438,8 @@ export default function BuyTestPage() {
       const isPlanBundle = (plan.exam_type || '').toUpperCase() === 'BUNDLE' || 
         (Array.isArray(plan.bundle_includes) && plan.bundle_includes.length > 1);
       
-      // If student owns the bundle, hide individual plans for exams already included in their bundle
-      if (userHasBundle && !isPlanBundle) {
+      // If student owns a PAID bundle, hide individual plans for exams already included in their bundle
+      if (userHasBundle && userHasPaidPass && !isPlanBundle) {
         const planExam = (plan.exam_type || '').toUpperCase();
         if (userBundleCoveredExams.includes(planExam)) {
           return false; // Redundant! Already included in student's active bundle
@@ -674,8 +736,59 @@ export default function BuyTestPage() {
             ))}
           </div>
 
-          {/* Active All-in-One Master Pass Banner */}
-          {userHasBundle && (
+          {/* 1. Active 24-Hour VIP Demo Account Banner */}
+          {userHasTrial && !userHasPaidPass && (
+            <div className="relative overflow-hidden p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#1c1815] via-[#241e18] to-[#1c1815] border-2 border-amber-400/80 text-amber-100 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
+              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex items-start gap-4 sm:gap-5 relative z-10">
+                <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-black flex items-center justify-center font-black text-2xl shadow-lg shrink-0">
+                  ⚡
+                </div>
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h4 className="font-serif font-bold text-xl sm:text-2xl text-white">
+                      You are in 24-Hour VIP Demo Mode
+                    </h4>
+                    <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-gradient-to-r from-amber-400 to-amber-500 text-black shadow-xs">
+                      Demo Account Active
+                    </span>
+                    {trialPassDetails?.formattedTimeLeft && (
+                      <span className="px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider bg-amber-950/80 border border-amber-400/40 text-amber-300">
+                        ⏱️ {trialPassDetails.formattedTimeLeft}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs sm:text-sm text-neutral-300 font-medium leading-relaxed max-w-2xl">
+                    You currently have temporary evaluation access to scheduled CBT mocks. <strong className="text-amber-300 font-bold">Upgrade to a Full Pass below</strong> to lock in your All-India Merit Rank, save your chapter mistake reviews permanently, and unlock 365-day access to all mocks.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto shrink-0 relative z-10">
+                <button
+                  onClick={() => {
+                    const pricingEl = document.getElementById('pricing-grid');
+                    if (pricingEl) pricingEl.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:brightness-110 text-neutral-950 font-black text-xs uppercase tracking-wider transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-center cursor-pointer"
+                >
+                  <Sparkles size={16} />
+                  <span>Upgrade to Full Pass (Save 50%)</span>
+                </button>
+                <a
+                  href="https://test.vigyanprep.com/dashboard"
+                  className="px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-extrabold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 text-center"
+                >
+                  <span>Go to Test Portal</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Active All-in-One Master Pass Banner (Only for Paid Enrolled Students) */}
+          {userHasBundle && userHasPaidPass && (
             <div className="p-6 rounded-3xl bg-emerald-950/15 border-2 border-emerald-500/40 text-emerald-950 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 shadow-lg backdrop-blur-xl">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-xl shadow-md shrink-0">
@@ -725,7 +838,7 @@ export default function BuyTestPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="pricing-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {displayPlans.map((plan, idx) => {
                 const isPlanTrial = isTrialPlan(plan);
                 const isPopular = !isPlanTrial && (idx === 0 || plan.name.toLowerCase().includes("all") || plan.name.toLowerCase().includes("pro"));
@@ -754,11 +867,28 @@ export default function BuyTestPage() {
                     }`}
                   >
                     {isPlanTrial && (
-                      <div className="absolute top-0 right-0 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black text-[10px] font-black uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md">
-                        ⚡ 24-HOUR VIP DEMO
+                      <div className={`absolute top-0 right-0 text-[10px] font-black uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md flex items-center gap-1.5 ${
+                        userHasTrial && !userHasPaidPass
+                          ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white"
+                          : "bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black"
+                      }`}>
+                        {userHasTrial && !userHasPaidPass ? (
+                          <>
+                            <Check size={12} className="stroke-[3]" />
+                            <span>CURRENTLY ACTIVE</span>
+                          </>
+                        ) : (
+                          <span>⚡ 24-HOUR VIP DEMO</span>
+                        )}
                       </div>
                     )}
-                    {!isPlanTrial && isPopular && buttonState !== 'access' && (
+                    {!isPlanTrial && userHasTrial && !userHasPaidPass && (
+                      <div className="absolute top-0 right-0 bg-gradient-to-r from-amber-400 to-amber-500 text-black text-[10px] font-black uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md flex items-center gap-1">
+                        <Sparkles size={12} />
+                        <span>UPGRADE AVAILABLE</span>
+                      </div>
+                    )}
+                    {!isPlanTrial && !userHasTrial && isPopular && buttonState !== 'access' && (
                       <div className="absolute top-0 right-0 bg-[#1c1815] text-amber-300 text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md border-b border-l border-amber-500/30">
                         ⭐ MOST POPULAR
                       </div>
@@ -768,7 +898,7 @@ export default function BuyTestPage() {
                         {isPlanBundle ? '✓ ALL-IN-ONE PASS ACTIVE' : '✓ SUBSCRIBED'}
                       </div>
                     )}
-                    {!isPlanTrial && buttonState === 'upgrade' && (
+                    {!isPlanTrial && !userHasTrial && buttonState === 'upgrade' && (
                       <div className="absolute top-0 right-0 bg-purple-600 text-white text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md">
                         ↑ UPGRADE AVAILABLE
                       </div>
@@ -813,15 +943,27 @@ export default function BuyTestPage() {
 
                       {/* Pricing Display */}
                       {isPlanTrial ? (
-                        <div className="flex items-baseline gap-3 py-3 border-y-2 border-amber-500/30">
-                          <span className="text-4xl font-extrabold font-serif text-amber-400">FREE</span>
-                          <span className="text-xs text-neutral-300 font-extrabold uppercase tracking-wider">
-                            24h VIP Demo
-                          </span>
-                          <span className="text-xs font-extrabold ml-auto px-2.5 py-1 rounded-full text-amber-300 bg-amber-500/20 border border-amber-500/40">
-                            No Payment Needed
-                          </span>
-                        </div>
+                        userHasTrial && !userHasPaidPass ? (
+                          <div className="flex items-baseline gap-3 py-3 border-y-2 border-emerald-500/40">
+                            <span className="text-3xl font-extrabold font-serif text-emerald-400">ACTIVE</span>
+                            <span className="text-xs text-neutral-300 font-extrabold uppercase tracking-wider">
+                              VIP Demo Pass
+                            </span>
+                            <span className="text-xs font-extrabold ml-auto px-2.5 py-1 rounded-full text-emerald-300 bg-emerald-500/20 border border-emerald-500/40">
+                              {trialPassDetails?.formattedTimeLeft || "24h Active"}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex items-baseline gap-3 py-3 border-y-2 border-amber-500/30">
+                            <span className="text-4xl font-extrabold font-serif text-amber-400">FREE</span>
+                            <span className="text-xs text-neutral-300 font-extrabold uppercase tracking-wider">
+                              24h VIP Demo
+                            </span>
+                            <span className="text-xs font-extrabold ml-auto px-2.5 py-1 rounded-full text-amber-300 bg-amber-500/20 border border-amber-500/40">
+                              No Payment Needed
+                            </span>
+                          </div>
+                        )
                       ) : (
                         <div className={`flex items-baseline gap-3 py-3 border-y-2 ${isPopular ? "border-white/15" : "border-amber-950/25"}`}>
                           <span className={`text-4xl font-extrabold font-serif ${isPopular ? "text-white" : "text-[#1c1815]"}`}>₹{displayPrice}</span>
@@ -864,14 +1006,49 @@ export default function BuyTestPage() {
                     {/* Smart CTA Button */}
                     <div className="pt-8">
                       {isPlanTrial ? (
-                        <button
-                          onClick={() => handleBuyClick(plan)}
-                          className="w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-neutral-950 hover:brightness-110 shadow-amber-500/25 cursor-pointer"
-                        >
-                          <Sparkles size={16} />
-                          <span>Request 24h VIP Demo Pass</span>
-                          <ArrowRight size={16} />
-                        </button>
+                        userHasTrial && !userHasPaidPass ? (
+                          <div className="space-y-2">
+                            <a
+                              href="https://test.vigyanprep.com/dashboard"
+                              className="w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/25 text-center"
+                            >
+                              <CheckCircle2 size={16} />
+                              <span>Demo Pass In Use — Go to Tests</span>
+                              <ArrowRight size={16} />
+                            </a>
+                            <p className="text-[11px] text-center text-amber-300/80 font-medium">
+                              ⚡ Evaluating now. Choose a Full Pass below to save all your mock attempts.
+                            </p>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleBuyClick(plan)}
+                            className="w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-neutral-950 hover:brightness-110 shadow-amber-500/25 cursor-pointer"
+                          >
+                            <Sparkles size={16} />
+                            <span>Request 24h VIP Demo Pass</span>
+                            <ArrowRight size={16} />
+                          </button>
+                        )
+                      ) : userHasTrial && !userHasPaidPass ? (
+                        /* HIGH CONVERSION: Demo user upgrading to a paid full pass */
+                        <div className="space-y-2">
+                          <button
+                            onClick={() => handleBuyClick(plan)}
+                            className={`w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg cursor-pointer ${
+                              isPopular
+                                ? "bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-neutral-950 hover:brightness-110 shadow-amber-500/30"
+                                : "bg-[#1c1815] hover:bg-black text-amber-300 border border-amber-500/40"
+                            }`}
+                          >
+                            <Sparkles size={16} />
+                            <span>Upgrade to Full Pass (₹{displayPrice})</span>
+                            <ArrowRight size={16} />
+                          </button>
+                          <p className={`text-[10.5px] text-center font-medium ${isPopular ? "text-neutral-400" : "text-neutral-600"}`}>
+                            Instant conversion • Preserves all your trial scores &amp; analysis
+                          </p>
+                        </div>
                       ) : buttonState === 'access' ? (
                         <a
                           href="https://test.vigyanprep.com/dashboard"

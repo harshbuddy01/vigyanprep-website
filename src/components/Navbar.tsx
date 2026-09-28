@@ -11,6 +11,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [studentName, setStudentName] = useState("");
+  const [isDemoStudent, setIsDemoStudent] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [isMaintenanceActive, setIsMaintenanceActive] = useState<boolean>(() => {
@@ -33,16 +34,21 @@ export default function Navbar() {
           localStorage.removeItem("student_token");
           localStorage.removeItem("student_name");
           localStorage.removeItem("student_email");
+          localStorage.removeItem("student_is_demo");
         } catch (e) {}
       }
       setIsLoggedIn(false);
       setStudentName("");
+      setIsDemoStudent(false);
     } else {
       setIsLoggedIn(true);
       const name = getCookie("student_name") || (typeof window !== "undefined" ? localStorage.getItem("student_name") : null);
       if (name) {
         setStudentName(name);
       }
+      const isDemo = getCookie("student_is_demo") === "true" ||
+        (typeof window !== "undefined" && localStorage.getItem("student_is_demo") === "true");
+      setIsDemoStudent(isDemo);
     }
 
     async function checkMaintenance() {
@@ -206,7 +212,14 @@ export default function Navbar() {
             }`}
           >
             <UserCheck className="w-4 h-4 text-amber-400" />
-            <span>{studentName ? `${studentName.split(' ')[0].toUpperCase()} (Dashboard)` : "HARSH (Dashboard)"}</span>
+            <span className="font-bold">{studentName ? studentName.split(' ')[0].toUpperCase() : "STUDENT"}</span>
+            {isDemoStudent ? (
+              <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-400 to-amber-500 text-black shadow-xs">
+                VIP DEMO
+              </span>
+            ) : (
+              <span className="text-[11px] text-amber-400/80 font-medium">(Dashboard)</span>
+            )}
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
         ) : (
