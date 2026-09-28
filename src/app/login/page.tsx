@@ -37,11 +37,54 @@ export default function LoginPage() {
         }, { onConflict: "email" });
         setMessage({ text: "Account created successfully! Check your email to confirm.", type: "success" });
       } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-        if (signInError) throw signInError;
+        let authenticated = false;
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        
+        if (!signInError && signInData?.session) {
+          const token = signInData.session.access_token;
+          const name = signInData.session.user?.user_metadata?.full_name || email.split("@")[0] || "Student";
+          document.cookie = `student_token=${token}; domain=.vigyanprep.com; path=/; max-age=2592000; SameSite=Lax; Secure`;
+          document.cookie = `student_name=${encodeURIComponent(name)}; domain=.vigyanprep.com; path=/; max-age=2592000; SameSite=Lax; Secure`;
+          document.cookie = `student_email=${encodeURIComponent(email)}; domain=.vigyanprep.com; path=/; max-age=2592000; SameSite=Lax; Secure`;
+          localStorage.setItem("student_token", token);
+          localStorage.setItem("student_name", name);
+          localStorage.setItem("student_email", email);
+          authenticated = true;
+        } else if (signInError) {
+          // VIP Passcode Fallback (VP-XXXXXX)
+          try {
+            const passRes = await fetch("https://api.vigyanprep.com/api/auth/student-login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: email.trim(), password: password.trim() })
+            });
+
+            if (passRes.ok) {
+              const passData = await passRes.json();
+              if (passData.success && passData.token) {
+                const token = passData.token;
+                const name = passData.user?.full_name || email.split("@")[0] || "Student";
+                document.cookie = `student_token=${token}; domain=.vigyanprep.com; path=/; max-age=2592000; SameSite=Lax; Secure`;
+                document.cookie = `student_name=${encodeURIComponent(name)}; domain=.vigyanprep.com; path=/; max-age=2592000; SameSite=Lax; Secure`;
+                document.cookie = `student_email=${encodeURIComponent(email)}; domain=.vigyanprep.com; path=/; max-age=2592000; SameSite=Lax; Secure`;
+                localStorage.setItem("student_token", token);
+                localStorage.setItem("student_name", name);
+                localStorage.setItem("student_email", email);
+                authenticated = true;
+              }
+            }
+          } catch (passErr) {
+            console.warn("VIP pass login fallback error:", passErr);
+          }
+
+          if (!authenticated) {
+            throw signInError;
+          }
+        }
+
         setMessage({ text: "Login successful! Loading your student portal...", type: "success" });
         setTimeout(() => {
-          window.location.href = "https://test.vigyanprep.com";
+          window.location.href = "https://test.vigyanprep.com/dashboard";
         }, 800);
       }
     } catch (err: any) {
