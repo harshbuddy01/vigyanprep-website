@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import {
   ArrowRight, Check, Award, Atom, Dna, BookOpen,
   Brain, BarChart3, FileText, Lock, LogIn, Sparkles, GraduationCap, Compass, ShieldCheck, CheckCircle2,
-  RefreshCw, HelpCircle, Download, ChevronRight
+  RefreshCw, HelpCircle, Download, ChevronRight, X
 } from "lucide-react";
 import {
   RayOpticsSketch,
@@ -33,6 +33,17 @@ export default function BuyTestPage() {
   const [selectedExam, setSelectedExam] = useState<string>("ALL");
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [selectedPlanForPurchase, setSelectedPlanForPurchase] = useState<Plan | null>(null);
+
+  // 24-Hour VIP Trial Request Modal State
+  const [showTrialModal, setShowTrialModal] = useState(false);
+  const [trialName, setTrialName] = useState("");
+  const [trialEmail, setTrialEmail] = useState("");
+  const [trialTargetExam, setTrialTargetExam] = useState("IAT");
+  const [trialPhone, setTrialPhone] = useState("");
+  const [trialSubmitting, setTrialSubmitting] = useState(false);
+  const [trialSubmitted, setTrialSubmitted] = useState(false);
+  const [trialError, setTrialError] = useState<string | null>(null);
+  const [trialResponseMessage, setTrialResponseMessage] = useState<string>("");
 
   // User auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -237,12 +248,83 @@ export default function BuyTestPage() {
     }
   };
 
+  const isTrialPlan = (plan: Plan) => {
+    return (
+      plan.price === 0 ||
+      plan.id === 'e0000000-0000-0000-0000-000000000024' ||
+      (plan.name || '').toLowerCase().includes('trial') ||
+      (plan.name || '').toLowerCase().includes('demo')
+    );
+  };
+
   const handleBuyClick = (plan: Plan) => {
+    if (isTrialPlan(plan)) {
+      setSelectedPlanForPurchase(plan);
+      setTrialError(null);
+      setTrialSubmitted(false);
+      if (typeof window !== 'undefined') {
+        const storedEmail = getCookie("student_email") || localStorage.getItem('student_email') || localStorage.getItem('user_email') || '';
+        const storedName = getCookie("student_name") || localStorage.getItem('student_name') || localStorage.getItem('user_name') || '';
+        if (storedEmail) setTrialEmail(storedEmail);
+        if (storedName) setTrialName(storedName);
+      }
+      setShowTrialModal(true);
+      return;
+    }
+
     setSelectedPlanForPurchase(plan);
     if (!isLoggedIn) {
       setShowAuthModal(true);
     } else {
       openRazorpayCheckout(plan);
+    }
+  };
+
+  const handleTrialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trialEmail || !trialEmail.includes("@")) {
+      setTrialError("Please enter a valid student email address.");
+      return;
+    }
+    if (!trialName || !trialName.trim()) {
+      setTrialError("Please enter your name.");
+      return;
+    }
+
+    setTrialSubmitting(true);
+    setTrialError(null);
+
+    try {
+      const res = await fetch("https://api.vigyanprep.com/api/public/trial-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: trialName.trim(),
+          email: trialEmail.trim().toLowerCase(),
+          targetExam: trialTargetExam,
+          phone: trialPhone.trim()
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setTrialSubmitted(true);
+        setTrialResponseMessage(
+          data.message ||
+          "We have received your email. Our team will verify and activate your demo pass within 1 to 2 hours. Kindly please wait, you will receive a confirmation email shortly."
+        );
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('student_email', trialEmail.trim().toLowerCase());
+          if (trialName) localStorage.setItem('student_name', trialName.trim());
+        }
+      } else {
+        setTrialError(data.error || "Unable to submit your demo request. Please try again or reach out on WhatsApp.");
+      }
+    } catch (err: any) {
+      console.error("Trial request submission error:", err);
+      setTrialError("Network error. Please check your internet connection and try again.");
+    } finally {
+      setTrialSubmitting(false);
     }
   };
 
@@ -645,7 +727,8 @@ export default function BuyTestPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {displayPlans.map((plan, idx) => {
-                const isPopular = idx === 0 || plan.name.toLowerCase().includes("all") || plan.name.toLowerCase().includes("pro");
+                const isPlanTrial = isTrialPlan(plan);
+                const isPopular = !isPlanTrial && (idx === 0 || plan.name.toLowerCase().includes("all") || plan.name.toLowerCase().includes("pro"));
                 const displayPrice = plan.discount_price || plan.price;
                 const originalPrice = plan.price;
                 const discountPercent = plan.discount_price && originalPrice > plan.discount_price
@@ -663,22 +746,29 @@ export default function BuyTestPage() {
                   <div
                     key={plan.id}
                     className={`relative overflow-hidden rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-2xl backdrop-blur-2xl shadow-[inset_0_1px_2px_0_rgba(255,255,255,0.7)] ${
-                      isPopular
+                      isPlanTrial
+                        ? "bg-gradient-to-b from-[#1c1815] via-[#201c18] to-[#1c1815] text-white border-2 border-amber-400/60 shadow-amber-500/10 shadow-2xl"
+                        : isPopular
                         ? "bg-[#1c1815] text-white border-2 border-amber-500/40 shadow-2xl"
                         : "bg-white/40 border-2 border-amber-950/35 hover:border-amber-950/60"
                     }`}
                   >
-                    {isPopular && buttonState !== 'access' && (
+                    {isPlanTrial && (
+                      <div className="absolute top-0 right-0 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black text-[10px] font-black uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md">
+                        ⚡ 24-HOUR VIP DEMO
+                      </div>
+                    )}
+                    {!isPlanTrial && isPopular && buttonState !== 'access' && (
                       <div className="absolute top-0 right-0 bg-[#1c1815] text-amber-300 text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md border-b border-l border-amber-500/30">
                         ⭐ MOST POPULAR
                       </div>
                     )}
-                    {buttonState === 'access' && (
+                    {!isPlanTrial && buttonState === 'access' && (
                       <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md">
                         {isPlanBundle ? '✓ ALL-IN-ONE PASS ACTIVE' : '✓ SUBSCRIBED'}
                       </div>
                     )}
-                    {buttonState === 'upgrade' && (
+                    {!isPlanTrial && buttonState === 'upgrade' && (
                       <div className="absolute top-0 right-0 bg-purple-600 text-white text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-bl-2xl tracking-widest shadow-md">
                         ↑ UPGRADE AVAILABLE
                       </div>
@@ -693,28 +783,28 @@ export default function BuyTestPage() {
                               <span key={exam} className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest border ${
                                 subscribedExamTypes.includes(exam)
                                   ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
-                                  : isPopular ? 'bg-purple-500/20 border-purple-400/30 text-purple-200' : 'bg-purple-100 border-purple-300 text-purple-800'
+                                  : isPopular || isPlanTrial ? 'bg-amber-500/20 border-amber-400/30 text-amber-300' : 'bg-purple-100 border-purple-300 text-purple-800'
                               }`}>
                                 {subscribedExamTypes.includes(exam) ? '✓ ' : ''}{exam}
                               </span>
                             ))}
                             <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest border ${
-                              isPopular ? 'bg-amber-500/20 border-amber-500/30 text-amber-300' : 'bg-amber-100 border-amber-300 text-amber-800'
-                            }`}>BUNDLE</span>
+                              isPopular || isPlanTrial ? 'bg-amber-500/20 border-amber-500/30 text-amber-300' : 'bg-amber-100 border-amber-300 text-amber-800'
+                            }`}>{isPlanTrial ? 'TRIAL PASS' : 'BUNDLE'}</span>
                           </div>
                         ) : (
                           <span className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest ${
-                            isPopular ? "bg-amber-500/20 border border-amber-500/30 text-amber-300" : "bg-amber-950/15 border border-amber-950/30 text-amber-950"
+                            isPopular || isPlanTrial ? "bg-amber-500/20 border border-amber-500/30 text-amber-300" : "bg-amber-950/15 border border-amber-950/30 text-amber-950"
                           }`}>
                             {plan.exam_type || "TEST SERIES"}
                           </span>
                         )}
-                        <h3 className={`font-serif text-2xl font-bold pt-2 ${isPopular ? "text-white" : "text-[#1c1815]"}`}>{plan.name}</h3>
-                        <p className={`text-xs font-extrabold ${isPopular ? "text-neutral-300" : "text-[#1c1815]/80"}`}>
-                          Valid for {plan.duration_days} days full access across all devices
+                        <h3 className={`font-serif text-2xl font-bold pt-2 ${isPopular || isPlanTrial ? "text-white" : "text-[#1c1815]"}`}>{plan.name}</h3>
+                        <p className={`text-xs font-extrabold ${isPopular || isPlanTrial ? "text-neutral-300" : "text-[#1c1815]/80"}`}>
+                          {isPlanTrial ? "Instant 24-Hour full evaluation access to CBT portal" : `Valid for ${plan.duration_days} days full access across all devices`}
                         </p>
                         {/* Upgrade hint: show what new exams this bundle unlocks */}
-                        {buttonState === 'upgrade' && newExamsInBundle.length > 0 && (
+                        {!isPlanTrial && buttonState === 'upgrade' && newExamsInBundle.length > 0 && (
                           <p className="text-xs font-extrabold text-purple-300 bg-purple-500/15 border border-purple-400/20 rounded-lg px-3 py-1.5">
                             🔓 Unlocks: {newExamsInBundle.join(' + ')} access
                           </p>
@@ -722,46 +812,67 @@ export default function BuyTestPage() {
                       </div>
 
                       {/* Pricing Display */}
-                      <div className={`flex items-baseline gap-3 py-3 border-y-2 ${isPopular ? "border-white/15" : "border-amber-950/25"}`}>
-                        <span className={`text-4xl font-extrabold font-serif ${isPopular ? "text-white" : "text-[#1c1815]"}`}>₹{displayPrice}</span>
-                        {plan.discount_price && (
-                          <span className={`text-sm line-through ${isPopular ? "text-neutral-400" : "text-neutral-600 font-bold"}`}>₹{plan.price}</span>
-                        )}
-                        {discountPercent > 0 && (
-                          <span className={`text-xs font-extrabold ml-auto px-2.5 py-1 rounded-full border ${
-                            isPopular
-                              ? "text-emerald-300 bg-emerald-950/80 border-emerald-500/50"
-                              : "text-emerald-950 bg-emerald-200/70 border-emerald-400"
-                          }`}>
-                            Save {discountPercent}% OFF
+                      {isPlanTrial ? (
+                        <div className="flex items-baseline gap-3 py-3 border-y-2 border-amber-500/30">
+                          <span className="text-4xl font-extrabold font-serif text-amber-400">FREE</span>
+                          <span className="text-xs text-neutral-300 font-extrabold uppercase tracking-wider">
+                            24h VIP Demo
                           </span>
-                        )}
-                      </div>
+                          <span className="text-xs font-extrabold ml-auto px-2.5 py-1 rounded-full text-amber-300 bg-amber-500/20 border border-amber-500/40">
+                            No Payment Needed
+                          </span>
+                        </div>
+                      ) : (
+                        <div className={`flex items-baseline gap-3 py-3 border-y-2 ${isPopular ? "border-white/15" : "border-amber-950/25"}`}>
+                          <span className={`text-4xl font-extrabold font-serif ${isPopular ? "text-white" : "text-[#1c1815]"}`}>₹{displayPrice}</span>
+                          {plan.discount_price && (
+                            <span className={`text-sm line-through ${isPopular ? "text-neutral-400" : "text-neutral-600 font-bold"}`}>₹{plan.price}</span>
+                          )}
+                          {discountPercent > 0 && (
+                            <span className={`text-xs font-extrabold ml-auto px-2.5 py-1 rounded-full border ${
+                              isPopular
+                                ? "text-emerald-300 bg-emerald-950/80 border-emerald-500/50"
+                                : "text-emerald-950 bg-emerald-200/70 border-emerald-400"
+                            }`}>
+                              Save {discountPercent}% OFF
+                            </span>
+                          )}
+                        </div>
+                      )}
 
                       {/* Feature Bullet Points */}
-                      <ul className={`space-y-3 text-xs font-extrabold ${isPopular ? "text-neutral-200" : "text-[#1c1815]"}`}>
+                      <ul className={`space-y-3 text-xs font-extrabold ${isPopular || isPlanTrial ? "text-neutral-200" : "text-[#1c1815]"}`}>
                         <li className="flex items-center gap-2.5">
-                          <Check size={16} className={isPopular ? "text-amber-400 shrink-0" : "text-amber-950 shrink-0"} />
-                          <span>Full Length Official CBT Pattern Mocks</span>
+                          <Check size={16} className={isPopular || isPlanTrial ? "text-amber-400 shrink-0" : "text-amber-950 shrink-0"} />
+                          <span>{isPlanTrial ? "Official NTA CBT Interface & Scientific Calculator" : "Full Length Official CBT Pattern Mocks"}</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <Check size={16} className={isPopular ? "text-amber-400 shrink-0" : "text-amber-950 shrink-0"} />
-                          <span>Real-Time All-India Merit Leaderboard</span>
+                          <Check size={16} className={isPopular || isPlanTrial ? "text-amber-400 shrink-0" : "text-amber-950 shrink-0"} />
+                          <span>{isPlanTrial ? "Full Practice Tests: IAT 01-03, JEE 01 & NEST" : "Real-Time All-India Merit Leaderboard"}</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <Check size={16} className={isPopular ? "text-amber-400 shrink-0" : "text-amber-950 shrink-0"} />
-                          <span>Detailed Physics, Chemistry, Math & Biology Solutions</span>
+                          <Check size={16} className={isPopular || isPlanTrial ? "text-amber-400 shrink-0" : "text-amber-950 shrink-0"} />
+                          <span>{isPlanTrial ? "Diagnostic Percentage & Chapter Mistake Review" : "Detailed Physics, Chemistry, Math & Biology Solutions"}</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <Check size={16} className={isPopular ? "text-amber-400 shrink-0" : "text-amber-950 shrink-0"} />
-                          <span>Passcode Protected CBT Test Engine Entry</span>
+                          <Check size={16} className={isPopular || isPlanTrial ? "text-amber-400 shrink-0" : "text-amber-950 shrink-0"} />
+                          <span>{isPlanTrial ? "Valid Exactly 24 Hours from Account Activation" : "Passcode Protected CBT Test Engine Entry"}</span>
                         </li>
                       </ul>
                     </div>
 
                     {/* Smart CTA Button */}
                     <div className="pt-8">
-                      {buttonState === 'access' ? (
+                      {isPlanTrial ? (
+                        <button
+                          onClick={() => handleBuyClick(plan)}
+                          className="w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-neutral-950 hover:brightness-110 shadow-amber-500/25 cursor-pointer"
+                        >
+                          <Sparkles size={16} />
+                          <span>Request 24h VIP Demo Pass</span>
+                          <ArrowRight size={16} />
+                        </button>
+                      ) : buttonState === 'access' ? (
                         <a
                           href="https://test.vigyanprep.com/dashboard"
                           className={`w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg ${
@@ -906,6 +1017,229 @@ export default function BuyTestPage() {
                 Cancel
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 24-Hour VIP Demo Pass Request Modal */}
+      {showTrialModal && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#1c1815] border-2 border-amber-500/50 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl text-white relative animate-in fade-in zoom-in-95 duration-200">
+            {/* Close Button */}
+            <button
+              onClick={() => {
+                setShowTrialModal(false);
+                setTrialSubmitted(false);
+                setTrialError(null);
+              }}
+              className="absolute top-5 right-5 text-neutral-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition cursor-pointer"
+            >
+              <X size={20} />
+            </button>
+
+            {!trialSubmitted ? (
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] font-extrabold uppercase tracking-wider">
+                    <Sparkles size={13} className="text-amber-400" />
+                    <span>24-Hour VIP Demo Pass</span>
+                  </div>
+                  <h3 className="font-serif text-2xl font-bold text-white">
+                    Request Your Free 24h Demo Pass
+                  </h3>
+                  <p className="text-xs text-neutral-300 leading-relaxed font-medium">
+                    Experience our official CBT test engine, authentic question palette, and detailed solution reviews. Our academic team will verify and activate your pass within 1-2 hours.
+                  </p>
+                </div>
+
+                {trialError && (
+                  <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-200 text-xs font-semibold flex items-start gap-2.5">
+                    <span className="text-red-400 font-bold">⚠️</span>
+                    <span>{trialError}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleTrialSubmit} className="space-y-4">
+                  {/* Name */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-neutral-200 uppercase tracking-wider">
+                      Student Full Name <span className="text-amber-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Aryan Sharma"
+                      value={trialName}
+                      onChange={(e) => setTrialName(e.target.value)}
+                      className="w-full bg-neutral-900 border border-white/15 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-500 focus:outline-none transition"
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-neutral-200 uppercase tracking-wider">
+                      Student Email Address <span className="text-amber-400">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="student@gmail.com"
+                      value={trialEmail}
+                      onChange={(e) => setTrialEmail(e.target.value)}
+                      className="w-full bg-neutral-900 border border-white/15 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-500 focus:outline-none transition"
+                    />
+                    <p className="text-[11px] text-neutral-400">
+                      We will dispatch your login credentials and activation confirmation to this email.
+                    </p>
+                  </div>
+
+                  {/* Target Exam */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-neutral-200 uppercase tracking-wider">
+                      Target Exam
+                    </label>
+                    <select
+                      value={trialTargetExam}
+                      onChange={(e) => setTrialTargetExam(e.target.value)}
+                      className="w-full bg-neutral-900 border border-white/15 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition cursor-pointer"
+                    >
+                      <option value="IAT">IISER IAT 2026 (Aptitude Test)</option>
+                      <option value="NEST">NISER NEST 2026</option>
+                      <option value="JEE">JEE Main 2026 (Physics, Chem, Math)</option>
+                      <option value="ISI">ISI B.Stat / B.Math</option>
+                      <option value="CMI">CMI Entrance</option>
+                      <option value="ALL">All Science Exams (Full VIP Access)</option>
+                    </select>
+                  </div>
+
+                  {/* Optional WhatsApp/Phone */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-neutral-200 uppercase tracking-wider flex items-center justify-between">
+                      <span>WhatsApp / Mobile Number</span>
+                      <span className="text-[10px] text-neutral-400 font-normal uppercase">Optional</span>
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="+91 98765 43210 (For WhatsApp invite)"
+                      value={trialPhone}
+                      onChange={(e) => setTrialPhone(e.target.value)}
+                      className="w-full bg-neutral-900 border border-white/15 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-500 focus:outline-none transition"
+                    />
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="pt-2 space-y-2">
+                    <button
+                      type="submit"
+                      disabled={trialSubmitting}
+                      className="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:brightness-110 disabled:opacity-50 text-neutral-950 font-extrabold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2 shadow-xl shadow-amber-500/20 cursor-pointer"
+                    >
+                      {trialSubmitting ? (
+                        <>
+                          <RefreshCw size={16} className="animate-spin" />
+                          <span>Submitting Request...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={16} />
+                          <span>Submit Request for 24h Pass</span>
+                          <ArrowRight size={16} />
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowTrialModal(false)}
+                      className="w-full py-2.5 text-xs text-neutral-400 hover:text-white transition font-semibold cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            ) : (
+              /* Success / Confirmation State */
+              <div className="text-center space-y-6 py-2">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-emerald-400 mx-auto shadow-lg shadow-emerald-500/20">
+                  <CheckCircle2 size={32} />
+                </div>
+
+                <div className="space-y-2">
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-emerald-400">
+                    Request Received Successfully
+                  </span>
+                  <h3 className="font-serif text-2xl font-bold text-white">
+                    We Have Received Your Email!
+                  </h3>
+                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs leading-relaxed font-medium text-left">
+                    <p>
+                      <strong>{trialResponseMessage || "We have received your email. Our team will verify and activate your demo pass within 1 to 2 hours. Kindly please wait, you will receive a confirmation email shortly."}</strong>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Details Summary */}
+                <div className="p-4 rounded-xl bg-neutral-900 border border-white/10 text-left space-y-2 text-xs">
+                  <div className="flex justify-between items-center text-neutral-400">
+                    <span>Student:</span>
+                    <span className="text-white font-bold">{trialName}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-neutral-400">
+                    <span>Email:</span>
+                    <span className="font-mono text-amber-300 font-bold">{trialEmail}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-neutral-400">
+                    <span>Target Exam:</span>
+                    <span className="text-white font-bold">{trialTargetExam}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-neutral-400">
+                    <span>Validity:</span>
+                    <span className="text-emerald-400 font-bold">24 Hours from activation</span>
+                  </div>
+                  <div className="flex justify-between items-center text-neutral-400">
+                    <span>Test Portal:</span>
+                    <a href="https://test.vigyanprep.com" target="_blank" rel="noreferrer" className="text-amber-400 hover:underline font-mono">
+                      test.vigyanprep.com
+                    </a>
+                  </div>
+                </div>
+
+                {/* Next Steps */}
+                <div className="text-left text-xs text-neutral-300 space-y-2 bg-white/5 p-4 rounded-xl border border-white/10">
+                  <div className="font-bold text-amber-300 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                    <span>What happens next?</span>
+                  </div>
+                  <ul className="space-y-1.5 text-[11px] text-neutral-300 list-disc list-inside">
+                    <li>Our team reviews and activates your trial pass within 1-2 hours.</li>
+                    <li>You will receive an email from <strong className="text-white">noreply@vigyanprep.com</strong> with your temporary login password.</li>
+                    <li>Log in at <strong className="text-white">test.vigyanprep.com</strong> to start taking mock tests.</li>
+                  </ul>
+                </div>
+
+                {/* Direct Action Buttons */}
+                <div className="space-y-2.5 pt-2">
+                  <a
+                    href={`https://wa.me/917004283531?text=${encodeURIComponent(`Hello VigyanPrep Team! I just requested a 24-hour demo pass for ${trialEmail} (${trialTargetExam}). Could you please activate my account?`)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                  >
+                    <span>💬 Need Faster Activation? WhatsApp Us</span>
+                  </a>
+
+                  <button
+                    onClick={() => {
+                      setShowTrialModal(false);
+                      setTrialSubmitted(false);
+                    }}
+                    className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-extrabold transition cursor-pointer"
+                  >
+                    Back to Test Series
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
