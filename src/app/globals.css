@@ -1,6 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 @import "tailwindcss";
 
+:root {
+  --font-outfit: 'Outfit', sans-serif;
+  --font-plus-jakarta: 'Plus Jakarta Sans', sans-serif;
+  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+  --font-caveat: 'Caveat', cursive;
+  --font-dm-sans: 'DM Sans', sans-serif;
+  --font-manrope: 'Manrope', sans-serif;
+  --font-architects-daughter: 'Architects Daughter', cursive;
+}
+
 @font-face {
   font-family: 'Dirtyline36days';
   src: url('/fonts/Dirtyline36days.woff2') format('woff2'),
